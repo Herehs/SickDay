@@ -74,4 +74,6 @@ dependencies {
     implementation(libs.ktor.negotiation)
     implementation(libs.ktor.serialization.kotlinx.json)
     implementation(libs.ktor.websockets)
+
+    implementation(libs.androidx.compose.ui.text.google.fonts)
 }
