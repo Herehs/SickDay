@@ -42,7 +42,7 @@ fun MainScreen(){
                 color = text,
                 fontWeight = FontWeight.W400
             )
-            DateCarousel(modifier = Modifier.padding(top = 10.dp))
+            DateCarousel(modifier = Modifier.padding(top = 10.dp), pickedDay = {it})
         }
     }
 }

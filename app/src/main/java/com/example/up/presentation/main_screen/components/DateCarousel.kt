@@ -1,11 +1,22 @@
 package com.example.up.presentation.main_screen.components
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.EaseIn
+import androidx.compose.animation.core.animateDpAsState
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.gestures.snapping.SnapPosition
+import androidx.compose.foundation.gestures.snapping.rememberSnapFlingBehavior
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -24,6 +35,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.LocalWindowInfo
 import androidx.compose.ui.text.font.FontWeight
 
 import androidx.compose.ui.tooling.preview.Preview
@@ -35,36 +48,59 @@ import com.example.up.presentation.ui.theme.text
 
 @Composable
 fun DateCarousel(
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    pickedDay: (DateCardData) -> Unit,
+//    dateList: List<DateCardData>
 ){
     val dateList = listOf(
         DateCardData(number = "1", name = "Понедельник"),
         DateCardData(number = "2", name = "Вторник"),
         DateCardData(number = "3", name = "Среда"),
         DateCardData(number = "4", name = "Четверг"),
-        DateCardData(number = "5", name = "Понедельник")
+        DateCardData(number = "5", name = "Пятница"),
+        DateCardData(number = "6", name = "Суббота"),
+        DateCardData(number = "7", name = "Воскресенье"),
+        DateCardData(number = "8", name = "Понедельник"),
+        DateCardData(number = "9", name = "Вторник"),
+        DateCardData(number = "10", name = "Среда"),
+        DateCardData(number = "11", name = "Четверг"),
+        DateCardData(number = "12", name = "Пятница"),
+        DateCardData(number = "13", name = "Суббота"),
+        DateCardData(number = "14", name = "Воскресенье"),
 
     )
     val lazyRowState = rememberLazyListState()
     val centerItemIndex = remember {
         derivedStateOf {
             val layoutInfo = lazyRowState.layoutInfo
-
             val viewportCenter = (layoutInfo.viewportStartOffset + layoutInfo.viewportEndOffset) / 2
 
+            println("viewportCenter ${viewportCenter}")
             layoutInfo.visibleItemsInfo.minByOrNull { item ->
                 val itemCenter = item.offset + item.size / 2
                 kotlin.math.abs(itemCenter - viewportCenter)
             }?.index
         }
     }
+
     LazyRow(
         state = lazyRowState,
-        modifier = modifier
+        modifier = modifier,
+        flingBehavior = rememberSnapFlingBehavior(lazyListState = lazyRowState, snapPosition = SnapPosition.Center),
+// !!!!100 ии контент!!!!
+        contentPadding = PaddingValues(
+//            horizontal = (LocalWindowInfo.current.containerDpSize.width / 2) - (126.dp / 2)
+            horizontal = (LocalConfiguration.current.screenWidthDp.dp / 2) - (126.dp / 2)
+
+        )
     ) {
         itemsIndexed(dateList){ index, card ->
-            if (index == centerItemIndex.value) card.selected = true else card.selected = false
-            DateCard(card)
+            var isSelected = false
+            if(index == centerItemIndex.value){
+                isSelected = true
+                pickedDay(card)
+            }
+            DateCard(card.copy(selected = isSelected))
         }
     }
 }
@@ -72,7 +108,8 @@ fun DateCarousel(
 data class DateCardData(
     val number: String,
     val name: String,
-    var selected: Boolean = false
+    var selected: Boolean = false,
+    var scale: Float = 1f
 )
 
 @Composable
@@ -80,20 +117,24 @@ fun DateCard(
     data: DateCardData,
 ){
     val numberSize = if(data.selected) 36.sp else 24.sp
-    val width = if(data.selected) 126.dp else 80.dp
-    val height = if(data.selected) 100.dp else 69.dp
+    val width = animateDpAsState(if(data.selected) 126.dp else 80.dp)
+    val height = animateDpAsState(if(data.selected) 100.dp else 67.dp)
+
 
     Column(
         modifier = Modifier
             .padding(5.dp)
-            .width(width)
-            .height(height)
+            .width(width.value)
+            .height(height.value)
             .clip(shape = RoundedCornerShape(8.dp))
             .background(color = Color(0xffFFFAEF))
             .border(
                 width = 1.dp,
                 color = Color(0xffFBB672),
                 shape = RoundedCornerShape(8.dp)
+            )
+            .graphicsLayer(
+                translationX = 1f
             ),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
@@ -107,7 +148,12 @@ fun DateCard(
             color = text,
             fontWeight = FontWeight.W500
         )
-        if(data.selected){
+
+        AnimatedVisibility(
+            visible = data.selected,
+            enter = slideInVertically(initialOffsetY = { -20 }) + fadeIn(),
+            exit = slideOutVertically(targetOffsetY = {-20}) + fadeOut()
+        ) {
             Text(
                 modifier = Modifier,
                 text = data.name,
@@ -128,7 +174,6 @@ fun CarouselPreview(){
         modifier = Modifier.fillMaxSize(),
         contentAlignment = Alignment.Center
     ){
-
+        DateCarousel(pickedDay = {it})
     }
-    DateCarousel()
 }
