@@ -2,6 +2,8 @@ package com.example.up.presentation.main_screen.components
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.animateDpAsState
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.animateOffsetAsState
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInVertically
@@ -16,6 +18,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
@@ -34,6 +37,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -112,12 +116,13 @@ data class DateCardData(
 fun DateCard(
     data: DateCardData,
 ){
-    val numberSize = if(data.selected) 36.sp else 24.sp
+    val numberSize = animateFloatAsState(if(data.selected) 1.5wf else 1f)
     val width = animateDpAsState(if(data.selected) 126.dp else 80.dp)
     val height = animateDpAsState(if(data.selected) 100.dp else 67.dp)
+    val textOffset = animateFloatAsState(if(data.selected) 55f else 0f)
 
 
-    Column(
+    Box(
         modifier = Modifier
             .padding(5.dp)
             .width(width.value)
@@ -128,38 +133,36 @@ fun DateCard(
                 width = 1.dp,
                 color = Color(0xffFBB672),
                 shape = RoundedCornerShape(8.dp)
-            )
-            .graphicsLayer(
-                translationX = 1f
             ),
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
+        contentAlignment = Alignment.Center
     ){
         Text(
-            modifier = Modifier,
+            modifier = Modifier.graphicsLayer(
+                translationY = -textOffset.value
+            ),
             text = data.number,
-            fontSize = numberSize,
+            fontSize = 24.sp * numberSize.value,
             lineHeight = 22.sp,
             fontFamily = bodyFontFamily,
             color = text,
             fontWeight = FontWeight.W500
         )
 
-        AnimatedVisibility(
-            visible = data.selected,
-            enter = slideInVertically(initialOffsetY = { -20 }) + fadeIn(),
-            exit = slideOutVertically(targetOffsetY = {-20}) + fadeOut()
-        ) {
-            Text(
-                modifier = Modifier,
-                text = data.name,
-                fontSize = 13.sp,
-                lineHeight = 22.sp,
-                fontFamily = bodyFontFamily,
-                color = text,
-                fontWeight = FontWeight.W500
-            )
-        }
+
+        Text(
+            modifier = Modifier.graphicsLayer(
+                translationY = textOffset.value,
+                alpha = if (textOffset.value > 10f) textOffset.value / 55 else 0f
+            ),
+            text = data.name,
+            fontSize = 13.sp,
+            lineHeight = 22.sp,
+            fontFamily = bodyFontFamily,
+            color = text,
+            fontWeight = FontWeight.W500,
+            maxLines = 1,
+            textAlign = TextAlign.Center
+        )
     }
 }
 
