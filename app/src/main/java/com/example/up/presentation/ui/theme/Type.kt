@@ -23,13 +23,6 @@ val bodyFontFamily = FontFamily(
     )
 )
 
-val mainFontFamily = FontFamily(
-    Font(
-        googleFont = GoogleFont("Bai Jamjuree"),
-        fontProvider = provider,
-    )
-)
-
 val Typography = Typography(
     bodyLarge = TextStyle(
         fontFamily = FontFamily.Default,
