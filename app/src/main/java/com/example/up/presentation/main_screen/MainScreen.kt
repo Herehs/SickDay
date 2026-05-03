@@ -11,6 +11,7 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -24,24 +25,31 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.up.R
 import com.example.up.presentation.common_сomponents.Section
-import com.example.up.presentation.main_screen.components.Advice
 import com.example.up.presentation.main_screen.components.AdviceList
 import com.example.up.presentation.main_screen.components.Background
 import com.example.up.presentation.main_screen.components.DateCarousel
 import com.example.up.presentation.main_screen.components.IndexScale
 import com.example.up.presentation.main_screen.components.PillsSchedule
-import com.example.up.presentation.main_screen.components.PillsScheduleData
 import com.example.up.presentation.main_screen.components.Tile
 import com.example.up.presentation.ui.theme.bodyFontFamily
 import com.example.up.presentation.ui.theme.text
+import org.koin.androidx.compose.koinViewModel
 import java.time.LocalDate
 import java.time.LocalTime
 import java.time.format.DateTimeFormatter
 
 @Composable
-fun MainScreen(){
+fun MainScreen(
+    mainViewModel: MainViewmodel = koinViewModel()
+){
+    val adviceList = mainViewModel.adviseList.collectAsState()
+    val pillsScheduleList = mainViewModel.pillsList.collectAsState()
+    val pressure = mainViewModel.atmPressure.collectAsState()
+    val KRIndex = mainViewModel.KRIndex.collectAsState()
+    val temperature = mainViewModel.temperature.collectAsState()
+    val humidity = mainViewModel.humidity.collectAsState()
+
     var currentDate by remember { mutableStateOf(LocalDate.now())}
     val formatted = currentDate.format(DateTimeFormatter.ofPattern("LLLL yyyy")).replaceFirstChar { it.uppercase() }
 
@@ -66,15 +74,16 @@ fun MainScreen(){
             Column(
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(horizontal = 20.dp).padding(top = 8.dp),
+                    .padding(top = 8.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                IndexScale(text = "Индекс", value = .68f,)
+                IndexScale(text = "Индекс", value = .68f, modifier = Modifier.padding(horizontal = 20.dp))
 
                 LazyVerticalGrid(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(top = 12.dp),
+                        .padding(top = 12.dp)
+                        .padding(horizontal = 20.dp),
                     columns = GridCells.Fixed(2),
                     horizontalArrangement = Arrangement.spacedBy(8.dp),
                     verticalArrangement = Arrangement.spacedBy(8.dp)
@@ -94,7 +103,7 @@ fun MainScreen(){
                                             fontWeight = FontWeight.W400
                                         )
                                         ){
-                                            append("777")
+                                            append(pressure.value.toString())
                                         }
                                         withStyle(style = SpanStyle(
                                             fontSize = 16.sp,
@@ -132,7 +141,7 @@ fun MainScreen(){
                                             fontWeight = FontWeight.W400
                                         )
                                         ){
-                                            append("6/")
+                                            append("${KRIndex.value}/")
                                         }
                                         withStyle(style = SpanStyle(
                                             fontSize = 24.sp,
@@ -168,7 +177,7 @@ fun MainScreen(){
                                             fontWeight = FontWeight.W400
                                         )
                                         ){
-                                            append("+12")
+                                            append("${temperature.value}")
                                         }
                                     },
                                     fontSize = 18.sp,
@@ -194,7 +203,7 @@ fun MainScreen(){
                                             fontWeight = FontWeight.W400
                                         )
                                         ){
-                                            append("81%")
+                                            append("${humidity.value}%")
                                         }
                                     },
                                     fontSize = 18.sp,
@@ -209,58 +218,30 @@ fun MainScreen(){
                     }
                 }
                 Section(
-                    modifier = Modifier.fillMaxWidth().padding(top = 19.dp),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(top = 19.dp)
+                        .padding(horizontal = 20.dp),
                     name = "Советы на сегодня"
                 ) {
-                    //пока захардкожеено пока нет вьюмодели
-                    // (ненадолго, дальше будет захардкожено во вьюмодели пока ты не доделаешь сервак))
-                    val adviceList = mutableListOf<Advice>(
-                        Advice(
-                            icon = R.drawable.heart_rate,
-                            text = "Снизьте физические нагрузки, избегайте резкого подъёма"
-                        ),
-                        Advice(
-                            icon = R.drawable.clock,
-                            text = "Пейте больше воды \n1.5–2 л в течение дня"
-                        ),
-                        Advice(
-                            icon = R.drawable.drop,
-                            text = "Ложитесь спать пораньше, ночью буря усилится"
-                        )
-                    )
-                    AdviceList(adviceList)
+                    //уже захардкожено во вьюмодели
+                    // (ждём сервак =( )
+
+                    AdviceList(advices = adviceList.value)
                 }
 
-                Section(
-                    modifier = Modifier.fillMaxWidth().padding(top = 19.dp),
-                    name = "Принятие лекарств"
-                ) {
-                    val list = listOf(
-                        PillsScheduleData(
-                            name = "Фенозепам",
-                            date = LocalDate.now(),
-                            time = LocalTime.of(12, 0)
-                        ),
-                        PillsScheduleData(
-                            name = "Лирика",
-                            date = LocalDate.now(),
-                            time = LocalTime.of(16, 0),
-                            taken = true
-                        ),
-                        PillsScheduleData(
-                            name = "Фенибут",
-                            date = LocalDate.now(),
-                            time = LocalTime.of(18, 0)
-                        ),
-                        PillsScheduleData(
-                            name = "Фенозепам",
-                            date = LocalDate.now(),
-                            time = LocalTime.of(21, 0)
-                        ),
-                    )
-                    PillsSchedule(pillsList = list, currentTime = LocalTime.of(14 ,0))
+                Text(
+                    modifier = Modifier.fillMaxWidth().padding(horizontal = 20.dp),
+                    text = "Принятие лекарств",
+                    fontSize = 17.sp,
+                    lineHeight = 22.sp,
+                    fontFamily = bodyFontFamily,
+                    color = text,
+                    fontWeight = FontWeight.W400,
+                    letterSpacing = -(0.8).sp
+                )
+                PillsSchedule(pillsList = pillsScheduleList.value, currentTime = LocalTime.of(14 ,0))
 
-                }
 
             }
         }

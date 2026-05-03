@@ -2,14 +2,17 @@ package com.example.up.di
 
 import com.example.up.data.remote.GetService
 import com.example.up.data.remote.GetServiceImpl
+import com.example.up.presentation.main_screen.MainViewmodel
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.cio.CIO
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.serialization.kotlinx.json.json
+import org.koin.core.module.dsl.viewModel
+import org.koin.core.module.dsl.viewModelOf
 import org.koin.dsl.module
 
 val mainModule = module {
-
+    viewModelOf(::MainViewmodel)
 }
 
 val networkModule = module {
