@@ -38,10 +38,11 @@ fun AdviceList(
             ) {
                 Icon(
                     painter = painterResource(advice.icon),
-                    contentDescription = null
+                    contentDescription = null,
+                    tint = text
                 )
                 Text(
-                    modifier = Modifier.padding(start = 10.dp),
+                    modifier = Modifier.padding(start = 20.dp),
                     text = advice.text,
                     fontSize = 18.sp,
                     lineHeight = 22.sp,

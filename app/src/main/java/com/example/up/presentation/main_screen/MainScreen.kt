@@ -11,6 +11,10 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.SpanStyle
@@ -20,19 +24,25 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.up.R
 import com.example.up.presentation.common_сomponents.Section
+import com.example.up.presentation.main_screen.components.Advice
+import com.example.up.presentation.main_screen.components.AdviceList
 import com.example.up.presentation.main_screen.components.Background
 import com.example.up.presentation.main_screen.components.DateCarousel
 import com.example.up.presentation.main_screen.components.IndexScale
+import com.example.up.presentation.main_screen.components.PillsSchedule
+import com.example.up.presentation.main_screen.components.PillsScheduleData
 import com.example.up.presentation.main_screen.components.Tile
 import com.example.up.presentation.ui.theme.bodyFontFamily
 import com.example.up.presentation.ui.theme.text
 import java.time.LocalDate
+import java.time.LocalTime
 import java.time.format.DateTimeFormatter
 
 @Composable
 fun MainScreen(){
-    val currentDate = LocalDate.now()
+    var currentDate by remember { mutableStateOf(LocalDate.now())}
     val formatted = currentDate.format(DateTimeFormatter.ofPattern("LLLL yyyy")).replaceFirstChar { it.uppercase() }
 
     Scaffold() { innerPadding ->
@@ -52,7 +62,7 @@ fun MainScreen(){
                 color = text,
                 fontWeight = FontWeight.W400
             )
-            DateCarousel(modifier = Modifier.padding(top = 10.dp).height(100.dp), pickedDay = {it})
+            DateCarousel(modifier = Modifier.padding(top = 10.dp).height(100.dp), pickedDay = {currentDate = it.date})
             Column(
                 modifier = Modifier
                     .fillMaxSize()
@@ -202,13 +212,53 @@ fun MainScreen(){
                     modifier = Modifier.fillMaxWidth().padding(top = 19.dp),
                     name = "Советы на сегодня"
                 ) {
-
+                    //пока захардкожеено пока нет вьюмодели
+                    // (ненадолго, дальше будет захардкожено во вьюмодели пока ты не доделаешь сервак))
+                    val adviceList = mutableListOf<Advice>(
+                        Advice(
+                            icon = R.drawable.heart_rate,
+                            text = "Снизьте физические нагрузки, избегайте резкого подъёма"
+                        ),
+                        Advice(
+                            icon = R.drawable.clock,
+                            text = "Пейте больше воды \n1.5–2 л в течение дня"
+                        ),
+                        Advice(
+                            icon = R.drawable.drop,
+                            text = "Ложитесь спать пораньше, ночью буря усилится"
+                        )
+                    )
+                    AdviceList(adviceList)
                 }
 
                 Section(
                     modifier = Modifier.fillMaxWidth().padding(top = 19.dp),
                     name = "Принятие лекарств"
                 ) {
+                    val list = listOf(
+                        PillsScheduleData(
+                            name = "Фенозепам",
+                            date = LocalDate.now(),
+                            time = LocalTime.of(12, 0)
+                        ),
+                        PillsScheduleData(
+                            name = "Лирика",
+                            date = LocalDate.now(),
+                            time = LocalTime.of(16, 0),
+                            taken = true
+                        ),
+                        PillsScheduleData(
+                            name = "Фенибут",
+                            date = LocalDate.now(),
+                            time = LocalTime.of(18, 0)
+                        ),
+                        PillsScheduleData(
+                            name = "Фенозепам",
+                            date = LocalDate.now(),
+                            time = LocalTime.of(21, 0)
+                        ),
+                    )
+                    PillsSchedule(pillsList = list, currentTime = LocalTime.of(14 ,0))
 
                 }
 

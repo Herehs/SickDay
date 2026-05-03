@@ -36,14 +36,11 @@ import com.example.up.presentation.ui.theme.bodyFontFamily
 import com.example.up.presentation.ui.theme.text
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
-import java.time.format.TextStyle
-import java.util.Locale
 
 @Composable
 fun DateCarousel(
     modifier: Modifier = Modifier,
     pickedDay: (DateCardData) -> Unit,
-    startDay: Int = 0
 ){
     val listSize = 201
     val dateList = getDateList(listSize)
@@ -84,13 +81,6 @@ fun DateCarousel(
     }
 }
 
-data class DateCardData(
-    val number: String,
-    val name: String,
-    var selected: Boolean = false,
-    var scale: Float = 1f
-)
-
 @Composable
 fun DateCard(
     data: DateCardData,
@@ -119,7 +109,7 @@ fun DateCard(
             modifier = Modifier.graphicsLayer(
                 translationY = -textOffset.value
             ),
-            text = data.number,
+            text = data.date.format(DateTimeFormatter.ofPattern("d")),
             fontSize = 24.sp * numberSize.value,
             lineHeight = 22.sp,
             fontFamily = bodyFontFamily,
@@ -133,7 +123,7 @@ fun DateCard(
                 translationY = textOffset.value,
                 alpha = if (textOffset.value > 10f) textOffset.value / 55 else 0f
             ),
-            text = data.name,
+            text = data.date.format(DateTimeFormatter.ofPattern("EEEE")).replaceFirstChar { it.uppercase() },
             fontSize = 13.sp,
             lineHeight = 22.sp,
             fontFamily = bodyFontFamily,
@@ -145,17 +135,19 @@ fun DateCard(
     }
 }
 
+data class DateCardData(
+    val date: LocalDate,
+    var selected: Boolean = false,
+    var scale: Float = 1f
+)
+
 fun getDateList(size: Int): List<DateCardData> {
     val today = LocalDate.now()
     val dateList = mutableListOf<DateCardData>()
     for(i in -size / 2 .. size / 2){
-        val date = today.plusDays(i.toLong())
         dateList.add(
             DateCardData(
-                number = date.dayOfMonth.toString(),
-                name = date.format(
-                    DateTimeFormatter.ofPattern("eeee")
-                )
+                date = today.plusDays(i.toLong())
             )
         )
     }
