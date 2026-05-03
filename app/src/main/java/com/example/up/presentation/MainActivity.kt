@@ -18,6 +18,7 @@ import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.core.view.WindowCompat
 import com.example.up.presentation.main_screen.MainScreen
+import com.example.up.presentation.navigation.NavRoot
 import com.example.up.presentation.ui.theme.UpTheme
 import io.ktor.client.HttpClient
 import org.koin.android.ext.android.inject
@@ -38,9 +39,7 @@ class MainActivity : ComponentActivity() {
         )
         setContent {
             UpTheme {
-                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding -> innerPadding
-                    MainScreen()
-                }
+                NavRoot()
             }
         }
     }

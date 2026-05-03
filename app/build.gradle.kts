@@ -76,4 +76,8 @@ dependencies {
     implementation(libs.ktor.websockets)
 
     implementation(libs.androidx.compose.ui.text.google.fonts)
+
+    implementation(libs.androidx.lifecycle.runtime.compose)
+    implementation(libs.androidx.lifecycle.viewmodel.compose)
+    implementation(libs.androidx.navigation.compose)
 }

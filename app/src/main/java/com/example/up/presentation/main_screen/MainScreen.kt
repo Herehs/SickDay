@@ -1,9 +1,7 @@
 package com.example.up.presentation.main_screen
 
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -22,14 +20,13 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.up.presentation.commonComponents.Section
+import com.example.up.presentation.common_сomponents.Section
 import com.example.up.presentation.main_screen.components.Background
 import com.example.up.presentation.main_screen.components.DateCarousel
 import com.example.up.presentation.main_screen.components.IndexScale
 import com.example.up.presentation.main_screen.components.Tile
 import com.example.up.presentation.ui.theme.bodyFontFamily
 import com.example.up.presentation.ui.theme.text
-import org.koin.core.qualifier.named
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 

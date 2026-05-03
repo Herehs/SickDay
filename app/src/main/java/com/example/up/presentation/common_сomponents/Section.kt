@@ -1,4 +1,4 @@
-package com.example.up.presentation.commonComponents
+package com.example.up.presentation.common_сomponents
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box

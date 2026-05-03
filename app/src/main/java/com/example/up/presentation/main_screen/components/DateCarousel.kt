@@ -1,24 +1,15 @@
 package com.example.up.presentation.main_screen.components
 
-import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.animateFloatAsState
-import androidx.compose.animation.core.animateOffsetAsState
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
-import androidx.compose.animation.slideInVertically
-import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.gestures.snapping.SnapPosition
 import androidx.compose.foundation.gestures.snapping.rememberSnapFlingBehavior
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
@@ -43,31 +34,19 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.up.presentation.ui.theme.bodyFontFamily
 import com.example.up.presentation.ui.theme.text
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
+import java.time.format.TextStyle
+import java.util.Locale
 
 @Composable
 fun DateCarousel(
     modifier: Modifier = Modifier,
     pickedDay: (DateCardData) -> Unit,
     startDay: Int = 0
-//    dateList: List<DateCardData>
 ){
-    val dateList = listOf(
-        DateCardData(number = "1", name = "Понедельник"),
-        DateCardData(number = "2", name = "Вторник"),
-        DateCardData(number = "3", name = "Среда"),
-        DateCardData(number = "4", name = "Четверг"),
-        DateCardData(number = "5", name = "Пятница"),
-        DateCardData(number = "6", name = "Суббота"),
-        DateCardData(number = "7", name = "Воскресенье"),
-        DateCardData(number = "8", name = "Понедельник"),
-        DateCardData(number = "9", name = "Вторник"),
-        DateCardData(number = "10", name = "Среда"),
-        DateCardData(number = "11", name = "Четверг"),
-        DateCardData(number = "12", name = "Пятница"),
-        DateCardData(number = "13", name = "Суббота"),
-        DateCardData(number = "14", name = "Воскресенье"),
-
-    )
+    val listSize = 201
+    val dateList = getDateList(listSize)
 
     val lazyRowState = rememberLazyListState()
     val centerItemIndex = remember {
@@ -83,7 +62,7 @@ fun DateCarousel(
         }
     }
     LaunchedEffect(Unit) {
-        lazyRowState.scrollToItem(startDay)
+        lazyRowState.scrollToItem(listSize / 2)
     }
 
     LazyRow(
@@ -116,7 +95,7 @@ data class DateCardData(
 fun DateCard(
     data: DateCardData,
 ){
-    val numberSize = animateFloatAsState(if(data.selected) 1.5wf else 1f)
+    val numberSize = animateFloatAsState(if(data.selected) 1.5f else 1f)
     val width = animateDpAsState(if(data.selected) 126.dp else 80.dp)
     val height = animateDpAsState(if(data.selected) 100.dp else 67.dp)
     val textOffset = animateFloatAsState(if(data.selected) 55f else 0f)
@@ -166,7 +145,26 @@ fun DateCard(
     }
 }
 
-@Preview
+fun getDateList(size: Int): List<DateCardData> {
+    val today = LocalDate.now()
+    val dateList = mutableListOf<DateCardData>()
+    for(i in -size / 2 .. size / 2){
+        val date = today.plusDays(i.toLong())
+        dateList.add(
+            DateCardData(
+                number = date.dayOfMonth.toString(),
+                name = date.format(
+                    DateTimeFormatter.ofPattern("eeee")
+                )
+            )
+        )
+    }
+    return dateList
+}
+
+@Preview(
+//    device = TABLET
+)
 @Composable
 fun CarouselPreview(){
     Box(
