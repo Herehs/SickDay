@@ -11,4 +11,8 @@ val PurpleGrey40 = Color(0xFF625b71)
 val Pink40 = Color(0xFF7D5260)
 
 val text = Color(0xFF561F1F)
-val textDark = Color(0xFF8E8E8E)
+val textDim = Color(0xFF8E8E8E)
+val texDark = Color(0xff141414)
+
+val openedQualityComponent = Color(0xffFFFAF2)
+val closedQualityComponent = Color(0xffFFFFFF)

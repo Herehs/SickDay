@@ -54,6 +54,16 @@ fun MainScreen(
             .fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
+        Text(
+            modifier = Modifier.padding(horizontal = 10.dp).padding(top = 10.dp),
+            text = formatted.format(DateTimeFormatter.ofPattern("LLLL yyyy")).replaceFirstChar { it.uppercase() },
+            fontSize = 18.sp,
+            lineHeight = 22.sp,
+            fontFamily = bodyFontFamily,
+            color = text,
+            fontWeight = FontWeight.W400
+        )
+
         DateCarousel(modifier = Modifier.padding(top = 10.dp).height(100.dp), pickedDay = {mainViewModel.selectDate(it.date)})
         Column(
             modifier = Modifier
