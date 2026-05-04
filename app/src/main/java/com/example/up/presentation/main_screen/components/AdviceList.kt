@@ -30,10 +30,12 @@ import com.example.up.presentation.ui.theme.text
 fun AdviceList(
     advices: List<Advice>
 ){
-    LazyColumn() {
+    LazyColumn(
+        modifier = Modifier.padding(top = 4.dp)
+    ) {
         items(advices){ advice ->
             Row(
-                modifier = Modifier.padding(top = 12.dp, bottom = 12.dp),
+                modifier = Modifier.padding(top = 4.dp, bottom = 4.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Icon(

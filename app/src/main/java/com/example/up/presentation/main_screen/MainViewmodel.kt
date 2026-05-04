@@ -29,6 +29,14 @@ class MainViewmodel() : ViewModel() {
     private val _humidity = MutableStateFlow(0)
     val humidity = _humidity.asStateFlow()
 
+
+    private val _selectedDate = MutableStateFlow(LocalDate.now())
+    val selectedDate = _selectedDate.asStateFlow()
+
+    fun selectDate(date: LocalDate) {
+        _selectedDate.value = date
+    }
+
     init {
         _adviseList.value = listOf(
             Advice(

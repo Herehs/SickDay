@@ -109,7 +109,7 @@ fun DateCard(
             modifier = Modifier.graphicsLayer(
                 translationY = -textOffset.value
             ),
-            text = data.date.format(DateTimeFormatter.ofPattern("d")),
+            text = data.date.format(DateTimeFormatter.ofPattern("dd")),
             fontSize = 24.sp * numberSize.value,
             lineHeight = 22.sp,
             fontFamily = bodyFontFamily,
