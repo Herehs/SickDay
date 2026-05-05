@@ -18,6 +18,7 @@ import com.example.up.presentation.common_сomponents.BottomBar
 import com.example.up.presentation.common_сomponents.BottomBarItem
 import com.example.up.presentation.main_screen.MainScreen
 import com.example.up.presentation.main_screen.components.Background
+import com.example.up.presentation.note_screen.NoteScreen
 
 
 @Composable
@@ -70,7 +71,9 @@ fun NavRoot(
                 )
             }
             composable<Routes.Notes>{
-                Background()
+                NoteScreen(
+                    modifier = Modifier.padding(paddingValues)
+                )
             }
             composable<Routes.Settings>{
                 Background()

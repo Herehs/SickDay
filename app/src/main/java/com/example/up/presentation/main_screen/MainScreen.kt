@@ -32,6 +32,7 @@ import com.example.up.presentation.ui.theme.text
 import org.koin.androidx.compose.koinViewModel
 import java.time.LocalTime
 import java.time.format.DateTimeFormatter
+import kotlin.math.roundToInt
 
 @Composable
 fun MainScreen(
@@ -40,11 +41,8 @@ fun MainScreen(
 ){
     val adviceList = mainViewModel.adviseList.collectAsState()
     val pillsScheduleList = mainViewModel.pillsList.collectAsState()
-    val pressure = mainViewModel.atmPressure.collectAsState()
-    val KRIndex = mainViewModel.KRIndex.collectAsState()
-    val temperature = mainViewModel.temperature.collectAsState()
-    val humidity = mainViewModel.humidity.collectAsState()
     val currentDate = mainViewModel.selectedDate.collectAsState()
+    val weatherInfo = mainViewModel.weatherInfoState.collectAsState()
 
     val formatted = currentDate.value.format(DateTimeFormatter.ofPattern("LLLL yyyy")).replaceFirstChar { it.uppercase() }
 
@@ -97,7 +95,7 @@ fun MainScreen(
                                         fontWeight = FontWeight.W400
                                     )
                                     ){
-                                        append(pressure.value.toString())
+                                        append(weatherInfo.value.pressure.roundToInt().toString())
                                     }
                                     withStyle(style = SpanStyle(
                                         fontSize = 16.sp,
@@ -135,7 +133,7 @@ fun MainScreen(
                                         fontWeight = FontWeight.W400
                                     )
                                     ){
-                                        append("${KRIndex.value}/")
+                                        append("${weatherInfo.value.kp_index.roundToInt()}/")
                                     }
                                     withStyle(style = SpanStyle(
                                         fontSize = 24.sp,
@@ -171,7 +169,7 @@ fun MainScreen(
                                         fontWeight = FontWeight.W400
                                     )
                                     ){
-                                        append("${temperature.value}")
+                                        append("${weatherInfo.value.temperature}")
                                     }
                                 },
                                 fontSize = 18.sp,
@@ -197,7 +195,7 @@ fun MainScreen(
                                         fontWeight = FontWeight.W400
                                     )
                                     ){
-                                        append("${humidity.value}%")
+                                        append("${weatherInfo.value.humidity.roundToInt()}%")
                                     }
                                 },
                                 fontSize = 18.sp,

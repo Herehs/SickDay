@@ -1,7 +1,6 @@
 package com.example.up.presentation.note_screen.components
 
 import androidx.compose.foundation.Canvas
-import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.AnchoredDraggableState
 import androidx.compose.foundation.gestures.DraggableAnchors
 import androidx.compose.foundation.gestures.Orientation
@@ -27,7 +26,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.geometry.Offset
@@ -36,10 +34,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.IntOffset
-import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
-import com.example.up.presentation.ui.theme.text
 import kotlin.math.roundToInt
 
 @Composable
@@ -48,13 +45,15 @@ fun CustomSlider(
     onValueChange: (Float) -> Unit,
     value: Float,
     steps: Int,
-    colors: SliderColors
+    colors: SliderColors,
+    showNumbers: Boolean = true
 ){
     BoxWithConstraints(
         modifier = modifier
             .height(40.dp)
             .fillMaxWidth()
             .padding(horizontal = 10.dp)
+
     ){
         val width = this.minWidth
         val height = this.minHeight
@@ -67,12 +66,12 @@ fun CustomSlider(
         val widthPx = with(density) { width.toPx() }
         val heightPx = with(density) { height.toPx() }
 
-        val thumbSize = 24.dp
+        val thumbSize = 15.dp
         val thumbRadiusPx = with(LocalDensity.current) { thumbSize.toPx() / 2 }
 
         val anchors = DraggableAnchors {
-            for (i in 0..steps) {
-                val fraction = i / steps.toFloat()
+            for (i in 0 until steps) {
+                val fraction = i / (steps - 1).toFloat()
                 fraction at fraction * widthPx
             }
         }
@@ -113,26 +112,26 @@ fun CustomSlider(
                 drawRoundRect(
                     size = Size(
                         width = size.width,
-                        height = 20f
+                        height = 15f
                     ),
                     color = colors.inactiveTrackColor,
                     topLeft = Offset(
                         x = 0f,
-                        y = (size.height - 20f) / 2
+                        y = (size.height - 15f) / 2
                     ),
-                    cornerRadius = CornerRadius(16f, 16f)
+                    cornerRadius = CornerRadius(8f, 8f)
                 )
                 drawRoundRect(
                     size = Size(
                         width = state.requireOffset(),
-                        height = 20f
+                        height = 15f
                     ),
                     color = colors.activeTrackColor,
                     topLeft = Offset(
                         x = 0f,
-                        y = (size.height - 20f) / 2
+                        y = (size.height - 15f) / 2
                     ),
-                    cornerRadius = CornerRadius(16f, 16f)
+                    cornerRadius = CornerRadius(8f, 8f)
                 )
 
             }
@@ -147,6 +146,36 @@ fun CustomSlider(
 
             onValueChange(fraction)
         }
+        if(showNumbers){
+            Box(
+                modifier = Modifier
+                    .matchParentSize()
+            ) {
+                for (i in 0 until steps) {
+                    val fraction = i / (steps - 1).toFloat()
+                    val xPx = fraction * widthPx
+
+                    var textWidthPx by remember { mutableStateOf(0) }
+
+                    Text(
+                        text = (i + 1).toString(),
+                        onTextLayout = {
+                            textWidthPx = it.size.width
+                        },
+                        modifier = Modifier.offset {
+                            IntOffset(
+                                x = (xPx - textWidthPx / 2f).roundToInt(),
+                                y = heightPx.roundToInt() - 25
+                            )
+                        },
+                        fontSize = 12.sp,
+                        lineHeight = 22.sp,
+                        letterSpacing = -(0.8).sp,
+                        color = Color(0xff848484)
+                    )
+                }
+            }
+        }
     }
 }
 
@@ -157,12 +186,10 @@ fun CustomSlider(
 fun SliderTest(){
     var value by remember { mutableStateOf(0f) }
     Column(
-        modifier = Modifier.fillMaxSize(),
+        modifier = Modifier.fillMaxSize().padding(horizontal = 20.dp),
         verticalArrangement = Arrangement.Center
     ){
-        Text(
-            text = value.toString()
-        )
+
 
         CustomSlider(
             onValueChange = {value = it},
@@ -174,5 +201,19 @@ fun SliderTest(){
                 inactiveTrackColor = Color(0xff9C9C9C),
             )
         )
+
+        var value2 by remember { mutableStateOf(0f) }
+
+        CustomSlider(
+            onValueChange = {value2 = it},
+            value = value2,
+            steps = 5,
+            colors = SliderDefaults.colors(
+                thumbColor = Color(0xff531111),
+                activeTrackColor = Color(0xff531111),
+                inactiveTrackColor = Color(0xff9C9C9C),
+            )
+        )
+
     }
 }

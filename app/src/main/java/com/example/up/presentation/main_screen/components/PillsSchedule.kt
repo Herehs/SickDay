@@ -29,6 +29,7 @@ import com.example.up.presentation.ui.theme.textDim
 import java.time.LocalDate
 import java.time.LocalTime
 import java.time.format.DateTimeFormatter
+import kotlin.collections.listOf
 
 @Composable
 fun PillsSchedule(

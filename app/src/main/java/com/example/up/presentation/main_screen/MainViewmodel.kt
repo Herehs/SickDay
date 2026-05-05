@@ -2,6 +2,8 @@ package com.example.up.presentation.main_screen
 
 import androidx.lifecycle.ViewModel
 import com.example.up.R
+import com.example.up.domain.model.WeatherInfoState
+import com.example.up.domain.use_case.GetWeatherInfoUseCase
 import com.example.up.presentation.main_screen.components.Advice
 import com.example.up.presentation.main_screen.components.PillsScheduleData
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -9,7 +11,9 @@ import kotlinx.coroutines.flow.asStateFlow
 import java.time.LocalDate
 import java.time.LocalTime
 
-class MainViewmodel() : ViewModel() {
+class MainViewmodel(
+    private val getWeatherInfoUseCase: GetWeatherInfoUseCase
+) : ViewModel() {
 
     private val _adviseList = MutableStateFlow(emptyList<Advice>())
     val adviseList = _adviseList.asStateFlow()
@@ -17,18 +21,8 @@ class MainViewmodel() : ViewModel() {
     private val _pillsList = MutableStateFlow(emptyList<PillsScheduleData>())
     val pillsList = _pillsList.asStateFlow()
 
-    private val _atmPressure = MutableStateFlow(0)
-    val atmPressure = _atmPressure.asStateFlow()
-
-    private val _KRIndex = MutableStateFlow(0)
-    val KRIndex = _KRIndex.asStateFlow()
-
-    private val _temperature = MutableStateFlow(0)
-    val temperature = _temperature.asStateFlow()
-
-    private val _humidity = MutableStateFlow(0)
-    val humidity = _humidity.asStateFlow()
-
+    private val _weatherInfoState = MutableStateFlow(WeatherInfoState())
+    val weatherInfoState = _weatherInfoState.asStateFlow()
 
     private val _selectedDate = MutableStateFlow(LocalDate.now())
     val selectedDate = _selectedDate.asStateFlow()
@@ -37,7 +31,13 @@ class MainViewmodel() : ViewModel() {
         _selectedDate.value = date
     }
 
+    private fun getWeatherInfo(){
+        _weatherInfoState.value = getWeatherInfoUseCase()
+    }
+
     init {
+        getWeatherInfo()
+
         _adviseList.value = listOf(
             Advice(
                 icon = R.drawable.heart_rate,
@@ -76,10 +76,5 @@ class MainViewmodel() : ViewModel() {
                 time = LocalTime.of(21, 0)
             ),
         )
-
-        _atmPressure.value = 777
-        _KRIndex.value = 6
-        _temperature.value = 12
-        _humidity.value = 81
     }
 }
