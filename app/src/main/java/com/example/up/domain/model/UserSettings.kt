@@ -1,36 +1,35 @@
 package com.example.up.domain.model
 
 import kotlinx.serialization.Serializable
-import kotlinx.serialization.Serializer
 
 
 @Serializable
 data class UserSettings(
-    val email: String,
-    val password: String,
-    val gender: Gender,
-    val age: Int,
-    val notificationSettings: NotificationSettings
+    val email: String = "",
+    val password: String = "",
+    val gender: Gender = Gender.MALE,
+    val age: Int = 0,
+    val notificationSettings: NotificationSettings = NotificationSettings()
 )
 
 @Serializable
 data class NotificationSettings(
-    val enabled: Boolean,
-    val tempSettings: TempSettings,
-    val humiditySettings: HumiditySettings
+    val enabled: Boolean = false,
+    val tempSettings: TempSettings = TempSettings(),
+    val humiditySettings: HumiditySettings = HumiditySettings()
 )
 
 @Serializable
 data class TempSettings(
-    val enabled: Boolean,
-    val tempLowThreshold: Int,
-    val tempHighThreshold: Int,
+    val enabled: Boolean = false,
+    val tempLowThreshold: Int = 0,
+    val tempHighThreshold: Int = 0
 )
 
 @Serializable
 data class HumiditySettings(
-    val enabled: Boolean,
-    val humidityThreshold: Int
+    val enabled: Boolean = false,
+    val humidityThreshold: Int = 0
 )
 
 @Serializable

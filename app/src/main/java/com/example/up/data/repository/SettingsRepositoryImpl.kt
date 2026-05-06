@@ -1,23 +1,18 @@
 package com.example.up.data.repository
 
-import android.content.SharedPreferences
+import androidx.datastore.core.DataStore
 import com.example.up.domain.model.UserSettings
 import com.example.up.domain.repository.SettingsRepository
+import kotlinx.coroutines.flow.Flow
 
 class SettingsRepositoryImpl(
-    private val prefs: SharedPreferences
+    private val dataStore: DataStore<UserSettings>
 ) : SettingsRepository {
-    override fun getSettings(): UserSettings {
-        TODO("Not yet implemented")
-    }
+    override fun getSettings(): Flow<UserSettings> = dataStore.data
 
-    override fun saveSettings(settings: UserSettings) {
-        prefs.edit().apply {
-            putString("email", settings.email)
-            putString("password", settings.password)
-            putInt("age", settings.age)
-            TODO("Доделать настройки")
-            apply()
+    override suspend fun saveSettings(transform: (UserSettings) -> UserSettings) {
+        dataStore.updateData {
+            transform(it)
         }
     }
 }
