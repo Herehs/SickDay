@@ -17,8 +17,9 @@ uiTextGoogleFonts = "1.10.5"
 
 nav_version = "2.9.8"
 
-
 foundationVersion = "1.11.0"
+
+datastoreversion = "1.2.1"
 
 
 
@@ -66,6 +67,10 @@ androidx-navigation-compose = { module = "androidx.navigation:navigation-compose
 
 
 androidx-compose-foundation = { group = "androidx.compose.foundation", name = "foundation", version.ref = "foundationVersion" }
+
+androidx-datastore = {module = "androidx.datastore:datastore", version.ref = "datastoreversion"}
+androidx-datastore-core = {module = "androidx.datastore:datastore-core", version.ref = "datastoreversion"}
+
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

@@ -1,8 +1,9 @@
 package com.example.up
 
 import android.app.Application
-import com.example.up.di.mainModule
-import com.example.up.di.networkModule
+import com.example.up.di.dataModule
+import com.example.up.di.domainModule
+import com.example.up.di.presentationModule
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.context.startKoin
 
@@ -12,8 +13,9 @@ class KoinApplication : Application() {
         startKoin {
             androidContext(this@KoinApplication)
             modules(
-                mainModule,
-                networkModule
+                presentationModule,
+                domainModule,
+                dataModule
             )
         }
     }
