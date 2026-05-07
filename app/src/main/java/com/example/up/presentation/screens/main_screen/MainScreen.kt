@@ -46,7 +46,7 @@ fun MainScreen(
 
     val formatted = currentDate.value.format(DateTimeFormatter.ofPattern("LLLL yyyy")).replaceFirstChar { it.uppercase() }
 
-    Background()
+//    Background()
     Column(
         modifier = modifier
             .fillMaxSize(),

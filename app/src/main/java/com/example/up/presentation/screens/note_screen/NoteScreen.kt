@@ -48,7 +48,7 @@ fun NoteScreen(modifier: Modifier) {
 
     var sliderValue by rememberSaveable { mutableFloatStateOf(0f) }
 
-    Background()
+//    Background()
     Column(modifier) {
         Row(
             modifier = Modifier
