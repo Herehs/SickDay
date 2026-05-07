@@ -17,7 +17,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.core.view.WindowCompat
-import com.example.up.presentation.main_screen.MainScreen
+import com.example.up.presentation.screens.main_screen.MainScreen
 import com.example.up.presentation.navigation.NavRoot
 import com.example.up.presentation.ui.theme.UpTheme
 import io.ktor.client.HttpClient

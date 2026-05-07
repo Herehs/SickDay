@@ -7,5 +7,5 @@ import kotlinx.coroutines.flow.Flow
 class GetSettingsUseCase(
     private val repository: SettingsRepository
 ) {
-    fun invoke(): Flow<UserSettings> = repository.getSettings()
+    operator fun invoke(): Flow<UserSettings> = repository.getSettings()
 }

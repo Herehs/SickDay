@@ -1,4 +1,4 @@
-package com.example.up.presentation.main_screen.components
+package com.example.up.presentation.screens.main_screen.components
 
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.animateFloatAsState

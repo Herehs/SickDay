@@ -1,10 +1,9 @@
-package com.example.up.presentation.note_screen.components
+package com.example.up.presentation.screens.note_screen.components
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.Spring
-import androidx.compose.animation.core.VisibilityThreshold
 import androidx.compose.animation.core.spring
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -12,7 +11,6 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -42,7 +40,7 @@ import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.up.R
-import com.example.up.presentation.main_screen.components.Background
+import com.example.up.presentation.common_сomponents.Background
 import com.example.up.presentation.ui.theme.bodyFontFamily
 import com.example.up.presentation.ui.theme.openedQualityComponent
 import com.example.up.presentation.ui.theme.texDark

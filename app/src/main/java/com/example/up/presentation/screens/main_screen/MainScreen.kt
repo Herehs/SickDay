@@ -1,4 +1,4 @@
-package com.example.up.presentation.main_screen
+package com.example.up.presentation.screens.main_screen
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -21,12 +21,12 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.up.presentation.common_сomponents.Section
-import com.example.up.presentation.main_screen.components.AdviceList
-import com.example.up.presentation.main_screen.components.Background
-import com.example.up.presentation.main_screen.components.DateCarousel
-import com.example.up.presentation.main_screen.components.IndexScale
-import com.example.up.presentation.main_screen.components.PillsSchedule
-import com.example.up.presentation.main_screen.components.Tile
+import com.example.up.presentation.screens.main_screen.components.AdviceList
+import com.example.up.presentation.common_сomponents.Background
+import com.example.up.presentation.screens.main_screen.components.DateCarousel
+import com.example.up.presentation.screens.main_screen.components.IndexScale
+import com.example.up.presentation.screens.main_screen.components.PillsSchedule
+import com.example.up.presentation.screens.main_screen.components.Tile
 import com.example.up.presentation.ui.theme.bodyFontFamily
 import com.example.up.presentation.ui.theme.text
 import org.koin.androidx.compose.koinViewModel
@@ -37,7 +37,7 @@ import kotlin.math.roundToInt
 @Composable
 fun MainScreen(
     modifier: Modifier = Modifier,
-    mainViewModel: MainViewmodel = koinViewModel()
+    mainViewModel: MainViewModel = koinViewModel()
 ){
     val adviceList = mainViewModel.adviseList.collectAsState()
     val pillsScheduleList = mainViewModel.pillsList.collectAsState()

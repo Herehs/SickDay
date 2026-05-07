@@ -1,4 +1,4 @@
-package com.example.up.presentation.calendar_screen.components
+package com.example.up.presentation.screens.calendar_screen.components
 
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.layout.Arrangement

@@ -24,7 +24,7 @@ fun Section(
         Text(
             modifier = Modifier,
             text = name,
-            fontSize = 17.sp,
+            fontSize = 16.sp,
             lineHeight = 22.sp,
             fontFamily = bodyFontFamily,
             color = text,

@@ -1,4 +1,4 @@
-package com.example.up.presentation.main_screen.components
+package com.example.up.presentation.screens.main_screen.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box

@@ -1,17 +1,17 @@
-package com.example.up.presentation.main_screen
+package com.example.up.presentation.screens.main_screen
 
 import androidx.lifecycle.ViewModel
 import com.example.up.R
 import com.example.up.domain.model.WeatherInfoState
 import com.example.up.domain.use_case.GetWeatherInfoUseCase
-import com.example.up.presentation.main_screen.components.Advice
-import com.example.up.presentation.main_screen.components.PillsScheduleData
+import com.example.up.presentation.screens.main_screen.components.Advice
+import com.example.up.presentation.screens.main_screen.components.PillsScheduleData
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import java.time.LocalDate
 import java.time.LocalTime
 
-class MainViewmodel(
+class MainViewModel(
     private val getWeatherInfoUseCase: GetWeatherInfoUseCase
 ) : ViewModel() {
 

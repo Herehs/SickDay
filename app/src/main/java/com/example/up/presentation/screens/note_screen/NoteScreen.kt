@@ -1,4 +1,4 @@
-package com.example.up.presentation.note_screen
+package com.example.up.presentation.screens.note_screen
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -18,6 +18,7 @@ import androidx.compose.material3.SliderDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
@@ -30,10 +31,10 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.up.R
+import com.example.up.presentation.common_сomponents.Background
 import com.example.up.presentation.common_сomponents.Section
-import com.example.up.presentation.main_screen.components.Background
-import com.example.up.presentation.note_screen.components.CustomSlider
-import com.example.up.presentation.note_screen.components.NoteQualityComponent
+import com.example.up.presentation.screens.note_screen.components.CustomSlider
+import com.example.up.presentation.screens.note_screen.components.NoteQualityComponent
 import com.example.up.presentation.ui.theme.bodyFontFamily
 import com.example.up.presentation.ui.theme.text
 import java.time.LocalDate
@@ -45,7 +46,7 @@ fun NoteScreen(modifier: Modifier) {
     val currDate = LocalDate.now()
     var note by rememberSaveable { mutableStateOf("") }
 
-    var sliderValue by rememberSaveable { mutableStateOf(0f) }
+    var sliderValue by rememberSaveable { mutableFloatStateOf(0f) }
 
     Background()
     Column(modifier) {
@@ -171,7 +172,7 @@ fun NoteScreen(modifier: Modifier) {
 @Preview
 @Composable
 fun NoteScreenTest(){
-    Scaffold() { paddingValues ->
-        NoteScreen(modifier = Modifier.padding(paddingValues))
+    Scaffold {
+        NoteScreen(modifier = Modifier.padding(it))
     }
 }

@@ -1,4 +1,4 @@
-package com.example.up.presentation.calendar_screen
+package com.example.up.presentation.screens.calendar_screen
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -32,9 +32,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.up.R
-import com.example.up.presentation.calendar_screen.components.CalendarComponent
-import com.example.up.presentation.calendar_screen.components.ChartComponent
-import com.example.up.presentation.main_screen.components.Background
+import com.example.up.presentation.common_сomponents.Background
+import com.example.up.presentation.screens.calendar_screen.components.CalendarComponent
+import com.example.up.presentation.screens.calendar_screen.components.ChartComponent
 import com.example.up.presentation.ui.theme.bodyFontFamily
 import com.example.up.presentation.ui.theme.text
 import java.time.LocalDate
@@ -115,10 +115,9 @@ fun CalendarScreen(
                 }
             }
             CalendarComponent(
-                date = currDate,
-                modifier = Modifier
+                Modifier
                     .padding(bottom = 36.dp)
-                    .padding(horizontal = 20.dp)
+                    .padding(horizontal = 20.dp), currDate
             )
 
             ChartComponent(

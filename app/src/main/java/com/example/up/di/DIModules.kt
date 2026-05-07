@@ -12,7 +12,8 @@ import com.example.up.domain.repository.SettingsRepository
 import com.example.up.domain.use_case.GetSettingsUseCase
 import com.example.up.domain.use_case.GetWeatherInfoUseCase
 import com.example.up.domain.use_case.UpdateSettingsUseCase
-import com.example.up.presentation.main_screen.MainViewmodel
+import com.example.up.presentation.screens.main_screen.MainViewModel
+import com.example.up.presentation.screens.settings_screen.SettingsViewModel
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.cio.CIO
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
@@ -22,7 +23,8 @@ import org.koin.dsl.module
 import java.io.File
 
 val presentationModule = module {
-    viewModelOf(::MainViewmodel)
+    viewModelOf(::MainViewModel)
+    viewModelOf(::SettingsViewModel)
 
 }
 

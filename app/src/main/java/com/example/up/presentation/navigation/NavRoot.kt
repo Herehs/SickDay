@@ -3,7 +3,6 @@ package com.example.up.presentation.navigation
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
@@ -13,12 +12,12 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.up.R
-import com.example.up.presentation.calendar_screen.CalendarScreen
+import com.example.up.presentation.common_сomponents.Background
 import com.example.up.presentation.common_сomponents.BottomBar
 import com.example.up.presentation.common_сomponents.BottomBarItem
-import com.example.up.presentation.main_screen.MainScreen
-import com.example.up.presentation.main_screen.components.Background
-import com.example.up.presentation.note_screen.NoteScreen
+import com.example.up.presentation.screens.calendar_screen.CalendarScreen
+import com.example.up.presentation.screens.main_screen.MainScreen
+import com.example.up.presentation.screens.note_screen.NoteScreen
 
 
 @Composable
