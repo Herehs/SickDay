@@ -20,6 +20,7 @@ nav_version = "2.9.8"
 foundationVersion = "1.11.0"
 
 datastoreversion = "1.2.1"
+playServicesLocation = "21.3.0"
 
 
 
@@ -70,6 +71,7 @@ androidx-compose-foundation = { group = "androidx.compose.foundation", name = "f
 
 androidx-datastore = {module = "androidx.datastore:datastore", version.ref = "datastoreversion"}
 androidx-datastore-core = {module = "androidx.datastore:datastore-core", version.ref = "datastoreversion"}
+play-services-location = { group = "com.google.android.gms", name = "play-services-location", version.ref = "playServicesLocation" }
 
 
 [plugins]

@@ -1,14 +1,15 @@
 package com.example.up.domain.use_case
 
 import com.example.up.domain.model.CurrentWeather
+import com.example.up.domain.repository.WeatherRepository
 
-class GetWeatherInfoUseCase {
-    operator fun invoke(): CurrentWeather{
-        return CurrentWeather(
-            temperature = 12f,
-            kp_index = 6f,
-            pressure = 777,
-            humidity = 81
-        )
+class GetCurrentWeatherUseCase(
+    private val repository: WeatherRepository
+) {
+    suspend operator fun invoke(
+        lat: Float,
+        lon: Float
+    ): CurrentWeather{
+        return repository.getCurrentWeather(lat = lat, lon = lon)
     }
 }

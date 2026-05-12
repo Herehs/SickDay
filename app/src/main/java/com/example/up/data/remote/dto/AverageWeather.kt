@@ -1,5 +1,8 @@
 package com.example.up.data.remote.dto
 
+import kotlinx.serialization.Serializable
+
+@Serializable
 data class AverageWeather(
     val humidity_avg: Int,
     val kp_index_avg: Double,

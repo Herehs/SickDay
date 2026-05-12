@@ -83,8 +83,6 @@ fun NavRoot(
         NavHost(
             navController = navController,
             startDestination = Routes.MainScreen,
-//            enterTransition = { fadeIn(animationSpec = tween(400)) },
-//            exitTransition = { fadeOut(animationSpec = tween(400)) }
             enterTransition = {
 
                 val isForward =

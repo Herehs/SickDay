@@ -7,24 +7,32 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.BasicTextField
+import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.text.input.TextFieldState
 import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SliderDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -35,7 +43,9 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -48,27 +58,36 @@ import com.example.up.presentation.common_сomponents.Section
 import com.example.up.presentation.screens.note_screen.components.SmallCustomSlider
 import com.example.up.presentation.screens.settings_screen.components.ChronicDiseasesComponent
 import com.example.up.presentation.screens.settings_screen.components.GenderSelectorComponent
+import com.example.up.presentation.screens.settings_screen.components.Switch
 import com.example.up.presentation.ui.theme.bodyFontFamily
 import com.example.up.presentation.ui.theme.text
 import com.example.up.presentation.ui.theme.textDim
+import io.ktor.util.valuesOf
+import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun SettingsScreen(
     modifier: Modifier = Modifier,
-//    vm: SettingsViewModel = koinViewModel()
+    vm: SettingsViewModel = koinViewModel()
 ){
-//    val settingsState = vm.settingsState.collectAsState()
+    val settingsState = vm.settingsState.collectAsState()
     val focusManager = LocalFocusManager.current
 
     val name by remember { mutableStateOf("Jeffrey_Epstein") }
     var email by remember { mutableStateOf("sob***90@gmail.com") }
     var password by remember { mutableStateOf("wwwwwww") }
+    var age by remember { mutableStateOf("1") }
 
 
     var pressureSensitivity by remember { mutableFloatStateOf(0f) }
     var temperatureSensitivity by remember { mutableFloatStateOf(0f) }
     var mSSensitivity by remember { mutableFloatStateOf(0f) }
     var humiditySensitivity by remember { mutableFloatStateOf(0f) }
+
+    var notificationState by remember { mutableStateOf(false) }
+    var temperatureNotification by remember { mutableStateOf(false) }
+    var tempLowThreshold by remember { mutableIntStateOf(0) }
+    var tempHighThreshold by remember { mutableIntStateOf(0) }
 
     val state = ChronicDiseasesState(
         diseaseList = listOf(
@@ -213,7 +232,7 @@ fun SettingsScreen(
                 }
                 item {
                     Section(
-                        modifier = Modifier.padding(top = 17.dp),
+                        modifier = Modifier.padding(top = 22.dp),
                         name = "Чувствительность к факторам"
                     ) {
                         Column(
@@ -316,7 +335,7 @@ fun SettingsScreen(
                 }
                 item {
                     Section(
-                        modifier = Modifier.padding(top = 17.dp),
+                        modifier = Modifier.padding(top = 22.dp),
                         name = "Персональные данные"
                     ){
                         Column(
@@ -335,26 +354,187 @@ fun SettingsScreen(
                             SettingsItem(
                                 name = "Возраст"
                             ) {
-                                TextField(
-                                    modifier = Modifier.height(48.dp),
-                                    value = email,
-                                    onValueChange = {email = it},
-                                    colors = OutlinedTextFieldDefaults.colors(
-                                        focusedBorderColor= Color.Transparent,
-                                        unfocusedBorderColor = Color.Transparent,
-                                        cursorColor = Color(0xff9F8A8F).copy(alpha = .3f),
-                                        focusedTextColor = textDim,
-                                        unfocusedTextColor = textDim
-                                    ),
-                                    singleLine = true,
+                                BasicTextField(
+                                    modifier = Modifier
+                                        .padding(end = 186.dp)
+                                        .height(34.dp)
+                                        .width(90.dp)
+                                        .shadow(
+                                            elevation = 1.dp,
+                                            shape = RoundedCornerShape(9.dp)
+                                        )
+                                        .background(
+                                            color = Color.White,
+                                            shape = RoundedCornerShape(8.dp) // опционально
+                                        ),
+                                            value = age,
+                                    onValueChange = {age = it},
                                     textStyle = TextStyle(
                                         fontSize = 14.sp,
-                                        textAlign = TextAlign.Right
+                                        textAlign = TextAlign.Center,
+                                        color = text
                                     ),
+                                    singleLine = true,
+                                    decorationBox = { innerTextField ->
+                                        Box(
+                                            modifier = Modifier,
+                                            contentAlignment = Alignment.Center
+                                        ) {
+                                            innerTextField()
+                                        }
+                                    },
+                                    keyboardOptions = KeyboardOptions(
+                                        keyboardType = KeyboardType.Number
+                                    )
                                 )
                             }
                         }
                     }
+                }
+                item {
+                    Row(
+                        modifier = Modifier
+                            .padding(top = 20.dp)
+                            .fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Text(
+                            modifier = Modifier,
+                            text = "Уведомления",
+                            fontSize = 16.sp,
+                            lineHeight = 22.sp,
+                            fontFamily = bodyFontFamily,
+                            color = text,
+                            fontWeight = FontWeight.W400,
+                            letterSpacing = -(0.8).sp
+                        )
+
+                        Switch(
+                            value = notificationState
+                        ) { notificationState = it}
+                    }
+                    Column(
+                        modifier = Modifier
+                            .padding(top = 20.dp)
+                            .shadow(
+                                elevation = 1.dp,
+                                shape = RoundedCornerShape(11.dp)
+                            )
+                            .clip(shape = RoundedCornerShape(10.dp))
+                            .background(color = Color.White)
+                            .fillMaxWidth()
+                            .padding(horizontal = 14.dp)
+                    ) {
+                        SettingsItem(
+                            name = "Температура"
+                        ) {
+                            Switch(
+                                value = temperatureNotification
+                            ) { temperatureNotification = it }
+                        }
+                        Row(
+                            modifier = Modifier.width(110.dp),
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.SpaceBetween
+                        ) {
+                            Text(
+                                modifier = Modifier,
+                                text = "Ниже",
+                                fontSize = 14.sp,
+                                lineHeight = 22.sp,
+                                fontFamily = bodyFontFamily,
+                                color = text,
+                                fontWeight = FontWeight.W400,
+                                letterSpacing = -(0.8).sp
+                            )
+                            BasicTextField(
+                                modifier = Modifier
+                                    .padding(start = 15.dp)
+                                    .height(22.dp)
+                                    .width(60.dp)
+                                    .shadow(
+                                        elevation = 1.dp,
+                                        shape = RoundedCornerShape(9.dp)
+                                    )
+                                    .background(
+                                        color = Color(0xffDEDEDE),
+                                        shape = RoundedCornerShape(8.dp) // опционально
+                                    ),
+                                value = tempLowThreshold.toString(),
+                                onValueChange = { tempLowThreshold = it.toInt()},
+                                textStyle = TextStyle(
+                                    fontSize = 14.sp,
+                                    textAlign = TextAlign.Center,
+                                    color = Color.Black
+                                ),
+                                singleLine = true,
+                                decorationBox = { innerTextField ->
+                                    Box(
+                                        modifier = Modifier,
+                                        contentAlignment = Alignment.Center
+                                    ) {
+                                        innerTextField()
+                                    }
+                                },
+                                keyboardOptions = KeyboardOptions(
+                                    keyboardType = KeyboardType.Number
+                                )
+                            )
+                        }
+                        Row(
+                            modifier = Modifier.padding(top = 15.dp, bottom = 20.dp).width(110.dp),
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.SpaceBetween
+                        ) {
+                            Text(
+                                modifier = Modifier,
+                                text = "Выше",
+                                fontSize = 14.sp,
+                                lineHeight = 22.sp,
+                                fontFamily = bodyFontFamily,
+                                color = text,
+                                fontWeight = FontWeight.W400,
+                                letterSpacing = -(0.8).sp
+                            )
+                            BasicTextField(
+                                modifier = Modifier
+                                    .padding(start = 15.dp)
+                                    .height(22.dp)
+                                    .width(60.dp)
+                                    .shadow(
+                                        elevation = 1.dp,
+                                        shape = RoundedCornerShape(9.dp)
+                                    )
+                                    .background(
+                                        color = Color(0xffDEDEDE),
+                                        shape = RoundedCornerShape(8.dp) // опционально
+                                    ),
+                                value = tempHighThreshold.toString(),
+                                onValueChange = {tempHighThreshold = it.toInt()},
+                                textStyle = TextStyle(
+                                    fontSize = 14.sp,
+                                    textAlign = TextAlign.Center,
+                                    color = Color.Black
+                                ),
+                                singleLine = true,
+                                decorationBox = { innerTextField ->
+                                    Box(
+                                        modifier = Modifier,
+                                        contentAlignment = Alignment.Center
+                                    ) {
+                                        innerTextField()
+                                    }
+                                },
+                                keyboardOptions = KeyboardOptions(
+                                    keyboardType = KeyboardType.Number
+                                )
+                            )
+                        }
+                    }
+                }
+                item {
+                    Spacer(modifier = Modifier.padding(top = 25.dp))
                 }
             }
         }
@@ -364,12 +544,13 @@ fun SettingsScreen(
 
 @Composable
 fun SettingsItem(
+    modifier: Modifier = Modifier,
     name: String,
     content: @Composable () -> Unit
 ){
 
     Row(
-        modifier = Modifier
+        modifier = modifier
             .defaultMinSize(minHeight = 48.dp)
             .fillMaxWidth(),
         horizontalArrangement = Arrangement.SpaceBetween,

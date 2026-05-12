@@ -16,6 +16,15 @@ class SettingsViewModel(
     private val _settingsState = MutableStateFlow(UserSettings())
     val settingsState = _settingsState.asStateFlow()
 
+    private val _email = MutableStateFlow("")
+    val email = _email.asStateFlow()
+
+    fun onEmailChanged(value: String) {
+        _email.value = value
+    }
+
+
+
     fun updateSettings(newSettings:(UserSettings) -> UserSettings){
         viewModelScope.launch {
             updateSettingsUseCase(newSettings)

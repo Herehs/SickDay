@@ -1,18 +1,22 @@
 package com.example.up.presentation.screens.main_screen
 
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.example.up.R
-import com.example.up.domain.model.WeatherInfoState
-import com.example.up.domain.use_case.GetWeatherInfoUseCase
+import com.example.up.domain.model.CurrentWeather
+import com.example.up.domain.model.Position
+import com.example.up.domain.use_case.GetCurrentPositionUseCase
+import com.example.up.domain.use_case.GetCurrentWeatherUseCase
 import com.example.up.presentation.screens.main_screen.components.Advice
 import com.example.up.presentation.screens.main_screen.components.PillsScheduleData
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.launch
 import java.time.LocalDate
 import java.time.LocalTime
 
 class MainViewModel(
-    private val getWeatherInfoUseCase: GetWeatherInfoUseCase
+    private val getCurrentWeatherUseCase: GetCurrentWeatherUseCase,
 ) : ViewModel() {
 
     private val _adviseList = MutableStateFlow(emptyList<Advice>())
@@ -21,21 +25,31 @@ class MainViewModel(
     private val _pillsList = MutableStateFlow(emptyList<PillsScheduleData>())
     val pillsList = _pillsList.asStateFlow()
 
-    private val _weatherInfoState = MutableStateFlow(WeatherInfoState())
-    val weatherInfoState = _weatherInfoState.asStateFlow()
+    private val _currentWeather = MutableStateFlow(CurrentWeather(
+        temperature = 0f,
+        kp_index = 0f,
+        pressure = 0,
+        humidity = 0
+    ))
+    val currentWeather = _currentWeather.asStateFlow()
 
     private val _selectedDate = MutableStateFlow(LocalDate.now())
     val selectedDate = _selectedDate.asStateFlow()
+
+    private val _position = MutableStateFlow(Position(0f, 0f))
 
     fun selectDate(date: LocalDate) {
         _selectedDate.value = date
     }
 
     private fun getWeatherInfo(){
-        _weatherInfoState.value = getWeatherInfoUseCase()
+        viewModelScope.launch {
+            _currentWeather.value = getCurrentWeatherUseCase(lat = _position.asStateFlow().value.lat, lon = _position.asStateFlow().value.lon)
+        }
     }
 
     init {
+        //getPosition()
         getWeatherInfo()
 
         _adviseList.value = listOf(

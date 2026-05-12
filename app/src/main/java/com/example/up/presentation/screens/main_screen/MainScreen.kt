@@ -42,7 +42,7 @@ fun MainScreen(
     val adviceList = mainViewModel.adviseList.collectAsState()
     val pillsScheduleList = mainViewModel.pillsList.collectAsState()
     val currentDate = mainViewModel.selectedDate.collectAsState()
-    val weatherInfo = mainViewModel.weatherInfoState.collectAsState()
+    val weatherInfo = mainViewModel.currentWeather.collectAsState()
 
     val formatted = currentDate.value.format(DateTimeFormatter.ofPattern("LLLL yyyy")).replaceFirstChar { it.uppercase() }
 
@@ -95,7 +95,7 @@ fun MainScreen(
                                         fontWeight = FontWeight.W400
                                     )
                                     ){
-                                        append(weatherInfo.value.pressure.roundToInt().toString())
+                                        append(weatherInfo.value.pressure.toString())
                                     }
                                     withStyle(style = SpanStyle(
                                         fontSize = 16.sp,
@@ -195,7 +195,7 @@ fun MainScreen(
                                         fontWeight = FontWeight.W400
                                     )
                                     ){
-                                        append("${weatherInfo.value.humidity.roundToInt()}%")
+                                        append("${weatherInfo.value.humidity}%")
                                     }
                                 },
                                 fontSize = 18.sp,
