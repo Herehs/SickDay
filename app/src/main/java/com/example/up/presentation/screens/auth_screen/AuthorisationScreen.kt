@@ -23,6 +23,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
@@ -38,7 +39,8 @@ import com.example.up.presentation.ui.theme.text
 @Composable
 fun AuthorisationScreen(
     modifier: Modifier = Modifier,
-    onRegisterButtonClick: () -> Unit
+    onRegisterButtonClick: () -> Unit,
+    onLoginClick: () -> Unit
 ){
     Background3(
         primaryColor = Color(0xffFFA1CA).copy(alpha = .8f),
@@ -47,143 +49,42 @@ fun AuthorisationScreen(
 
     var login by rememberSaveable { mutableStateOf("") }
     var password by rememberSaveable { mutableStateOf("") }
+    val focusManager = LocalFocusManager.current
 
-    Column(
-        modifier = modifier
+    Box(
+        modifier = Modifier
             .fillMaxSize()
-            .padding(horizontal = 35.dp)
-    ) {
-        Text(
-            modifier = Modifier
-                .padding(top = 50.dp)
-                .align(alignment = Alignment.Start),
-            text = "Вход",
-            fontSize = 40.sp,
-            lineHeight = 50.sp,
-            fontFamily = bodyFontFamily,
-            color = text,
-            fontWeight = FontWeight.W400,
-            letterSpacing = -(0.8).sp
-        )
+            .clickable(
+                indication = null,
+                interactionSource = null
+            ) {
+                focusManager.clearFocus()
+            }
 
-        Text(
-            modifier = Modifier
-                .padding(top = 170.dp)
-                .align(alignment = Alignment.Start),
-            text = "Логин",
-            fontSize = 16.sp,
-            lineHeight = 16.sp,
-            fontFamily = bodyFontFamily,
-            color = Color.Black,
-            fontWeight = FontWeight.W400,
-            letterSpacing = -(0.8).sp
-        )
-        BasicTextField(
-            modifier = Modifier
-                .align(alignment = Alignment.CenterHorizontally)
-                .padding(top = 14.dp)
-                .height(40.dp)
-                .width(330.dp)
-                .shadow(
-                    elevation = 1.dp,
-                    shape = RoundedCornerShape(9.dp)
-                )
-                .background(
-                    color = Color.White,
-                    shape = RoundedCornerShape(8.dp) // опционально
-                ),
-            value = login,
-            onValueChange = {login = it},
-            textStyle = TextStyle(
-                fontSize = 14.sp,
-                textAlign = TextAlign.Center,
-                color = Color.Black
-            ),
-            singleLine = true,
-            decorationBox = { innerTextField ->
-                Box(
-                    modifier = Modifier,
-                    contentAlignment = Alignment.Center
-                ) {
-                    innerTextField()
-                }
-            },
-            keyboardOptions = KeyboardOptions(
-                keyboardType = KeyboardType.Number
-            )
-        )
-        Text(
-            modifier = Modifier
-                .padding(top = 30.dp)
-                .align(alignment = Alignment.Start),
-            text = "Пароль",
-            fontSize = 16.sp,
-            lineHeight = 16.sp,
-            fontFamily = bodyFontFamily,
-            color = Color.Black,
-            fontWeight = FontWeight.W400,
-            letterSpacing = -(0.8).sp
-        )
-        BasicTextField(
-            modifier = Modifier
-                .align(alignment = Alignment.CenterHorizontally)
-                .padding(top = 14.dp)
-                .height(40.dp)
-                .width(330.dp)
-                .shadow(
-                    elevation = 1.dp,
-                    shape = RoundedCornerShape(9.dp)
-                )
-                .background(
-                    color = Color.White,
-                    shape = RoundedCornerShape(8.dp) // опционально
-                ),
-            value = password,
-            onValueChange = {password = it},
-            textStyle = TextStyle(
-                fontSize = 14.sp,
-                textAlign = TextAlign.Center,
-                color = Color.Black
-            ),
-            singleLine = true,
-            decorationBox = { innerTextField ->
-                Box(
-                    modifier = Modifier,
-                    contentAlignment = Alignment.Center
-                ) {
-                    innerTextField()
-                }
-            },
-            keyboardOptions = KeyboardOptions(
-                keyboardType = KeyboardType.Number
-            )
-        )
-
-        Box(
-            modifier = Modifier
-                .align(alignment = Alignment.CenterHorizontally)
-                .padding(top = 30.dp)
-                .height(40.dp)
-                .width(330.dp)
-                .background(
-                    color = Color(0xffFFD8EF),
-                    shape = RoundedCornerShape(8.dp) // опционально
-                )
-                .border(
-                    width = 1.dp,
-                    color = Color(0xffDD97FE),
-                    shape = RoundedCornerShape(9.dp)
-                )
-                .clickable(
-                    onClick = {},
-                    indication = null,
-                    interactionSource = null
-                ),
-            contentAlignment = Alignment.Center
-        ){
+    ){
+        Column(
+            modifier = modifier
+                .fillMaxSize()
+                .padding(horizontal = 35.dp)
+        ) {
             Text(
-                modifier = Modifier,
-                text = "Войти",
+                modifier = Modifier
+                    .padding(top = 50.dp)
+                    .align(alignment = Alignment.Start),
+                text = "Вход",
+                fontSize = 40.sp,
+                lineHeight = 50.sp,
+                fontFamily = bodyFontFamily,
+                color = text,
+                fontWeight = FontWeight.W400,
+                letterSpacing = -(0.8).sp
+            )
+
+            Text(
+                modifier = Modifier
+                    .padding(top = 170.dp)
+                    .align(alignment = Alignment.Start),
+                text = "Логин",
                 fontSize = 16.sp,
                 lineHeight = 16.sp,
                 fontFamily = bodyFontFamily,
@@ -191,25 +92,139 @@ fun AuthorisationScreen(
                 fontWeight = FontWeight.W400,
                 letterSpacing = -(0.8).sp
             )
-        }
-        Text(
-            modifier = Modifier
-                .padding(top = 280.dp)
-                .align(alignment = Alignment.CenterHorizontally)
-                .clickable(
-                    onClick = onRegisterButtonClick,
-                    indication = null,
-                    interactionSource = null
+            BasicTextField(
+                modifier = Modifier
+                    .align(alignment = Alignment.CenterHorizontally)
+                    .padding(top = 14.dp)
+                    .height(40.dp)
+                    .width(330.dp)
+                    .shadow(
+                        elevation = 1.dp,
+                        shape = RoundedCornerShape(9.dp)
+                    )
+                    .background(
+                        color = Color.White,
+                        shape = RoundedCornerShape(8.dp) // опционально
+                    ),
+                value = login,
+                onValueChange = {login = it},
+                textStyle = TextStyle(
+                    fontSize = 14.sp,
+                    textAlign = TextAlign.Center,
+                    color = Color.Black
                 ),
-            text = "Нет аккаунта? Зарегистрироваться",
-            fontSize = 16.sp,
-            lineHeight = 16.sp,
-            fontFamily = bodyFontFamily,
-            color = Color(0xff4455A7),
-            fontWeight = FontWeight.W400,
-            textDecoration = TextDecoration.Underline,
-            letterSpacing = -(0.8).sp
-        )
+                singleLine = true,
+                decorationBox = { innerTextField ->
+                    Box(
+                        modifier = Modifier,
+                        contentAlignment = Alignment.Center
+                    ) {
+                        innerTextField()
+                    }
+                },
+                keyboardOptions = KeyboardOptions(
+                    keyboardType = KeyboardType.Number
+                )
+            )
+            Text(
+                modifier = Modifier
+                    .padding(top = 30.dp)
+                    .align(alignment = Alignment.Start),
+                text = "Пароль",
+                fontSize = 16.sp,
+                lineHeight = 16.sp,
+                fontFamily = bodyFontFamily,
+                color = Color.Black,
+                fontWeight = FontWeight.W400,
+                letterSpacing = -(0.8).sp
+            )
+            BasicTextField(
+                modifier = Modifier
+                    .align(alignment = Alignment.CenterHorizontally)
+                    .padding(top = 14.dp)
+                    .height(40.dp)
+                    .width(330.dp)
+                    .shadow(
+                        elevation = 1.dp,
+                        shape = RoundedCornerShape(9.dp)
+                    )
+                    .background(
+                        color = Color.White,
+                        shape = RoundedCornerShape(8.dp) // опционально
+                    ),
+                value = password,
+                onValueChange = {password = it},
+                textStyle = TextStyle(
+                    fontSize = 14.sp,
+                    textAlign = TextAlign.Center,
+                    color = Color.Black
+                ),
+                singleLine = true,
+                decorationBox = { innerTextField ->
+                    Box(
+                        modifier = Modifier,
+                        contentAlignment = Alignment.Center
+                    ) {
+                        innerTextField()
+                    }
+                },
+                keyboardOptions = KeyboardOptions(
+                    keyboardType = KeyboardType.Number
+                )
+            )
+
+            Box(
+                modifier = Modifier
+                    .align(alignment = Alignment.CenterHorizontally)
+                    .padding(top = 30.dp)
+                    .height(40.dp)
+                    .width(330.dp)
+                    .background(
+                        color = Color(0xffFFD8EF),
+                        shape = RoundedCornerShape(8.dp) // опционально
+                    )
+                    .border(
+                        width = 1.dp,
+                        color = Color(0xffDD97FE),
+                        shape = RoundedCornerShape(9.dp)
+                    )
+                    .clickable(
+                        onClick = onLoginClick,
+                        indication = null,
+                        interactionSource = null
+                    ),
+                contentAlignment = Alignment.Center
+            ){
+                Text(
+                    modifier = Modifier,
+                    text = "Войти",
+                    fontSize = 16.sp,
+                    lineHeight = 16.sp,
+                    fontFamily = bodyFontFamily,
+                    color = Color.Black,
+                    fontWeight = FontWeight.W400,
+                    letterSpacing = -(0.8).sp
+                )
+            }
+            Text(
+                modifier = Modifier
+                    .padding(top = 280.dp)
+                    .align(alignment = Alignment.CenterHorizontally)
+                    .clickable(
+                        onClick = onRegisterButtonClick,
+                        indication = null,
+                        interactionSource = null
+                    ),
+                text = "Нет аккаунта? Зарегистрироваться",
+                fontSize = 16.sp,
+                lineHeight = 16.sp,
+                fontFamily = bodyFontFamily,
+                color = Color(0xff4455A7),
+                fontWeight = FontWeight.W400,
+                textDecoration = TextDecoration.Underline,
+                letterSpacing = -(0.8).sp
+            )
+        }
     }
 }
 
@@ -222,7 +237,8 @@ fun RegistrationScreenTest(){
     ){ paddingValues ->
         AuthorisationScreen(
             Modifier.padding(paddingValues),
-            onRegisterButtonClick = {}
+            onRegisterButtonClick = {},
+            onLoginClick = {}
         )
     }
 }

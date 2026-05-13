@@ -2,6 +2,7 @@ package com.example.up.presentation.navigation
 
 import kotlinx.serialization.Serializable
 
+
 sealed class Routes(){
     @Serializable
     object MainScreen : Routes()
@@ -14,4 +15,13 @@ sealed class Routes(){
 
     @Serializable
     object Settings : Routes()
+
+    @Serializable
+    object Registration : Routes()
+
+    @Serializable
+    object Authorisation : Routes()
+
+    @Serializable
+    object Onboarding : Routes()
 }

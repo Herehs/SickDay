@@ -52,7 +52,7 @@ class MainViewModel(
         }
     }
 
-    private fun getPosition(){
+    fun getPosition(){
         viewModelScope.launch {
             getCurrentPositionUseCase().collect { result ->
                 when(result){
@@ -92,8 +92,8 @@ class MainViewModel(
     }
 
     init {
-        getPosition()
         getWeatherInfo()
+        getPosition()
 
         _adviseList.value = listOf(
             Advice(

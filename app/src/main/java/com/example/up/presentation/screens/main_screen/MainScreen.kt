@@ -51,14 +51,13 @@ fun MainScreen(
 
     val formatted = currentDate.value.format(DateTimeFormatter.ofPattern("LLLL yyyy")).replaceFirstChar { it.uppercase() }
 
-    val context = LocalContext.current
-
     val locationLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.RequestMultiplePermissions()
     ) { permissions ->
-        val fineGranted = permissions[Manifest.permission.ACCESS_FINE_LOCATION] ?: false
-        val coarseGranted = permissions[Manifest.permission.ACCESS_COARSE_LOCATION] ?: false
+        permissions[Manifest.permission.ACCESS_FINE_LOCATION] ?: false
+        permissions[Manifest.permission.ACCESS_COARSE_LOCATION] ?: false
     }
+
     LaunchedEffect(Unit) {
         locationLauncher.launch(
             arrayOf(

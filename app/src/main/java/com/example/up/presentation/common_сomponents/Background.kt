@@ -10,8 +10,12 @@ import androidx.compose.ui.draw.blur
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ImageBitmap
+import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.res.imageResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.example.up.R
 
 @Composable
 fun Background(){
@@ -62,16 +66,20 @@ fun Background(){
 }
 
 @Composable
-fun Background2(){
+fun OnboardingBackground(){
     Box(
         modifier = Modifier
             .fillMaxSize()
             .background(Color.White)
     ){
+        val icon = ImageBitmap.imageResource(id = R.drawable.onboarding)
+
+
         Canvas(modifier = Modifier
             .matchParentSize()
             .blur(radius = 120.dp)
         ) {
+
             drawOval(
                 color = Color(0xffD0EAFF),
                 topLeft = Offset(
@@ -109,6 +117,22 @@ fun Background2(){
                 color = Color(0xff7792FF),
                 radius = size.width * .4f,
                 center = Offset(size.width / 2, size.height * .45f)
+            )
+        }
+        Canvas(modifier = Modifier
+            .matchParentSize()
+            .graphicsLayer {
+                scaleX = 3f
+                scaleY = 3f
+            }
+        ){
+            drawImage(
+                image = icon,
+                topLeft = Offset(
+                    (size.width - icon.width) * .5f,
+                    (size.height - icon.height) * .49f
+                ),
+
             )
         }
     }
@@ -151,9 +175,6 @@ fun Background3(
 //    device = TABLET
 )
 @Composable
-fun BackgroundTest(){
-    Background3(
-        primaryColor = Color(0xffFFA1CA).copy(alpha = .8f),
-        secondaryColor = Color(0xffFFB3A1).copy(alpha = .5f)
-    )
+fun OnboardingBackgroundTest(){
+    OnboardingBackground()
 }
