@@ -3,6 +3,7 @@ package com.example.up.presentation.screens.main_screen
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.up.R
+import com.example.up.common.Resource
 import com.example.up.domain.model.CurrentWeather
 import com.example.up.domain.model.Position
 import com.example.up.domain.use_case.GetCurrentPositionUseCase
@@ -11,12 +12,14 @@ import com.example.up.presentation.screens.main_screen.components.Advice
 import com.example.up.presentation.screens.main_screen.components.PillsScheduleData
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.time.LocalDate
 import java.time.LocalTime
 
 class MainViewModel(
     private val getCurrentWeatherUseCase: GetCurrentWeatherUseCase,
+    private val getCurrentPositionUseCase: GetCurrentPositionUseCase
 ) : ViewModel() {
 
     private val _adviseList = MutableStateFlow(emptyList<Advice>())
@@ -36,7 +39,8 @@ class MainViewModel(
     private val _selectedDate = MutableStateFlow(LocalDate.now())
     val selectedDate = _selectedDate.asStateFlow()
 
-    private val _position = MutableStateFlow(Position(0f, 0f))
+    private val _position = MutableStateFlow(PositionState())
+    val position = _position.asStateFlow()
 
     fun selectDate(date: LocalDate) {
         _selectedDate.value = date
@@ -48,8 +52,47 @@ class MainViewModel(
         }
     }
 
+    private fun getPosition(){
+        viewModelScope.launch {
+            getCurrentPositionUseCase().collect { result ->
+                when(result){
+                    is Resource.Success -> {
+                        result.data?.let { position ->
+                            _position.update {
+                                it.copy(
+                                    lat = position.lat,
+                                    lon = position.lon,
+                                    isLoading = false,
+                                    isError = false
+                                )
+                            }
+                        }
+                    }
+                    is Resource.Loading -> {
+                        result.data?.let {
+                            _position.update {
+                                it.copy(
+                                    isLoading = true,
+                                )
+                            }
+                        }
+
+                    }
+                    is Resource.Error -> {
+                        _position.update {
+                            it.copy(
+                                isLoading = false,
+                                isError = true
+                            )
+                        }
+                    }
+                }
+            }
+        }
+    }
+
     init {
-        //getPosition()
+        getPosition()
         getWeatherInfo()
 
         _adviseList.value = listOf(

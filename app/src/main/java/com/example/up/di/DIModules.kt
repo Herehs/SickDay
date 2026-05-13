@@ -59,7 +59,11 @@ val dataModule = module {
     }
 
     single {
-        LocationServices.getFusedLocationProviderClient(get())
+        LocationServices.getFusedLocationProviderClient(get<Context>())
+    }
+
+    single<LocationProvider>{
+        LocationProviderImpl(get<Context>(), get())
     }
 
     //repositories
@@ -70,6 +74,10 @@ val dataModule = module {
     single<SettingsRepository>{
         SettingsRepositoryImpl(get())
     }
+
+    single<PositionRepository> {
+        PositionRepositoryImpl(get())
+    }
 }
 
 val domainModule = module {
@@ -79,4 +87,6 @@ val domainModule = module {
     single { UpdateSettingsUseCase(get()) }
 
     single { GetCurrentWeatherUseCase(get()) }
+
+    single { GetCurrentPositionUseCase(get()) }
 }

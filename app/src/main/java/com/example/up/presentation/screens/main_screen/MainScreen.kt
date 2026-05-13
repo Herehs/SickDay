@@ -1,5 +1,8 @@
 package com.example.up.presentation.screens.main_screen
 
+import android.Manifest
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -10,9 +13,11 @@ import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
@@ -22,7 +27,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.up.presentation.common_сomponents.Section
 import com.example.up.presentation.screens.main_screen.components.AdviceList
-import com.example.up.presentation.common_сomponents.Background
 import com.example.up.presentation.screens.main_screen.components.DateCarousel
 import com.example.up.presentation.screens.main_screen.components.IndexScale
 import com.example.up.presentation.screens.main_screen.components.PillsSchedule
@@ -43,10 +47,27 @@ fun MainScreen(
     val pillsScheduleList = mainViewModel.pillsList.collectAsState()
     val currentDate = mainViewModel.selectedDate.collectAsState()
     val weatherInfo = mainViewModel.currentWeather.collectAsState()
+    val position = mainViewModel.position.collectAsState()
 
     val formatted = currentDate.value.format(DateTimeFormatter.ofPattern("LLLL yyyy")).replaceFirstChar { it.uppercase() }
 
-//    Background()
+    val context = LocalContext.current
+
+    val locationLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.RequestMultiplePermissions()
+    ) { permissions ->
+        val fineGranted = permissions[Manifest.permission.ACCESS_FINE_LOCATION] ?: false
+        val coarseGranted = permissions[Manifest.permission.ACCESS_COARSE_LOCATION] ?: false
+    }
+    LaunchedEffect(Unit) {
+        locationLauncher.launch(
+            arrayOf(
+                Manifest.permission.ACCESS_FINE_LOCATION,
+                Manifest.permission.ACCESS_COARSE_LOCATION
+            )
+        )
+    }
+
     Column(
         modifier = modifier
             .fillMaxSize(),
@@ -70,7 +91,17 @@ fun MainScreen(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             IndexScale(text = "Индекс", value = .68f, modifier = Modifier.padding(horizontal = 20.dp))
-
+            Text(
+                text = if (position.value.isLoading){
+                    "Loading..."
+                } else if(position.value.isError){
+                    "Error"
+                }
+                else{
+                    "lat:${position.value.lat} \nlon:${position.value.lon}"
+                },
+                color = text
+            )
             LazyVerticalGrid(
                 modifier = Modifier
                     .fillMaxWidth()

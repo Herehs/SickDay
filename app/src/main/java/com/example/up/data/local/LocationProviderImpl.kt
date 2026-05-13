@@ -29,13 +29,15 @@ class LocationProviderImpl(
 
 
         return suspendCancellableCoroutine { cont ->
-            fusedClient.lastLocation
-                .addOnSuccessListener { location ->
-                    cont.resume(location, null)
-                }
-                .addOnFailureListener {
-                    cont.resume(null, null)
-                }
+
+            fusedClient.getCurrentLocation(
+                com.google.android.gms.location.Priority.PRIORITY_HIGH_ACCURACY,
+                null
+            ).addOnSuccessListener { location ->
+                cont.resume(location, null)
+            }.addOnFailureListener {
+                cont.resume(null, null)
+            }
         }
     }
 }
