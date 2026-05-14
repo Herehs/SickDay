@@ -36,8 +36,6 @@ import com.example.up.presentation.screens.settings_screen.SettingsScreen
 fun NavRoot(
     navController: NavHostController = rememberNavController()
 ) {
-
-
     val screens = listOf(
         BottomBarItem(
             icon = R.drawable.open_eye,
@@ -63,10 +61,8 @@ fun NavRoot(
         Routes.Settings
     )
 
-
     var previousIndex by remember { mutableIntStateOf(0) }
     var showBottomBar by rememberSaveable { mutableStateOf(true) }
-
 
     Scaffold(
         bottomBar = {

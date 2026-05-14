@@ -106,63 +106,74 @@ fun MainScreen(
                     Tile(
                         name = "Давление",
                         tileContent = {
-
-                            Text(
-                                modifier = Modifier.padding(bottom = 4.dp),
-                                text = buildAnnotatedString {
-                                    withStyle(style = SpanStyle(
-                                        fontSize = 32.sp,
-                                        fontFamily = bodyFontFamily,
-                                        color = text,
-                                        fontWeight = FontWeight.W400
-                                    )
-                                    ){
-                                        append(weatherInfo.value.pressure.roundToInt().toString())
-                                    }
-                                },
-                                fontSize = 18.sp,
-                                lineHeight = 22.sp,
-                                fontFamily = bodyFontFamily,
-                                color = text,
-                                fontWeight = FontWeight.W400
-                            )
+                            if(weatherInfo.value.isLoading){
+                                CircularProgressIndicator(
+                                    trackColor = text
+                                )
+                            }
+                            else {
+                                Text(
+                                    modifier = Modifier.padding(bottom = 4.dp),
+                                    text = buildAnnotatedString {
+                                        withStyle(style = SpanStyle(
+                                            fontSize = 32.sp,
+                                            fontFamily = bodyFontFamily,
+                                            color = text,
+                                            fontWeight = FontWeight.W400
+                                        )
+                                        ){
+                                            append(weatherInfo.value.pressure.roundToInt().toString())
+                                        }
+                                    },
+                                    fontSize = 18.sp,
+                                    lineHeight = 22.sp,
+                                    fontFamily = bodyFontFamily,
+                                    color = text,
+                                    fontWeight = FontWeight.W400
+                                )
+                            }
                         }
                     )
-
                 }
                 item {
                     Tile(
                         name = "Индекс Кр",
                         tileContent = {
-
-                            Text(
-                                modifier = Modifier.padding(bottom = 4.dp),
-                                text = buildAnnotatedString {
-                                    withStyle(style = SpanStyle(
-                                        fontSize = 32.sp,
-                                        fontFamily = bodyFontFamily,
-                                        color = text,
-                                        fontWeight = FontWeight.W400
-                                    )
-                                    ){
-                                        append("${weatherInfo.value.kp_index.roundToInt()}/")
-                                    }
-                                    withStyle(style = SpanStyle(
-                                        fontSize = 24.sp,
-                                        fontFamily = bodyFontFamily,
-                                        color = text,
-                                        fontWeight = FontWeight.W400
-                                    )
-                                    ){
-                                        append("9")
-                                    }
-                                },
-                                fontSize = 18.sp,
-                                lineHeight = 22.sp,
-                                fontFamily = bodyFontFamily,
-                                color = text,
-                                fontWeight = FontWeight.W400
-                            )
+                            if(weatherInfo.value.isLoading){
+                                CircularProgressIndicator(
+                                    trackColor = text
+                                )
+                            }
+                            else {
+                                Text(
+                                    modifier = Modifier.padding(bottom = 4.dp),
+                                    text = buildAnnotatedString {
+                                        withStyle(style = SpanStyle(
+                                            fontSize = 32.sp,
+                                            fontFamily = bodyFontFamily,
+                                            color = text,
+                                            fontWeight = FontWeight.W400
+                                        )
+                                        ){
+                                            append("${weatherInfo.value.kp_index.roundToInt()}/")
+                                        }
+                                        withStyle(style = SpanStyle(
+                                            fontSize = 24.sp,
+                                            fontFamily = bodyFontFamily,
+                                            color = text,
+                                            fontWeight = FontWeight.W400
+                                        )
+                                        ){
+                                            append("9")
+                                        }
+                                    },
+                                    fontSize = 18.sp,
+                                    lineHeight = 22.sp,
+                                    fontFamily = bodyFontFamily,
+                                    color = text,
+                                    fontWeight = FontWeight.W400
+                                )
+                            }
                         }
                     )
 
@@ -172,7 +183,9 @@ fun MainScreen(
                         name = "Температура",
                         tileContent = {
                             if(weatherInfo.value.isLoading){
-                                CircularProgressIndicator()
+                                CircularProgressIndicator(
+                                    trackColor = text
+                                )
                             }
                             else {
                                 Text(
@@ -203,25 +216,34 @@ fun MainScreen(
                     Tile(
                         name = "Влажность",
                         tileContent = {
-                            Text(
-                                modifier = Modifier.padding(bottom = 4.dp),
-                                text = buildAnnotatedString {
-                                    withStyle(style = SpanStyle(
-                                        fontSize = 32.sp,
-                                        fontFamily = bodyFontFamily,
-                                        color = text,
-                                        fontWeight = FontWeight.W400
-                                    )
-                                    ){
-                                        append("${weatherInfo.value.humidity.roundToInt()}%")
-                                    }
-                                },
-                                fontSize = 18.sp,
-                                lineHeight = 22.sp,
-                                fontFamily = bodyFontFamily,
-                                color = text,
-                                fontWeight = FontWeight.W400
-                            )
+                            if(weatherInfo.value.isLoading){
+                                CircularProgressIndicator(
+                                    trackColor = text
+                                )
+                            }
+                            else {
+                                Text(
+                                    modifier = Modifier.padding(bottom = 4.dp),
+                                    text = buildAnnotatedString {
+                                        withStyle(style = SpanStyle(
+                                            fontSize = 32.sp,
+                                            fontFamily = bodyFontFamily,
+                                            color = text,
+                                            fontWeight = FontWeight.W400
+                                        )
+                                        ){
+                                            append("${weatherInfo.value.humidity.roundToInt()}%")
+                                        }
+                                    },
+                                    fontSize = 18.sp,
+                                    lineHeight = 22.sp,
+                                    fontFamily = bodyFontFamily,
+                                    color = text,
+                                    fontWeight = FontWeight.W400
+                                )
+
+                            }
+
                         }
                     )
 
@@ -240,17 +262,17 @@ fun MainScreen(
                 AdviceList(advices = adviceList.value)
             }
 
-            Text(
-                modifier = Modifier.fillMaxWidth().padding(horizontal = 20.dp).padding(top = 30.dp),
-                text = "Принятие лекарств",
-                fontSize = 17.sp,
-                lineHeight = 22.sp,
-                fontFamily = bodyFontFamily,
-                color = text,
-                fontWeight = FontWeight.W400,
-                letterSpacing = -(0.8).sp
-            )
-            PillsSchedule(pillsList = pillsScheduleList.value, currentTime = LocalTime.of(14 ,0))
+//            Text(
+//                modifier = Modifier.fillMaxWidth().padding(horizontal = 20.dp).padding(top = 30.dp),
+//                text = "Принятие лекарств",
+//                fontSize = 17.sp,
+//                lineHeight = 22.sp,
+//                fontFamily = bodyFontFamily,
+//                color = text,
+//                fontWeight = FontWeight.W400,
+//                letterSpacing = -(0.8).sp
+//            )
+            //PillsSchedule(pillsList = pillsScheduleList.value, currentTime = LocalTime.of(14 ,0))
 
 
         }

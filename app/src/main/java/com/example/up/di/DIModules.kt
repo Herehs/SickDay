@@ -39,7 +39,6 @@ val presentationModule = module {
     viewModelOf(::MainViewModel)
     viewModelOf(::CalendarViewModel)
     viewModelOf(::SettingsViewModel)
-
 }
 
 val dataModule = module {

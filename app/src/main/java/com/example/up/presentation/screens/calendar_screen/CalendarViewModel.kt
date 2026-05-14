@@ -134,19 +134,11 @@ class CalendarViewModel(
                 lon = _position.asStateFlow().value.lon,
                 date = _pickedDate.asStateFlow().value
             ).collect {  result ->
-                when(result){
-                    is Resource.Success -> {
-                        result.data?.let { graphData ->
-                            _graphData.value = graphData.list
-                        }
-                    }
-                    else -> {
-                        _graphData.value = listOf(0f)
-                    }
+                result.data?.let { graphData ->
+                    _graphData.value = graphData.list
                 }
             }
         }
-
     }
 
     fun getPosition(){
