@@ -11,13 +11,16 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
@@ -47,7 +50,7 @@ fun MainScreen(
     val pillsScheduleList = mainViewModel.pillsList.collectAsState()
     val currentDate = mainViewModel.selectedDate.collectAsState()
     val weatherInfo = mainViewModel.currentWeather.collectAsState()
-    val position = mainViewModel.position.collectAsState()
+    val danger = mainViewModel.danger.collectAsState()
 
     val formatted = currentDate.value.format(DateTimeFormatter.ofPattern("LLLL yyyy")).replaceFirstChar { it.uppercase() }
 
@@ -89,18 +92,7 @@ fun MainScreen(
                 .padding(top = 8.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            IndexScale(text = "Индекс", value = .68f, modifier = Modifier.padding(horizontal = 20.dp))
-            Text(
-                text = if (position.value.isLoading){
-                    "Loading..."
-                } else if(position.value.isError){
-                    "Error"
-                }
-                else{
-                    "lat:${position.value.lat} \nlon:${position.value.lon}"
-                },
-                color = text
-            )
+            IndexScale(text = "Индекс", value = danger.value, modifier = Modifier.padding(horizontal = 20.dp))
             LazyVerticalGrid(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -125,17 +117,7 @@ fun MainScreen(
                                         fontWeight = FontWeight.W400
                                     )
                                     ){
-                                        append(weatherInfo.value.pressure.toString())
-                                    }
-                                    withStyle(style = SpanStyle(
-                                        fontSize = 16.sp,
-                                        fontFamily = bodyFontFamily,
-                                        color = text,
-                                        fontWeight = FontWeight.W400,
-                                        letterSpacing = -(1).sp
-                                    )
-                                    ){
-                                        append(" мм рт ст")
+                                        append(weatherInfo.value.pressure.roundToInt().toString())
                                     }
                                 },
                                 fontSize = 18.sp,
@@ -189,25 +171,31 @@ fun MainScreen(
                     Tile(
                         name = "Температура",
                         tileContent = {
-                            Text(
-                                modifier = Modifier.padding(bottom = 4.dp),
-                                text = buildAnnotatedString {
-                                    withStyle(style = SpanStyle(
-                                        fontSize = 32.sp,
-                                        fontFamily = bodyFontFamily,
-                                        color = text,
-                                        fontWeight = FontWeight.W400
-                                    )
-                                    ){
-                                        append("${weatherInfo.value.temperature}")
-                                    }
-                                },
-                                fontSize = 18.sp,
-                                lineHeight = 22.sp,
-                                fontFamily = bodyFontFamily,
-                                color = text,
-                                fontWeight = FontWeight.W400
-                            )
+                            if(weatherInfo.value.isLoading){
+                                CircularProgressIndicator()
+                            }
+                            else {
+                                Text(
+                                    modifier = Modifier.padding(bottom = 4.dp),
+                                    text = buildAnnotatedString {
+                                        withStyle(style = SpanStyle(
+                                            fontSize = 32.sp,
+                                            fontFamily = bodyFontFamily,
+                                            color = text,
+                                            fontWeight = FontWeight.W400
+                                        )
+                                        ){
+                                            append("${weatherInfo.value.temperature}")
+                                        }
+                                    },
+                                    fontSize = 18.sp,
+                                    lineHeight = 22.sp,
+                                    fontFamily = bodyFontFamily,
+                                    color = text,
+                                    fontWeight = FontWeight.W400
+                                )
+
+                            }
                         }
                     )
                 }
@@ -225,7 +213,7 @@ fun MainScreen(
                                         fontWeight = FontWeight.W400
                                     )
                                     ){
-                                        append("${weatherInfo.value.humidity}%")
+                                        append("${weatherInfo.value.humidity.roundToInt()}%")
                                     }
                                 },
                                 fontSize = 18.sp,

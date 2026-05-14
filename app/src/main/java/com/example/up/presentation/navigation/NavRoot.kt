@@ -40,11 +40,11 @@ fun NavRoot(
 
     val screens = listOf(
         BottomBarItem(
-            icon = R.drawable.calendar,
+            icon = R.drawable.open_eye,
             route = Routes.MainScreen
         ),
         BottomBarItem(
-            icon = R.drawable.open_eye,
+            icon = R.drawable.calendar,
             route = Routes.CalendarScreen
         ),
         BottomBarItem(
@@ -65,7 +65,7 @@ fun NavRoot(
 
 
     var previousIndex by remember { mutableIntStateOf(0) }
-    var showBottomBar by rememberSaveable { mutableStateOf(false) }
+    var showBottomBar by rememberSaveable { mutableStateOf(true) }
 
 
     Scaffold(
@@ -98,7 +98,7 @@ fun NavRoot(
         Background()
         NavHost(
             navController = navController,
-            startDestination = Routes.Onboarding,
+            startDestination = Routes.MainScreen,
             enterTransition = {
 
                 val isForward =
@@ -161,6 +161,7 @@ fun NavRoot(
                 enterTransition = { fadeIn(tween(400)) },
                 exitTransition = { fadeOut(tween(400)) }
             ) {
+                showBottomBar = false
                 RegistrationScreen(
                     modifier = Modifier.padding(paddingValues),
                     onRegisterClick = {
@@ -174,6 +175,7 @@ fun NavRoot(
                 enterTransition = { fadeIn(tween(400)) },
                 exitTransition = { fadeOut(tween(400)) }
             ) {
+                showBottomBar = false
                 AuthorisationScreen(
                     modifier = Modifier.padding(paddingValues),
                     onLoginClick = {
@@ -188,6 +190,7 @@ fun NavRoot(
                 enterTransition = { fadeIn(tween(400)) },
                 exitTransition = { fadeOut(tween(400)) }
             ) {
+                showBottomBar = false
                 Onboarding(
                     modifier = Modifier.padding(paddingValues),
                     onRegisterClick = { navController.navigate(Routes.Registration) },

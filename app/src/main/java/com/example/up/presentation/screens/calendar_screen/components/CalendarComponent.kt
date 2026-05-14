@@ -2,6 +2,7 @@ package com.example.up.presentation.screens.calendar_screen.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
@@ -13,6 +14,10 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -27,12 +32,15 @@ import com.example.up.presentation.ui.theme.bodyFontFamily
 import com.example.up.presentation.ui.theme.text
 import java.time.LocalDate
 import java.time.Month
+import java.time.format.DateTimeFormatter
 
 @Composable
 fun CalendarComponent(
     modifier: Modifier = Modifier,
-    date: LocalDate
+    date: LocalDate,
+    pickedDate: (String) -> Unit
 ){
+    var pickedDate by rememberSaveable { mutableStateOf(LocalDate.now()) }
     val daysList = generateDaysList(date)
     val days = listOf("Пн", "Вт", "Ср", "Чт", "Пт", "Сб", "Вс")
 
@@ -59,7 +67,19 @@ fun CalendarComponent(
                 contentAlignment = Alignment.Center,
                 modifier = Modifier.padding(top = 10.dp)
             ){
-                DateComponent(date = day)
+                DateComponent(
+                    modifier = Modifier.clickable(
+                        onClick = {
+                            pickedDate = day
+                            pickedDate(day.format(DateTimeFormatter.ofPattern("yyyy-MM-dd")))
+                        },
+                        indication = null,
+                        interactionSource = null,
+                        enabled = day <= LocalDate.now()
+                    ),
+                    date = day,
+                    pickedDate = pickedDate
+                )
             }
         }
     }
@@ -68,26 +88,33 @@ fun CalendarComponent(
 
 @Composable
 fun DateComponent(
-    date: LocalDate
+    modifier: Modifier = Modifier,
+    date: LocalDate,
+    pickedDate: LocalDate
 ){
     var backgroundColor: Color
     var borderColor: Color
 
+
     if(date.month == LocalDate.now().month){
         backgroundColor = Color(0xffFFF5EA)
         borderColor = Color(0xffCAB597).copy(alpha = .3f)
-        if (date == LocalDate.now()){
-            backgroundColor = Color(0xffFFAA56)
-            borderColor = Color(0xffCAB597).copy(alpha = .3f)
-        }
     }
     else{
         backgroundColor = Color(0xffFFFFFF)
         borderColor = Color(0xffCAB597).copy(alpha = .3f)
     }
+    if (date > LocalDate.now()){
+            backgroundColor = Color(0xffFFFFFF)
+            borderColor = Color(0xffCAB597).copy(alpha = .1f)
+    }
+    if (date == pickedDate){
+        backgroundColor = Color(0xffFFAA56)
+        borderColor = Color(0xffCAB597).copy(alpha = .3f)
+    }
 
     Box(
-        modifier = Modifier
+        modifier = modifier
             .size(38.dp)
             .clip(shape = RoundedCornerShape(50))
             .background(color = backgroundColor)
@@ -139,7 +166,7 @@ fun CalendarComponentTest(){
     Scaffold(){ paddingValues ->
         Background()
         Column(modifier = Modifier.padding(paddingValues).padding(horizontal = 20.dp)) {
-            CalendarComponent(date = LocalDate.of(2026, Month.MAY, 1))
+            CalendarComponent(date = LocalDate.of(2026, Month.MAY, 1), pickedDate = {})
         }
     }
 }

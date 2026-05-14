@@ -6,3 +6,12 @@ data class PositionState(
     val isLoading: Boolean = true,
     val isError: Boolean = false
 )
+
+data class CurrentWeatherState(
+    val humidity: Float = 0f,
+    val kp_index: Float = 0f,
+    val pressure: Float = 0f,
+    val temperature: Float = 0f,
+    val isLoading: Boolean = true,
+    val isError: Boolean = false
+)

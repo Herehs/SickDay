@@ -7,7 +7,7 @@ fun CurrentWeatherDto.toDomain(): CurrentWeather {
     return CurrentWeather(
         humidity = humidity,
         kp_index = kp_index,
-        pressure = pressure,
+        pressure = pressure / 1.33f,
         temperature = temperature
     )
 }

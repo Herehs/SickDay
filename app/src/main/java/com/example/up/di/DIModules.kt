@@ -10,15 +10,19 @@ import com.example.up.data.remote.WeatherServiceApi
 import com.example.up.data.remote.WeatherServiceApiImpl
 import com.example.up.data.repository.PositionRepositoryImpl
 import com.example.up.data.repository.SettingsRepositoryImpl
-import com.example.up.data.repository.test.WeatherRepositoryTest
+import com.example.up.data.repository.WeatherRepositoryImpl
 import com.example.up.domain.model.UserSettings
 import com.example.up.domain.repository.PositionRepository
 import com.example.up.domain.repository.SettingsRepository
 import com.example.up.domain.repository.WeatherRepository
+import com.example.up.domain.use_case.GetAvgWeatherUseCase
+import com.example.up.domain.use_case.GetCalendarUseCase
 import com.example.up.domain.use_case.GetCurrentPositionUseCase
 import com.example.up.domain.use_case.GetCurrentWeatherUseCase
+import com.example.up.domain.use_case.GetGraphDataUseCase
 import com.example.up.domain.use_case.GetSettingsUseCase
 import com.example.up.domain.use_case.UpdateSettingsUseCase
+import com.example.up.presentation.screens.calendar_screen.CalendarViewModel
 import com.example.up.presentation.screens.main_screen.MainViewModel
 import com.example.up.presentation.screens.settings_screen.SettingsViewModel
 import com.google.android.gms.location.LocationServices
@@ -26,13 +30,14 @@ import io.ktor.client.HttpClient
 import io.ktor.client.engine.cio.CIO
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.serialization.kotlinx.json.json
+import kotlinx.serialization.json.Json
 import org.koin.core.module.dsl.viewModelOf
 import org.koin.dsl.module
 import java.io.File
-import kotlin.math.sin
 
 val presentationModule = module {
     viewModelOf(::MainViewModel)
+    viewModelOf(::CalendarViewModel)
     viewModelOf(::SettingsViewModel)
 
 }
@@ -49,7 +54,9 @@ val dataModule = module {
     single {
         HttpClient(CIO) {
             install(ContentNegotiation) {
-                json()
+                json(Json{
+                    ignoreUnknownKeys = true
+                })
             }
         }
     }
@@ -68,7 +75,7 @@ val dataModule = module {
 
     //repositories
     single<WeatherRepository>{
-        WeatherRepositoryTest(get())
+        WeatherRepositoryImpl(get())
     }
 
     single<SettingsRepository>{
@@ -88,5 +95,11 @@ val domainModule = module {
 
     single { GetCurrentWeatherUseCase(get()) }
 
+    single { GetAvgWeatherUseCase(get()) }
+
+    single { GetGraphDataUseCase(get()) }
+
     single { GetCurrentPositionUseCase(get()) }
+
+    single { GetCalendarUseCase(get()) }
 }

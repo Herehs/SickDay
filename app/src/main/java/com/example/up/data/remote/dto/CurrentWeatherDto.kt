@@ -4,8 +4,8 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class CurrentWeatherDto(
-    val humidity: Int,
+    val humidity: Float,
     val kp_index: Float,
-    val pressure: Int,
+    val pressure: Float,
     val temperature: Float
 )

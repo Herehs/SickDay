@@ -11,11 +11,13 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconButtonColors
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -32,33 +34,33 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.up.R
-import com.example.up.presentation.common_сomponents.Background
 import com.example.up.presentation.screens.calendar_screen.components.CalendarComponent
 import com.example.up.presentation.screens.calendar_screen.components.ChartComponent
 import com.example.up.presentation.ui.theme.bodyFontFamily
 import com.example.up.presentation.ui.theme.text
+import org.koin.androidx.compose.koinViewModel
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
+import kotlin.math.roundToInt
 
 @Composable
 fun CalendarScreen(
     modifier: Modifier = Modifier,
 ){
-    val pressure = 677
-    val KRIndex = 6
-    val temperature = 6.7f
-    val humidity = 67f
+    val vm: CalendarViewModel = koinViewModel()
+    val weather = vm.weather.collectAsState()
 
     var dateDifference: Long by remember { mutableStateOf(0) }
 
     fun updateDateDifference(value: Long) {
         dateDifference = value.coerceIn(-3L, 1L)
     }
-    val currDate = LocalDate.now().plusMonths(dateDifference)
+    val selectedMonth = LocalDate.now().plusMonths(dateDifference)
+    val pickedDay = vm.pickedDate.collectAsState()
+    val graphData = vm.graphData.collectAsState()
 
 
     Box(){
-//        Background()
         Column(
             modifier = modifier.fillMaxSize()
         ) {
@@ -89,7 +91,7 @@ fun CalendarScreen(
                 }
                 Text(
                     modifier = Modifier.padding(horizontal = 10.dp),
-                    text = currDate.format(DateTimeFormatter.ofPattern("LLLL yyyy")).replaceFirstChar { it.uppercase() },
+                    text = selectedMonth.format(DateTimeFormatter.ofPattern("LLLL yyyy")).replaceFirstChar { it.uppercase() },
                     fontSize = 18.sp,
                     lineHeight = 22.sp,
                     fontFamily = bodyFontFamily,
@@ -117,15 +119,19 @@ fun CalendarScreen(
             CalendarComponent(
                 Modifier
                     .padding(bottom = 36.dp)
-                    .padding(horizontal = 20.dp), currDate
+                    .padding(horizontal = 20.dp),
+                date = selectedMonth,
+                pickedDate = {
+                    vm.setDate(it)
+                }
             )
 
             ChartComponent(
                 modifier = Modifier.padding(horizontal = 20.dp),
-                date = LocalDate.now(),
+                date = LocalDate.parse( pickedDay.value, DateTimeFormatter.ofPattern("yyyy-MM-dd")),
                 lastUpdate = 67,
                 healthScore = 67,
-                data = listOf(0f, 35f, 70f, 70f, 100f)
+                data = graphData.value
             )
             Row(
                 modifier = Modifier
@@ -155,16 +161,29 @@ fun CalendarScreen(
                         fontWeight = FontWeight.W400,
                         letterSpacing = -(0.2).sp
                     )
-                    Text(
-                        modifier = Modifier,
-                        text = "${humidity.toInt()}%",
-                        fontSize = 20.sp,
-                        lineHeight = 22.sp,
-                        fontFamily = bodyFontFamily,
-                        color = Color(0xffFF5D5D),
-                        fontWeight = FontWeight.W400,
-                        letterSpacing = -(0.2).sp
-                    )
+                    Box(
+                        modifier = Modifier.height(20.dp)
+                    ){
+                        if(weather.value.isLoading){
+                            CircularProgressIndicator(
+                                modifier = Modifier.size(20.dp),
+                                color = text.copy(alpha = .7f),
+                                strokeWidth = 2.dp
+                            )
+                        }
+                        else {
+                            Text(
+                                modifier = Modifier,
+                                text = "${weather.value.humidity.toInt()}%",
+                                fontSize = 20.sp,
+                                lineHeight = 22.sp,
+                                fontFamily = bodyFontFamily,
+                                color = Color(0xffFF5D5D),
+                                fontWeight = FontWeight.W400,
+                                letterSpacing = -(0.2).sp
+                            )
+                        }
+                    }
                 }
                 Column(
                     verticalArrangement = Arrangement.Center,
@@ -180,16 +199,29 @@ fun CalendarScreen(
                         fontWeight = FontWeight.W400,
                         letterSpacing = -(0.2).sp
                     )
-                    Text(
-                        modifier = Modifier,
-                        text = "+${temperature}",
-                        fontSize = 20.sp,
-                        lineHeight = 22.sp,
-                        fontFamily = bodyFontFamily,
-                        color = Color(0xff21DB8E),
-                        fontWeight = FontWeight.W400,
-                        letterSpacing = -(0.2).sp
-                    )
+                    Box(
+                        modifier = Modifier.height(20.dp)
+                    ){
+                        if(weather.value.isLoading){
+                            CircularProgressIndicator(
+                                modifier = Modifier.size(20.dp),
+                                color = text.copy(alpha = .7f),
+                                strokeWidth = 2.dp
+                            )
+                        }
+                        else {
+                            Text(
+                                modifier = Modifier,
+                                text = "${(weather.value.temperature * 10f).toInt() / 10f}",
+                                fontSize = 20.sp,
+                                lineHeight = 22.sp,
+                                fontFamily = bodyFontFamily,
+                                color = Color(0xff21DB8E),
+                                fontWeight = FontWeight.W400,
+                                letterSpacing = -(0.2).sp
+                            )
+                        }
+                    }
                 }
                 Column(
                     verticalArrangement = Arrangement.Center,
@@ -205,36 +237,40 @@ fun CalendarScreen(
                         fontWeight = FontWeight.W400,
                         letterSpacing = -(0.2).sp
                     )
-                    Text(
-                        modifier = Modifier,
-                        text = buildAnnotatedString {
-                            withStyle(style = SpanStyle(
+                    Box(
+                        modifier = Modifier.height(20.dp)
+                    ){
+                        if(weather.value.isLoading){
+                            CircularProgressIndicator(
+                                modifier = Modifier.size(20.dp),
+                                color = text.copy(alpha = .7f),
+                                strokeWidth = 2.dp
+                            )
+                        }
+                        else {
+                            Text(
+                                modifier = Modifier,
+                                text = buildAnnotatedString {
+                                    withStyle(style = SpanStyle(
+                                        fontSize = 20.sp,
+                                        fontFamily = bodyFontFamily,
+                                        color = Color(0xffFFD666),
+                                        fontWeight = FontWeight.W400,
+                                        letterSpacing = -(0.2).sp
+                                    )
+                                    ){
+                                        append("${weather.value.pressure.roundToInt()}")
+                                    }
+                                },
                                 fontSize = 20.sp,
+                                lineHeight = 22.sp,
                                 fontFamily = bodyFontFamily,
-                                color = Color(0xffFFD666),
                                 fontWeight = FontWeight.W400,
                                 letterSpacing = -(0.2).sp
                             )
-                            ){
-                                append("${pressure}")
-                            }
-                            withStyle(style = SpanStyle(
-                                fontSize = 12.sp,
-                                fontFamily = bodyFontFamily,
-                                color = Color(0xffFFD666),
-                                fontWeight = FontWeight.W400,
-                                letterSpacing = -(0.2).sp
-                            )
-                            ){
-                                append("мм рт ст")
-                            }
-                        },
-                        fontSize = 20.sp,
-                        lineHeight = 22.sp,
-                        fontFamily = bodyFontFamily,
-                        fontWeight = FontWeight.W400,
-                        letterSpacing = -(0.2).sp
-                    )
+                        }
+
+                    }
                 }
                 Column(
                     verticalArrangement = Arrangement.Center,
@@ -250,39 +286,50 @@ fun CalendarScreen(
                         fontWeight = FontWeight.W400,
                         letterSpacing = -(0.2).sp
                     )
-                    Text(
-                        modifier = Modifier,
-                        text = buildAnnotatedString {
-                            withStyle(style = SpanStyle(
+                    Box(
+                        modifier = Modifier.height(20.dp)
+                    ){
+                        if(weather.value.isLoading){
+                            CircularProgressIndicator(
+                                modifier = Modifier.size(20.dp),
+                                color = text.copy(alpha = .7f),
+                                strokeWidth = 2.dp
+                            )
+                        }
+                        else {
+                            Text(
+                                modifier = Modifier,
+                                text = buildAnnotatedString {
+                                    withStyle(style = SpanStyle(
+                                        fontSize = 20.sp,
+                                        fontFamily = bodyFontFamily,
+                                        color = text,
+                                        fontWeight = FontWeight.W400,
+                                        letterSpacing = -(0.2).sp
+                                    )
+                                    ){
+                                        append("${weather.value.kp_index.roundToInt()}/")
+                                    }
+                                    withStyle(style = SpanStyle(
+                                        fontSize = 15.sp,
+                                        fontFamily = bodyFontFamily,
+                                        color = text,
+                                        fontWeight = FontWeight.W400,
+                                        letterSpacing = -(0.2).sp
+                                    )
+                                    ){
+                                        append("9")
+                                    }
+                                },
                                 fontSize = 20.sp,
+                                lineHeight = 22.sp,
                                 fontFamily = bodyFontFamily,
-                                color = text,
                                 fontWeight = FontWeight.W400,
                                 letterSpacing = -(0.2).sp
                             )
-                            ){
-                                append("${KRIndex}/")
-                            }
-                            withStyle(style = SpanStyle(
-                                fontSize = 15.sp,
-                                fontFamily = bodyFontFamily,
-                                color = text,
-                                fontWeight = FontWeight.W400,
-                                letterSpacing = -(0.2).sp
-                            )
-                            ){
-                                append("7")
-                            }
-                        },
-                        fontSize = 20.sp,
-                        lineHeight = 22.sp,
-                        fontFamily = bodyFontFamily,
-                        fontWeight = FontWeight.W400,
-                        letterSpacing = -(0.2).sp
-                    )
-
+                        }
+                    }
                 }
-
             }
         }
     }

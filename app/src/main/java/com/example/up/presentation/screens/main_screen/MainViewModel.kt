@@ -4,8 +4,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.up.R
 import com.example.up.common.Resource
-import com.example.up.domain.model.CurrentWeather
-import com.example.up.domain.model.Position
 import com.example.up.domain.use_case.GetCurrentPositionUseCase
 import com.example.up.domain.use_case.GetCurrentWeatherUseCase
 import com.example.up.presentation.screens.main_screen.components.Advice
@@ -28,12 +26,7 @@ class MainViewModel(
     private val _pillsList = MutableStateFlow(emptyList<PillsScheduleData>())
     val pillsList = _pillsList.asStateFlow()
 
-    private val _currentWeather = MutableStateFlow(CurrentWeather(
-        temperature = 0f,
-        kp_index = 0f,
-        pressure = 0,
-        humidity = 0
-    ))
+    private val _currentWeather = MutableStateFlow(CurrentWeatherState())
     val currentWeather = _currentWeather.asStateFlow()
 
     private val _selectedDate = MutableStateFlow(LocalDate.now())
@@ -42,13 +35,50 @@ class MainViewModel(
     private val _position = MutableStateFlow(PositionState())
     val position = _position.asStateFlow()
 
+    private val _danger = MutableStateFlow(0f)
+    val danger = _danger.asStateFlow()
+
     fun selectDate(date: LocalDate) {
         _selectedDate.value = date
     }
 
     private fun getWeatherInfo(){
         viewModelScope.launch {
-            _currentWeather.value = getCurrentWeatherUseCase(lat = _position.asStateFlow().value.lat, lon = _position.asStateFlow().value.lon)
+            getCurrentWeatherUseCase(
+                lat = _position.asStateFlow().value.lat,
+                lon = _position.asStateFlow().value.lon
+            ).collect {  result ->
+                when(result){
+                    is Resource.Success -> {
+                        result.data?.let { weather ->
+                            _currentWeather.update {
+                                it.copy(
+                                    humidity = weather.humidity,
+                                    kp_index = weather.kp_index,
+                                    pressure = weather.pressure,
+                                    temperature = weather.temperature,
+                                    isLoading = false,
+                                    isError = false
+                                )
+                            }
+                        }
+                        calculateDangerCoefficient()
+                    }
+                    is Resource.Loading -> {
+                        _currentWeather.update {
+                            it.copy(isLoading = true)
+                        }
+                    }
+                    is Resource.Error -> {
+                        _currentWeather.update {
+                            it.copy(
+                                isLoading = false,
+                                isError = true
+                            )
+                        }
+                    }
+                }
+            }
         }
     }
 
@@ -66,17 +96,16 @@ class MainViewModel(
                                     isError = false
                                 )
                             }
+
+                            getWeatherInfo()
                         }
                     }
                     is Resource.Loading -> {
-                        result.data?.let {
-                            _position.update {
-                                it.copy(
-                                    isLoading = true,
-                                )
-                            }
+                        _position.update {
+                            it.copy(
+                                isLoading = true,
+                            )
                         }
-
                     }
                     is Resource.Error -> {
                         _position.update {
@@ -91,9 +120,72 @@ class MainViewModel(
         }
     }
 
+    private fun calculateDangerCoefficient() {
+        // Если идет загрузка или ошибка, возвращаем безопасное значение
+        if (_currentWeather.value.isLoading || _currentWeather.value.isError) {
+            _danger.value = 0f
+        }
+
+        // Нормализация температуры (экстремальные значения: -30°C и +40°C дают коэффициент 1)
+        val temperatureCoefficient = when {
+            _currentWeather.value.temperature < -30 -> 1f
+            _currentWeather.value.temperature > 30 -> 1f
+            _currentWeather.value.temperature in -10.0..20.0 -> 0f // Комфортная зона
+            else -> {
+                when {
+                    _currentWeather.value.temperature < -10 -> {
+                        // От -10 до -30: линейный рост от 0 до 1
+                        (-_currentWeather.value.temperature - 10) / 20f
+                    }
+                    else -> {
+                        // От 20 до 40: линейный рост от 0 до 1
+                        (_currentWeather.value.temperature - 20) / 20f
+                    }
+                }
+            }
+        }
+
+        // Нормализация влажности (оптимум 40-60%, экстремумы 0% и 100%)
+        val humidityCoefficient = when {
+            _currentWeather.value.humidity in 40f..60f -> 0f
+            _currentWeather.value.humidity < 40f -> (40f - _currentWeather.value.humidity) / 40f
+            else -> (_currentWeather.value.humidity - 60f) / 40f
+        }.coerceIn(0f, 1f)
+
+        // Нормализация KP-индекса (0-9, опасность начинается с 4)
+        val kpCoefficient = when {
+            _currentWeather.value.kp_index <= 3 -> 0f
+            else -> ((_currentWeather.value.kp_index - 3) / 6f).coerceIn(0f, 1f)
+        }
+
+        // Нормализация давления (норма 760 мм рт.ст., отклонение ±30 дает коэффициент 1)
+        val normalPressure = 760f
+        val pressureDeviation = kotlin.math.abs(_currentWeather.value.pressure - normalPressure)
+        val pressureCoefficient = (pressureDeviation / 30f).coerceIn(0f, 1f)
+
+        // Весовые коэффициенты для каждого фактора
+        // (можно менять в зависимости от того, что влияет сильнее)
+        val weights = mapOf(
+            "temperature" to 0.35f, // Температура
+            "humidity" to 0.15f,    // Влажность
+            "kp" to 0.30f,          // Геомагнитная активность
+            "pressure" to 0.20f     // Давление
+        )
+
+        // Взвешенная сумма коэффициентов
+        val dangerCoefficient =
+            temperatureCoefficient * weights["temperature"]!! +
+                    humidityCoefficient * weights["humidity"]!! +
+                    kpCoefficient * weights["kp"]!! +
+                    pressureCoefficient * weights["pressure"]!!
+
+        // Ограничиваем результат от 0 до 1 и округляем до 2 знаков
+        _danger.value = (dangerCoefficient.coerceIn(0f, 1f) * 100).toInt() / 100f
+    }
+
     init {
-        getWeatherInfo()
         getPosition()
+
 
         _adviseList.value = listOf(
             Advice(
