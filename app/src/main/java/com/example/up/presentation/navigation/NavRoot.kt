@@ -94,7 +94,7 @@ fun NavRoot(
         Background()
         NavHost(
             navController = navController,
-            startDestination = Routes.MainScreen,
+            startDestination = Routes.Registration,
             enterTransition = {
 
                 val isForward =
