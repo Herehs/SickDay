@@ -21,6 +21,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
@@ -106,31 +107,45 @@ fun MainScreen(
                     Tile(
                         name = "Давление",
                         tileContent = {
-                            if(weatherInfo.value.isLoading){
-                                CircularProgressIndicator(
-                                    trackColor = text
-                                )
-                            }
-                            else {
-                                Text(
-                                    modifier = Modifier.padding(bottom = 4.dp),
-                                    text = buildAnnotatedString {
-                                        withStyle(style = SpanStyle(
-                                            fontSize = 32.sp,
-                                            fontFamily = bodyFontFamily,
-                                            color = text,
-                                            fontWeight = FontWeight.W400
-                                        )
-                                        ){
-                                            append(weatherInfo.value.pressure.roundToInt().toString())
-                                        }
-                                    },
-                                    fontSize = 18.sp,
-                                    lineHeight = 22.sp,
-                                    fontFamily = bodyFontFamily,
-                                    color = text,
-                                    fontWeight = FontWeight.W400
-                                )
+                            when {
+                                weatherInfo.value.isLoading -> {
+                                    CircularProgressIndicator(
+                                        trackColor = text
+                                    )
+                                }
+                                weatherInfo.value.isError -> {
+                                    Text(
+                                        modifier = Modifier.padding(bottom = 4.dp),
+                                        text = "Ошибка",
+                                        fontSize = 32.sp,
+                                        lineHeight = 22.sp,
+                                        fontFamily = bodyFontFamily,
+                                        color = Color.Red,
+                                        fontWeight = FontWeight.W400
+                                    )
+                                }
+                                else -> {
+                                    Text(
+                                        modifier = Modifier.padding(bottom = 4.dp),
+                                        text = buildAnnotatedString {
+                                            withStyle(style = SpanStyle(
+                                                fontSize = 32.sp,
+                                                fontFamily = bodyFontFamily,
+                                                color = text,
+                                                fontWeight = FontWeight.W400
+                                            )
+                                            ){
+                                                append(weatherInfo.value.pressure.roundToInt().toString())
+                                            }
+                                        },
+                                        fontSize = 18.sp,
+                                        lineHeight = 22.sp,
+                                        fontFamily = bodyFontFamily,
+                                        color = text,
+                                        fontWeight = FontWeight.W400
+                                    )
+
+                                }
                             }
                         }
                     )
@@ -139,75 +154,99 @@ fun MainScreen(
                     Tile(
                         name = "Индекс Кр",
                         tileContent = {
-                            if(weatherInfo.value.isLoading){
-                                CircularProgressIndicator(
-                                    trackColor = text
-                                )
-                            }
-                            else {
-                                Text(
-                                    modifier = Modifier.padding(bottom = 4.dp),
-                                    text = buildAnnotatedString {
-                                        withStyle(style = SpanStyle(
-                                            fontSize = 32.sp,
-                                            fontFamily = bodyFontFamily,
-                                            color = text,
-                                            fontWeight = FontWeight.W400
-                                        )
-                                        ){
-                                            append("${weatherInfo.value.kp_index.roundToInt()}/")
-                                        }
-                                        withStyle(style = SpanStyle(
-                                            fontSize = 24.sp,
-                                            fontFamily = bodyFontFamily,
-                                            color = text,
-                                            fontWeight = FontWeight.W400
-                                        )
-                                        ){
-                                            append("9")
-                                        }
-                                    },
-                                    fontSize = 18.sp,
-                                    lineHeight = 22.sp,
-                                    fontFamily = bodyFontFamily,
-                                    color = text,
-                                    fontWeight = FontWeight.W400
-                                )
+                            when {
+                                weatherInfo.value.isLoading -> {
+                                    CircularProgressIndicator(
+                                        trackColor = text
+                                    )
+                                }
+                                weatherInfo.value.isError -> {
+                                    Text(
+                                        modifier = Modifier.padding(bottom = 4.dp),
+                                        text = "Ошибка",
+                                        fontSize = 32.sp,
+                                        lineHeight = 22.sp,
+                                        fontFamily = bodyFontFamily,
+                                        color = Color.Red,
+                                        fontWeight = FontWeight.W400
+                                    )
+                                }
+                                else -> {
+                                    Text(
+                                        modifier = Modifier.padding(bottom = 4.dp),
+                                        text = buildAnnotatedString {
+                                            withStyle(style = SpanStyle(
+                                                fontSize = 32.sp,
+                                                fontFamily = bodyFontFamily,
+                                                color = text,
+                                                fontWeight = FontWeight.W400
+                                            )
+                                            ){
+                                                append("${weatherInfo.value.kp_index.roundToInt()}/")
+                                            }
+                                            withStyle(style = SpanStyle(
+                                                fontSize = 24.sp,
+                                                fontFamily = bodyFontFamily,
+                                                color = text,
+                                                fontWeight = FontWeight.W400
+                                            )
+                                            ){
+                                                append("9")
+                                            }
+                                        },
+                                        fontSize = 18.sp,
+                                        lineHeight = 22.sp,
+                                        fontFamily = bodyFontFamily,
+                                        color = text,
+                                        fontWeight = FontWeight.W400
+                                    )
+                                }
                             }
                         }
                     )
-
                 }
                 item {
                     Tile(
                         name = "Температура",
                         tileContent = {
-                            if(weatherInfo.value.isLoading){
-                                CircularProgressIndicator(
-                                    trackColor = text
-                                )
-                            }
-                            else {
-                                Text(
-                                    modifier = Modifier.padding(bottom = 4.dp),
-                                    text = buildAnnotatedString {
-                                        withStyle(style = SpanStyle(
-                                            fontSize = 32.sp,
-                                            fontFamily = bodyFontFamily,
-                                            color = text,
-                                            fontWeight = FontWeight.W400
-                                        )
-                                        ){
-                                            append("${weatherInfo.value.temperature}")
-                                        }
-                                    },
-                                    fontSize = 18.sp,
-                                    lineHeight = 22.sp,
-                                    fontFamily = bodyFontFamily,
-                                    color = text,
-                                    fontWeight = FontWeight.W400
-                                )
-
+                            when {
+                                weatherInfo.value.isLoading -> {
+                                    CircularProgressIndicator(
+                                        trackColor = text
+                                    )
+                                }
+                                weatherInfo.value.isError -> {
+                                    Text(
+                                        modifier = Modifier.padding(bottom = 4.dp),
+                                        text = "Ошибка",
+                                        fontSize = 32.sp,
+                                        lineHeight = 22.sp,
+                                        fontFamily = bodyFontFamily,
+                                        color = Color.Red,
+                                        fontWeight = FontWeight.W400
+                                    )
+                                }
+                                else -> {
+                                    Text(
+                                        modifier = Modifier.padding(bottom = 4.dp),
+                                        text = buildAnnotatedString {
+                                            withStyle(style = SpanStyle(
+                                                fontSize = 32.sp,
+                                                fontFamily = bodyFontFamily,
+                                                color = text,
+                                                fontWeight = FontWeight.W400
+                                            )
+                                            ){
+                                                append("${weatherInfo.value.temperature}")
+                                            }
+                                        },
+                                        fontSize = 18.sp,
+                                        lineHeight = 22.sp,
+                                        fontFamily = bodyFontFamily,
+                                        color = text,
+                                        fontWeight = FontWeight.W400
+                                    )
+                                }
                             }
                         }
                     )
@@ -216,34 +255,46 @@ fun MainScreen(
                     Tile(
                         name = "Влажность",
                         tileContent = {
-                            if(weatherInfo.value.isLoading){
-                                CircularProgressIndicator(
-                                    trackColor = text
-                                )
-                            }
-                            else {
-                                Text(
-                                    modifier = Modifier.padding(bottom = 4.dp),
-                                    text = buildAnnotatedString {
-                                        withStyle(style = SpanStyle(
-                                            fontSize = 32.sp,
-                                            fontFamily = bodyFontFamily,
-                                            color = text,
-                                            fontWeight = FontWeight.W400
-                                        )
-                                        ){
-                                            append("${weatherInfo.value.humidity.roundToInt()}%")
-                                        }
-                                    },
-                                    fontSize = 18.sp,
-                                    lineHeight = 22.sp,
-                                    fontFamily = bodyFontFamily,
-                                    color = text,
-                                    fontWeight = FontWeight.W400
-                                )
+                            when {
+                                weatherInfo.value.isLoading -> {
+                                    CircularProgressIndicator(
+                                        trackColor = text
+                                    )
+                                }
+                                weatherInfo.value.isError -> {
+                                    Text(
+                                        modifier = Modifier.padding(bottom = 4.dp),
+                                        text = "Ошибка",
+                                        fontSize = 32.sp,
+                                        lineHeight = 22.sp,
+                                        fontFamily = bodyFontFamily,
+                                        color = Color.Red,
+                                        fontWeight = FontWeight.W400
+                                    )
+                                }
+                                else -> {
+                                    Text(
+                                        modifier = Modifier.padding(bottom = 4.dp),
+                                        text = buildAnnotatedString {
+                                            withStyle(style = SpanStyle(
+                                                fontSize = 32.sp,
+                                                fontFamily = bodyFontFamily,
+                                                color = text,
+                                                fontWeight = FontWeight.W400
+                                            )
+                                            ){
+                                                append("${weatherInfo.value.humidity.roundToInt()}%")
+                                            }
+                                        },
+                                        fontSize = 18.sp,
+                                        lineHeight = 22.sp,
+                                        fontFamily = bodyFontFamily,
+                                        color = text,
+                                        fontWeight = FontWeight.W400
+                                    )
 
+                                }
                             }
-
                         }
                     )
 
