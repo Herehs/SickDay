@@ -1,7 +1,7 @@
 package com.example.up.data.repository
 
 import com.example.up.common.Resource
-import com.example.up.data.local.LocationProvider
+import com.example.up.data.local.location.LocationProvider
 import com.example.up.data.local.mappers.toDomain
 import com.example.up.domain.model.Position
 import com.example.up.domain.repository.PositionRepository

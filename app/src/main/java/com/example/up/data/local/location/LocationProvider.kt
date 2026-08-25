@@ -1,4 +1,4 @@
-package com.example.up.data.local
+package com.example.up.data.local.location
 
 import android.location.Location
 
