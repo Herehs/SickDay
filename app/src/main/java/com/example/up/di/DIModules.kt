@@ -1,23 +1,17 @@
 package com.example.up.di
 
 import android.content.Context
-import androidx.datastore.core.DataStore
-import androidx.datastore.core.DataStoreFactory
 import androidx.room3.Room
+import com.example.up.data.local.database.AppDatabase
 import com.example.up.data.local.location.LocationProvider
 import com.example.up.data.local.location.LocationProviderImpl
-import com.example.up.data.local.SettingsSerializer
-import com.example.up.data.local.database.AppDatabase
 import com.example.up.data.remote.WeatherServiceApi
 import com.example.up.data.remote.WeatherServiceApiImpl
 import com.example.up.data.repository.NoteRepositoryImpl
 import com.example.up.data.repository.PositionRepositoryImpl
-import com.example.up.data.repository.SettingsRepositoryImpl
 import com.example.up.data.repository.WeatherRepositoryImpl
-import com.example.up.domain.model.UserSettings
 import com.example.up.domain.repository.NoteRepository
 import com.example.up.domain.repository.PositionRepository
-import com.example.up.domain.repository.SettingsRepository
 import com.example.up.domain.repository.WeatherRepository
 import com.example.up.domain.use_case.GetAvgWeatherUseCase
 import com.example.up.domain.use_case.GetCalendarUseCase
@@ -36,7 +30,6 @@ import kotlinx.serialization.json.Json
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.module.dsl.viewModelOf
 import org.koin.dsl.module
-import java.io.File
 
 val presentationModule = module {
     viewModelOf(::MainViewModel)
@@ -45,12 +38,6 @@ val presentationModule = module {
 
 val dataModule = module {
     //data providers
-    single<DataStore<UserSettings>> {
-        DataStoreFactory.create(
-            serializer = SettingsSerializer,
-            produceFile = { File( get<Context>().filesDir,"settings.json") }
-        )
-    }
     single {
         Room.databaseBuilder(
             androidContext(),
@@ -92,13 +79,10 @@ val dataModule = module {
         WeatherRepositoryImpl(get())
     }
 
-    single<SettingsRepository>{
-        SettingsRepositoryImpl(get())
-    }
-
     single<PositionRepository> {
         PositionRepositoryImpl(get())
     }
+
     single<NoteRepository> {
         NoteRepositoryImpl(get())
     }
