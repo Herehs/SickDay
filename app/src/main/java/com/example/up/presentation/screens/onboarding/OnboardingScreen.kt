@@ -28,8 +28,7 @@ import com.example.up.presentation.ui.theme.text
 @Composable
 fun Onboarding(
     modifier: Modifier = Modifier,
-    onLoginClick: () -> Unit,
-    onRegisterClick: () -> Unit
+    onButtonClick: () -> Unit
 ){
     Box(
         modifier = Modifier
@@ -40,7 +39,8 @@ fun Onboarding(
         Column(
             modifier = modifier
                 .fillMaxSize()
-                .padding(horizontal = 35.dp),
+                .padding(horizontal = 35.dp)
+                .padding(bottom = 35.dp),
             verticalArrangement = Arrangement.SpaceBetween
         ) {
             Text(
@@ -56,66 +56,45 @@ fun Onboarding(
                 letterSpacing = -(0.8).sp
             )
 
-            Column{
-                Box(
-                    modifier = Modifier
-                        .align(alignment = Alignment.CenterHorizontally)
-                        .padding(top = 30.dp)
-                        .height(40.dp)
-                        .width(330.dp)
-                        .background(
-                            color = Color(0xffD8DEFF),
-                            shape = RoundedCornerShape(8.dp) // опционально
-                        )
-                        .border(
-                            width = 1.dp,
-                            color = Color(0xff97AAFE),
-                            shape = RoundedCornerShape(9.dp)
-                        )
-                        .clickable(
-                            onClick = onRegisterClick,
-                            indication = null,
-                            interactionSource = null
-                        ),
-                    contentAlignment = Alignment.Center
-                ){
-                    Text(
-                        modifier = Modifier,
-                        text = "Регистрация",
-                        fontSize = 16.sp,
-                        lineHeight = 16.sp,
-                        fontFamily = bodyFontFamily,
-                        color = Color.Black,
-                        fontWeight = FontWeight.W400,
-                        letterSpacing = -(0.8).sp
+            Box(
+                modifier = Modifier
+                    .align(alignment = Alignment.CenterHorizontally)
+                    .padding(top = 30.dp)
+                    .height(40.dp)
+                    .width(330.dp)
+                    .background(
+                        color = Color(0xffD8DEFF),
+                        shape = RoundedCornerShape(8.dp)
                     )
-                }
+                    .border(
+                        width = 1.dp,
+                        color = Color(0xff97AAFE),
+                        shape = RoundedCornerShape(9.dp)
+                    )
+                    .clickable(
+                        onClick = onButtonClick,
+                        indication = null,
+                        interactionSource = null
+                    ),
+                contentAlignment = Alignment.Center
+            ){
                 Text(
-                    modifier = Modifier
-                        .padding(top = 16.dp, bottom = 40.dp)
-                        .align(alignment = Alignment.CenterHorizontally)
-                        .clickable(
-                            onClick = onLoginClick,
-                            indication = null,
-                            interactionSource = null
-                        ),
-                    text = "Войти",
+                    modifier = Modifier,
+                    text = "Приступить к работе",
                     fontSize = 16.sp,
                     lineHeight = 16.sp,
                     fontFamily = bodyFontFamily,
-                    color = Color(0xff4455A7),
+                    color = Color.Black,
                     fontWeight = FontWeight.W400,
-                    textDecoration = TextDecoration.Underline,
                     letterSpacing = -(0.8).sp
                 )
             }
         }
-
     }
 }
 
 @Preview
 @Composable
 fun OnboardingTest(){
-    Onboarding(onLoginClick = {}, onRegisterClick = {})
+    Onboarding( onButtonClick = {})
 }

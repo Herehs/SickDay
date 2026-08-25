@@ -16,11 +16,6 @@ sealed class Routes(){
     @Serializable
     object Settings : Routes()
 
-    @Serializable
-    object Registration : Routes()
-
-    @Serializable
-    object Authorisation : Routes()
 
     @Serializable
     object Onboarding : Routes()
