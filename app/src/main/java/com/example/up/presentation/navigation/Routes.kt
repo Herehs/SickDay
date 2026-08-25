@@ -14,9 +14,5 @@ sealed class Routes(){
     object Notes : Routes()
 
     @Serializable
-    object Settings : Routes()
-
-
-    @Serializable
     object Onboarding : Routes()
 }

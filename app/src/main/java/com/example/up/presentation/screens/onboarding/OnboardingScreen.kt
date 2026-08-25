@@ -40,7 +40,7 @@ fun Onboarding(
             modifier = modifier
                 .fillMaxSize()
                 .padding(horizontal = 35.dp)
-                .padding(bottom = 35.dp),
+                .padding(bottom = 70.dp),
             verticalArrangement = Arrangement.SpaceBetween
         ) {
             Text(

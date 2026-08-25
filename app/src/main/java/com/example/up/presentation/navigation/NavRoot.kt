@@ -166,7 +166,7 @@ fun NavRoot(
                 exitTransition = { fadeOut(tween(400)) }
             ) {
                 Onboarding(
-                    modifier = Modifier.padding(paddingValues),
+                    modifier = Modifier,
                     onButtonClick = {
                         navController.navigate(Routes.MainScreen){
                             popUpTo<Routes.Onboarding> {

@@ -24,11 +24,8 @@ import com.example.up.domain.use_case.GetCalendarUseCase
 import com.example.up.domain.use_case.GetCurrentPositionUseCase
 import com.example.up.domain.use_case.GetCurrentWeatherUseCase
 import com.example.up.domain.use_case.GetGraphDataUseCase
-import com.example.up.domain.use_case.GetSettingsUseCase
-import com.example.up.domain.use_case.UpdateSettingsUseCase
 import com.example.up.presentation.screens.calendar_screen.CalendarViewModel
 import com.example.up.presentation.screens.main_screen.MainViewModel
-import com.example.up.presentation.screens.settings_screen.SettingsViewModel
 import com.google.android.gms.location.LocationServices
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.cio.CIO
@@ -44,7 +41,6 @@ import java.io.File
 val presentationModule = module {
     viewModelOf(::MainViewModel)
     viewModelOf(::CalendarViewModel)
-    viewModelOf(::SettingsViewModel)
 }
 
 val dataModule = module {
@@ -110,9 +106,6 @@ val dataModule = module {
 
 val domainModule = module {
     //use cases
-    single { GetSettingsUseCase(get()) }
-
-    single { UpdateSettingsUseCase(get()) }
 
     single { GetCurrentWeatherUseCase(get()) }
 
