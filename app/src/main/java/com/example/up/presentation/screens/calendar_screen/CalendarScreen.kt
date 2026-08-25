@@ -129,8 +129,6 @@ fun CalendarScreen(
             ChartComponent(
                 modifier = Modifier.padding(horizontal = 20.dp),
                 date = LocalDate.parse( pickedDay.value, DateTimeFormatter.ofPattern("yyyy-MM-dd")),
-                lastUpdate = 67,
-                healthScore = 67,
                 data = graphData.value
             )
             Row(
@@ -164,24 +162,38 @@ fun CalendarScreen(
                     Box(
                         modifier = Modifier.height(20.dp)
                     ){
-                        if(weather.value.isLoading){
-                            CircularProgressIndicator(
-                                modifier = Modifier.size(20.dp),
-                                color = text.copy(alpha = .7f),
-                                strokeWidth = 2.dp
-                            )
-                        }
-                        else {
-                            Text(
-                                modifier = Modifier,
-                                text = "${weather.value.humidity.toInt()}%",
-                                fontSize = 20.sp,
-                                lineHeight = 22.sp,
-                                fontFamily = bodyFontFamily,
-                                color = Color(0xffFF5D5D),
-                                fontWeight = FontWeight.W400,
-                                letterSpacing = -(0.2).sp
-                            )
+                        when {
+                            weather.value.isLoading -> {
+                                CircularProgressIndicator(
+                                    modifier = Modifier.size(20.dp),
+                                    color = text.copy(alpha = .7f),
+                                    strokeWidth = 2.dp
+                                )
+                            }
+                            weather.value.isError -> {
+                                Text(
+                                    modifier = Modifier,
+                                    text = "Ошибка",
+                                    fontSize = 20.sp,
+                                    lineHeight = 22.sp,
+                                    fontFamily = bodyFontFamily,
+                                    color = Color.Red,
+                                    fontWeight = FontWeight.W400,
+                                    letterSpacing = -(0.2).sp
+                                )
+                            }
+                            else -> {
+                                Text(
+                                    modifier = Modifier,
+                                    text = "${weather.value.humidity.toInt()}%",
+                                    fontSize = 20.sp,
+                                    lineHeight = 22.sp,
+                                    fontFamily = bodyFontFamily,
+                                    color = Color(0xffFF5D5D),
+                                    fontWeight = FontWeight.W400,
+                                    letterSpacing = -(0.2).sp
+                                )
+                            }
                         }
                     }
                 }
@@ -202,24 +214,38 @@ fun CalendarScreen(
                     Box(
                         modifier = Modifier.height(20.dp)
                     ){
-                        if(weather.value.isLoading){
-                            CircularProgressIndicator(
-                                modifier = Modifier.size(20.dp),
-                                color = text.copy(alpha = .7f),
-                                strokeWidth = 2.dp
-                            )
-                        }
-                        else {
-                            Text(
-                                modifier = Modifier,
-                                text = "${(weather.value.temperature * 10f).toInt() / 10f}",
-                                fontSize = 20.sp,
-                                lineHeight = 22.sp,
-                                fontFamily = bodyFontFamily,
-                                color = Color(0xff21DB8E),
-                                fontWeight = FontWeight.W400,
-                                letterSpacing = -(0.2).sp
-                            )
+                        when {
+                            weather.value.isLoading -> {
+                                CircularProgressIndicator(
+                                    modifier = Modifier.size(20.dp),
+                                    color = text.copy(alpha = .7f),
+                                    strokeWidth = 2.dp
+                                )
+                            }
+                            weather.value.isError -> {
+                                Text(
+                                    modifier = Modifier,
+                                    text = "Ошибка",
+                                    fontSize = 20.sp,
+                                    lineHeight = 22.sp,
+                                    fontFamily = bodyFontFamily,
+                                    color = Color.Red,
+                                    fontWeight = FontWeight.W400,
+                                    letterSpacing = -(0.2).sp
+                                )
+                            }
+                            else -> {
+                                Text(
+                                    modifier = Modifier,
+                                    text = "${(weather.value.temperature * 10f).toInt() / 10f}",
+                                    fontSize = 20.sp,
+                                    lineHeight = 22.sp,
+                                    fontFamily = bodyFontFamily,
+                                    color = Color(0xff21DB8E),
+                                    fontWeight = FontWeight.W400,
+                                    letterSpacing = -(0.2).sp
+                                )
+                            }
                         }
                     }
                 }
@@ -240,36 +266,49 @@ fun CalendarScreen(
                     Box(
                         modifier = Modifier.height(20.dp)
                     ){
-                        if(weather.value.isLoading){
-                            CircularProgressIndicator(
-                                modifier = Modifier.size(20.dp),
-                                color = text.copy(alpha = .7f),
-                                strokeWidth = 2.dp
-                            )
+                        when {
+                            weather.value.isLoading -> {
+                                CircularProgressIndicator(
+                                    modifier = Modifier.size(20.dp),
+                                    color = text.copy(alpha = .7f),
+                                    strokeWidth = 2.dp
+                                )
+                            }
+                            weather.value.isError -> {
+                                Text(
+                                    modifier = Modifier,
+                                    text = "Ошибка",
+                                    fontSize = 20.sp,
+                                    lineHeight = 22.sp,
+                                    fontFamily = bodyFontFamily,
+                                    color = Color.Red,
+                                    fontWeight = FontWeight.W400,
+                                    letterSpacing = -(0.2).sp
+                                )
+                            }
+                            else -> {
+                                Text(
+                                    modifier = Modifier,
+                                    text = buildAnnotatedString {
+                                        withStyle(style = SpanStyle(
+                                            fontSize = 20.sp,
+                                            fontFamily = bodyFontFamily,
+                                            color = Color(0xffFFD666),
+                                            fontWeight = FontWeight.W400,
+                                            letterSpacing = -(0.2).sp
+                                        )
+                                        ){
+                                            append("${weather.value.pressure.roundToInt()}")
+                                        }
+                                    },
+                                    fontSize = 20.sp,
+                                    lineHeight = 22.sp,
+                                    fontFamily = bodyFontFamily,
+                                    fontWeight = FontWeight.W400,
+                                    letterSpacing = -(0.2).sp
+                                )
+                            }
                         }
-                        else {
-                            Text(
-                                modifier = Modifier,
-                                text = buildAnnotatedString {
-                                    withStyle(style = SpanStyle(
-                                        fontSize = 20.sp,
-                                        fontFamily = bodyFontFamily,
-                                        color = Color(0xffFFD666),
-                                        fontWeight = FontWeight.W400,
-                                        letterSpacing = -(0.2).sp
-                                    )
-                                    ){
-                                        append("${weather.value.pressure.roundToInt()}")
-                                    }
-                                },
-                                fontSize = 20.sp,
-                                lineHeight = 22.sp,
-                                fontFamily = bodyFontFamily,
-                                fontWeight = FontWeight.W400,
-                                letterSpacing = -(0.2).sp
-                            )
-                        }
-
                     }
                 }
                 Column(
@@ -289,44 +328,59 @@ fun CalendarScreen(
                     Box(
                         modifier = Modifier.height(20.dp)
                     ){
-                        if(weather.value.isLoading){
-                            CircularProgressIndicator(
-                                modifier = Modifier.size(20.dp),
-                                color = text.copy(alpha = .7f),
-                                strokeWidth = 2.dp
-                            )
-                        }
-                        else {
-                            Text(
-                                modifier = Modifier,
-                                text = buildAnnotatedString {
-                                    withStyle(style = SpanStyle(
-                                        fontSize = 20.sp,
-                                        fontFamily = bodyFontFamily,
-                                        color = text,
-                                        fontWeight = FontWeight.W400,
-                                        letterSpacing = -(0.2).sp
-                                    )
-                                    ){
-                                        append("${weather.value.kp_index.roundToInt()}/")
-                                    }
-                                    withStyle(style = SpanStyle(
-                                        fontSize = 15.sp,
-                                        fontFamily = bodyFontFamily,
-                                        color = text,
-                                        fontWeight = FontWeight.W400,
-                                        letterSpacing = -(0.2).sp
-                                    )
-                                    ){
-                                        append("9")
-                                    }
-                                },
-                                fontSize = 20.sp,
-                                lineHeight = 22.sp,
-                                fontFamily = bodyFontFamily,
-                                fontWeight = FontWeight.W400,
-                                letterSpacing = -(0.2).sp
-                            )
+                        when {
+                            weather.value.isLoading -> {
+                                CircularProgressIndicator(
+                                    modifier = Modifier.size(20.dp),
+                                    color = text.copy(alpha = .7f),
+                                    strokeWidth = 2.dp
+                                )
+
+                            }
+                            weather.value.isError -> {
+                                Text(
+                                    modifier = Modifier,
+                                    text = "Ошибка",
+                                    fontSize = 20.sp,
+                                    lineHeight = 22.sp,
+                                    fontFamily = bodyFontFamily,
+                                    color = Color.Red,
+                                    fontWeight = FontWeight.W400,
+                                    letterSpacing = -(0.2).sp
+                                )
+                            }
+                            else -> {
+                                Text(
+                                    modifier = Modifier,
+                                    text = buildAnnotatedString {
+                                        withStyle(style = SpanStyle(
+                                            fontSize = 20.sp,
+                                            fontFamily = bodyFontFamily,
+                                            color = text,
+                                            fontWeight = FontWeight.W400,
+                                            letterSpacing = -(0.2).sp
+                                        )
+                                        ){
+                                            append("${weather.value.kp_index.roundToInt()}/")
+                                        }
+                                        withStyle(style = SpanStyle(
+                                            fontSize = 15.sp,
+                                            fontFamily = bodyFontFamily,
+                                            color = text,
+                                            fontWeight = FontWeight.W400,
+                                            letterSpacing = -(0.2).sp
+                                        )
+                                        ){
+                                            append("9")
+                                        }
+                                    },
+                                    fontSize = 20.sp,
+                                    lineHeight = 22.sp,
+                                    fontFamily = bodyFontFamily,
+                                    fontWeight = FontWeight.W400,
+                                    letterSpacing = -(0.2).sp
+                                )
+                            }
                         }
                     }
                 }

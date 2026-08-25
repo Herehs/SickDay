@@ -36,8 +36,6 @@ import kotlin.math.roundToInt
 fun ChartComponent(
     modifier: Modifier = Modifier,
     date: LocalDate,
-    lastUpdate: Int,
-    healthScore: Int,
     data: List<Float>
 ){
     Column(modifier = modifier) {
@@ -56,16 +54,6 @@ fun ChartComponent(
                     lineHeight = 22.sp,
                     fontFamily = bodyFontFamily,
                     color = text,
-                    fontWeight = FontWeight.W400,
-                    letterSpacing = -(0.8).sp
-                )
-                Text(
-                    modifier = Modifier,
-                    text = "Последнее обновление: $lastUpdate секунд назад",
-                    fontSize = 10.sp,
-                    lineHeight = 22.sp,
-                    fontFamily = bodyFontFamily,
-                    color = Color.Black.copy(alpha = .46f),
                     fontWeight = FontWeight.W400,
                     letterSpacing = -(0.8).sp
                 )
@@ -196,8 +184,6 @@ fun LineChart(
 fun ChartComponentTest(){
     ChartComponent(
         date = LocalDate.now(),
-        lastUpdate = 67,
-        healthScore = 67,
         data = listOf(0f, 35f, 70f, 70f, 100f)
     )
 }

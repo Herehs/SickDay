@@ -7,6 +7,7 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -94,7 +95,7 @@ fun NavRoot(
         Background()
         NavHost(
             navController = navController,
-            startDestination = Routes.Registration,
+            startDestination = Routes.Onboarding,
             enterTransition = {
 
                 val isForward =
@@ -157,7 +158,9 @@ fun NavRoot(
                 enterTransition = { fadeIn(tween(400)) },
                 exitTransition = { fadeOut(tween(400)) }
             ) {
-                showBottomBar = false
+                LaunchedEffect(Unit) {
+                    showBottomBar = false
+                }
                 RegistrationScreen(
                     modifier = Modifier.padding(paddingValues),
                     onRegisterClick = {
@@ -171,7 +174,9 @@ fun NavRoot(
                 enterTransition = { fadeIn(tween(400)) },
                 exitTransition = { fadeOut(tween(400)) }
             ) {
-                showBottomBar = false
+                LaunchedEffect(Unit) {
+                    showBottomBar = false
+                }
                 AuthorisationScreen(
                     modifier = Modifier.padding(paddingValues),
                     onLoginClick = {
@@ -186,7 +191,9 @@ fun NavRoot(
                 enterTransition = { fadeIn(tween(400)) },
                 exitTransition = { fadeOut(tween(400)) }
             ) {
-                showBottomBar = false
+                LaunchedEffect(Unit) {
+                    showBottomBar = false
+                }
                 Onboarding(
                     modifier = Modifier.padding(paddingValues),
                     onRegisterClick = { navController.navigate(Routes.Registration) },
