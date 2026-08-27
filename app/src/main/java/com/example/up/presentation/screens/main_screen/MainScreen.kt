@@ -4,24 +4,25 @@ import android.Manifest
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
@@ -29,31 +30,63 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.up.R
+import com.example.up.presentation.common_сomponents.ErrorScreen
+import com.example.up.presentation.common_сomponents.LoadingScreen
 import com.example.up.presentation.common_сomponents.Section
+import com.example.up.presentation.screens.main_screen.components.Advice
 import com.example.up.presentation.screens.main_screen.components.AdviceList
+import com.example.up.presentation.screens.main_screen.components.DateCardData
 import com.example.up.presentation.screens.main_screen.components.DateCarousel
 import com.example.up.presentation.screens.main_screen.components.IndexScale
-import com.example.up.presentation.screens.main_screen.components.PillsSchedule
 import com.example.up.presentation.screens.main_screen.components.Tile
 import com.example.up.presentation.ui.theme.bodyFontFamily
 import com.example.up.presentation.ui.theme.text
+import com.example.up.presentation.ui.theme.textDim
 import org.koin.androidx.compose.koinViewModel
-import java.time.LocalTime
+import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import kotlin.math.roundToInt
 
 @Composable
 fun MainScreen(
     modifier: Modifier = Modifier,
-    mainViewModel: MainViewModel = koinViewModel()
 ){
-    val adviceList = mainViewModel.adviseList.collectAsState()
-    val pillsScheduleList = mainViewModel.pillsList.collectAsState()
-    val currentDate = mainViewModel.selectedDate.collectAsState()
+    val mainViewModel: MainViewModel = koinViewModel()
     val weatherInfo = mainViewModel.currentWeather.collectAsState()
+    val adviceList = mainViewModel.adviseList.collectAsState()
+    val currentDate = mainViewModel.selectedDate.collectAsState()
     val danger = mainViewModel.danger.collectAsState()
+    when {
+        weatherInfo.value.isLoading -> {
+            LoadingScreen(modifier = modifier)
+        }
+        weatherInfo.value.isError -> {
+            ErrorScreen(modifier = modifier)
+        }
+        else -> {
+            MainScreenSuccess(
+                modifier = modifier,
+                adviceList = adviceList.value,
+                currentDate = currentDate.value,
+                weatherInfo = weatherInfo.value,
+                danger = danger.value,
+                pickDate = { mainViewModel.selectDate(it.date) }
+            )
+        }
+    }
+}
 
-    val formatted = currentDate.value.format(DateTimeFormatter.ofPattern("LLLL yyyy")).replaceFirstChar { it.uppercase() }
+@Composable
+fun MainScreenSuccess(
+    modifier: Modifier = Modifier,
+    adviceList: List<Advice>,
+    currentDate: LocalDate,
+    weatherInfo: CurrentWeatherState,
+    danger: Float,
+    pickDate: (DateCardData) -> Unit
+){
+    val formatted = currentDate.format(DateTimeFormatter.ofPattern("LLLL yyyy")).replaceFirstChar { it.uppercase() }
 
     val locationLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.RequestMultiplePermissions()
@@ -86,14 +119,14 @@ fun MainScreen(
             fontWeight = FontWeight.W400
         )
 
-        DateCarousel(modifier = Modifier.padding(top = 10.dp).height(100.dp), pickedDay = {mainViewModel.selectDate(it.date)})
+        DateCarousel(modifier = Modifier.padding(top = 10.dp).height(100.dp), pickedDay = pickDate)
         Column(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(top = 8.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            IndexScale(text = "Индекс", value = danger.value, modifier = Modifier.padding(horizontal = 20.dp))
+            IndexScale(text = "Индекс", value = danger, modifier = Modifier.padding(horizontal = 20.dp))
             LazyVerticalGrid(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -107,46 +140,25 @@ fun MainScreen(
                     Tile(
                         name = "Давление",
                         tileContent = {
-                            when {
-                                weatherInfo.value.isLoading -> {
-                                    CircularProgressIndicator(
-                                        trackColor = text
-                                    )
-                                }
-                                weatherInfo.value.isError -> {
-                                    Text(
-                                        modifier = Modifier.padding(bottom = 4.dp),
-                                        text = "Ошибка",
+                            Text(
+                                modifier = Modifier.padding(bottom = 4.dp),
+                                text = buildAnnotatedString {
+                                    withStyle(style = SpanStyle(
                                         fontSize = 32.sp,
-                                        lineHeight = 22.sp,
-                                        fontFamily = bodyFontFamily,
-                                        color = Color.Red,
-                                        fontWeight = FontWeight.W400
-                                    )
-                                }
-                                else -> {
-                                    Text(
-                                        modifier = Modifier.padding(bottom = 4.dp),
-                                        text = buildAnnotatedString {
-                                            withStyle(style = SpanStyle(
-                                                fontSize = 32.sp,
-                                                fontFamily = bodyFontFamily,
-                                                color = text,
-                                                fontWeight = FontWeight.W400
-                                            )
-                                            ){
-                                                append(weatherInfo.value.pressure.roundToInt().toString())
-                                            }
-                                        },
-                                        fontSize = 18.sp,
-                                        lineHeight = 22.sp,
                                         fontFamily = bodyFontFamily,
                                         color = text,
                                         fontWeight = FontWeight.W400
                                     )
-
-                                }
-                            }
+                                    ){
+                                        append(weatherInfo.pressure.roundToInt().toString())
+                                    }
+                                },
+                                fontSize = 18.sp,
+                                lineHeight = 22.sp,
+                                fontFamily = bodyFontFamily,
+                                color = text,
+                                fontWeight = FontWeight.W400
+                            )
                         }
                     )
                 }
@@ -154,54 +166,34 @@ fun MainScreen(
                     Tile(
                         name = "Индекс Кр",
                         tileContent = {
-                            when {
-                                weatherInfo.value.isLoading -> {
-                                    CircularProgressIndicator(
-                                        trackColor = text
-                                    )
-                                }
-                                weatherInfo.value.isError -> {
-                                    Text(
-                                        modifier = Modifier.padding(bottom = 4.dp),
-                                        text = "Ошибка",
+                            Text(
+                                modifier = Modifier.padding(bottom = 4.dp),
+                                text = buildAnnotatedString {
+                                    withStyle(style = SpanStyle(
                                         fontSize = 32.sp,
-                                        lineHeight = 22.sp,
-                                        fontFamily = bodyFontFamily,
-                                        color = Color.Red,
-                                        fontWeight = FontWeight.W400
-                                    )
-                                }
-                                else -> {
-                                    Text(
-                                        modifier = Modifier.padding(bottom = 4.dp),
-                                        text = buildAnnotatedString {
-                                            withStyle(style = SpanStyle(
-                                                fontSize = 32.sp,
-                                                fontFamily = bodyFontFamily,
-                                                color = text,
-                                                fontWeight = FontWeight.W400
-                                            )
-                                            ){
-                                                append("${weatherInfo.value.kp_index.roundToInt()}/")
-                                            }
-                                            withStyle(style = SpanStyle(
-                                                fontSize = 24.sp,
-                                                fontFamily = bodyFontFamily,
-                                                color = text,
-                                                fontWeight = FontWeight.W400
-                                            )
-                                            ){
-                                                append("9")
-                                            }
-                                        },
-                                        fontSize = 18.sp,
-                                        lineHeight = 22.sp,
                                         fontFamily = bodyFontFamily,
                                         color = text,
                                         fontWeight = FontWeight.W400
                                     )
-                                }
-                            }
+                                    ){
+                                        append("${weatherInfo.kp_index.roundToInt()}/")
+                                    }
+                                    withStyle(style = SpanStyle(
+                                        fontSize = 24.sp,
+                                        fontFamily = bodyFontFamily,
+                                        color = text,
+                                        fontWeight = FontWeight.W400
+                                    )
+                                    ){
+                                        append("9")
+                                    }
+                                },
+                                fontSize = 18.sp,
+                                lineHeight = 22.sp,
+                                fontFamily = bodyFontFamily,
+                                color = text,
+                                fontWeight = FontWeight.W400
+                            )
                         }
                     )
                 }
@@ -209,45 +201,25 @@ fun MainScreen(
                     Tile(
                         name = "Температура",
                         tileContent = {
-                            when {
-                                weatherInfo.value.isLoading -> {
-                                    CircularProgressIndicator(
-                                        trackColor = text
-                                    )
-                                }
-                                weatherInfo.value.isError -> {
-                                    Text(
-                                        modifier = Modifier.padding(bottom = 4.dp),
-                                        text = "Ошибка",
+                            Text(
+                                modifier = Modifier.padding(bottom = 4.dp),
+                                text = buildAnnotatedString {
+                                    withStyle(style = SpanStyle(
                                         fontSize = 32.sp,
-                                        lineHeight = 22.sp,
-                                        fontFamily = bodyFontFamily,
-                                        color = Color.Red,
-                                        fontWeight = FontWeight.W400
-                                    )
-                                }
-                                else -> {
-                                    Text(
-                                        modifier = Modifier.padding(bottom = 4.dp),
-                                        text = buildAnnotatedString {
-                                            withStyle(style = SpanStyle(
-                                                fontSize = 32.sp,
-                                                fontFamily = bodyFontFamily,
-                                                color = text,
-                                                fontWeight = FontWeight.W400
-                                            )
-                                            ){
-                                                append("${weatherInfo.value.temperature}")
-                                            }
-                                        },
-                                        fontSize = 18.sp,
-                                        lineHeight = 22.sp,
                                         fontFamily = bodyFontFamily,
                                         color = text,
                                         fontWeight = FontWeight.W400
                                     )
-                                }
-                            }
+                                    ){
+                                        append("${weatherInfo.temperature}")
+                                    }
+                                },
+                                fontSize = 18.sp,
+                                lineHeight = 22.sp,
+                                fontFamily = bodyFontFamily,
+                                color = text,
+                                fontWeight = FontWeight.W400
+                            )
                         }
                     )
                 }
@@ -255,46 +227,25 @@ fun MainScreen(
                     Tile(
                         name = "Влажность",
                         tileContent = {
-                            when {
-                                weatherInfo.value.isLoading -> {
-                                    CircularProgressIndicator(
-                                        trackColor = text
-                                    )
-                                }
-                                weatherInfo.value.isError -> {
-                                    Text(
-                                        modifier = Modifier.padding(bottom = 4.dp),
-                                        text = "Ошибка",
+                            Text(
+                                modifier = Modifier.padding(bottom = 4.dp),
+                                text = buildAnnotatedString {
+                                    withStyle(style = SpanStyle(
                                         fontSize = 32.sp,
-                                        lineHeight = 22.sp,
-                                        fontFamily = bodyFontFamily,
-                                        color = Color.Red,
-                                        fontWeight = FontWeight.W400
-                                    )
-                                }
-                                else -> {
-                                    Text(
-                                        modifier = Modifier.padding(bottom = 4.dp),
-                                        text = buildAnnotatedString {
-                                            withStyle(style = SpanStyle(
-                                                fontSize = 32.sp,
-                                                fontFamily = bodyFontFamily,
-                                                color = text,
-                                                fontWeight = FontWeight.W400
-                                            )
-                                            ){
-                                                append("${weatherInfo.value.humidity.roundToInt()}%")
-                                            }
-                                        },
-                                        fontSize = 18.sp,
-                                        lineHeight = 22.sp,
                                         fontFamily = bodyFontFamily,
                                         color = text,
                                         fontWeight = FontWeight.W400
                                     )
-
-                                }
-                            }
+                                    ){
+                                        append("${weatherInfo.humidity.roundToInt()}%")
+                                    }
+                                },
+                                fontSize = 18.sp,
+                                lineHeight = 22.sp,
+                                fontFamily = bodyFontFamily,
+                                color = text,
+                                fontWeight = FontWeight.W400
+                            )
                         }
                     )
 
@@ -310,7 +261,7 @@ fun MainScreen(
                 //уже захардкожено во вьюмодели
                 // (ждём сервак =( )
 
-                AdviceList(advices = adviceList.value)
+                AdviceList(advices = adviceList)
             }
 
 //            Text(
@@ -330,6 +281,9 @@ fun MainScreen(
     }
 
 }
+
+
+
 
 @Preview
 @Composable

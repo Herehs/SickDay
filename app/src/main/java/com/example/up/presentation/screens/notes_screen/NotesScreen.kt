@@ -28,6 +28,8 @@ import androidx.room3.util.TableInfo
 import com.example.up.R
 import com.example.up.common.Resource
 import com.example.up.domain.model.Note
+import com.example.up.presentation.common_сomponents.ErrorScreen
+import com.example.up.presentation.common_сomponents.LoadingScreen
 import com.example.up.presentation.screens.notes_screen.components.NoteCard
 import com.example.up.presentation.ui.theme.text
 import com.example.up.presentation.ui.theme.textDim
@@ -50,13 +52,14 @@ fun NotesScreen(
             )
         }
         is Resource.Loading -> {
-            NotesScreenLoading(
+            LoadingScreen(
                 modifier = modifier
             )
         }
         is Resource.Error -> {
-            NotesScreenLoading(
-                modifier = modifier
+            ErrorScreen(
+                modifier = modifier,
+                icon = R.drawable.database_x
             )
         }
     }
