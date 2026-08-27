@@ -22,12 +22,14 @@ import androidx.compose.material3.SliderDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.geometry.Offset
@@ -40,6 +42,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
 import kotlin.math.roundToInt
+
 
 @SuppressLint("FrequentlyChangingValue")
 @Composable
@@ -56,37 +59,62 @@ fun CustomSlider(
             .height(40.dp)
             .fillMaxWidth()
             .padding(horizontal = 10.dp)
-
     ){
         val width = this.minWidth
         val height = this.minHeight
-
-        val state = rememberSaveable(saver = AnchoredDraggableState.Saver()) {
-            AnchoredDraggableState(initialValue = value)
-        }
 
         val density = LocalDensity.current
         val widthPx = with(density) { width.toPx() }
         val heightPx = with(density) { height.toPx() }
 
         val thumbSize = 15.dp
-        val thumbRadiusPx = with(LocalDensity.current) { thumbSize.toPx() / 2 }
+        val thumbRadiusPx = with(density) { thumbSize.toPx() / 2 }
 
-        val anchors = DraggableAnchors {
-            for (i in 0 until steps) {
-                val fraction = i / (steps - 1).toFloat()
-                fraction at fraction * widthPx
+        val stepIndex = ((value.coerceIn(0f, 1f)) * (steps - 1)).roundToInt()
+        val normalizedValue = stepIndex / (steps - 1).toFloat()
+
+        val anchors = remember(widthPx, steps) {
+            DraggableAnchors {
+                for (i in 0 until steps) {
+                    val fraction = i / (steps - 1).toFloat()
+                    fraction at fraction * widthPx
+                }
             }
         }
 
-        state.updateAnchors(anchors)
+        val state = rememberSaveable(saver = AnchoredDraggableState.Saver()) {
+            AnchoredDraggableState(
+                initialValue = normalizedValue
+            )
+        }
+
+        SideEffect {
+            state.updateAnchors(anchors)
+        }
+
+        LaunchedEffect(normalizedValue) {
+            if (state.targetValue != normalizedValue && !anchors.positionOf(normalizedValue).isNaN()) {
+                state.animateTo(normalizedValue)
+            }
+        }
+
+        LaunchedEffect(state) {
+            snapshotFlow { state.settledValue }
+                .collect { settled ->
+                    onValueChange(settled)
+                }
+        }
+
+        val currentOffset = remember(state.offset) {
+            if (state.offset.isNaN()) 0f else state.offset
+        }
 
         Box(
             modifier = Modifier
                 .zIndex(2f)
-                .offset{
+                .offset {
                     IntOffset(
-                        x = (state.requireOffset() - thumbRadiusPx).roundToInt(),
+                        x = (currentOffset - thumbRadiusPx).roundToInt(),
                         y = (heightPx / 2f - thumbRadiusPx).roundToInt()
                     )
                 }
@@ -102,7 +130,6 @@ fun CustomSlider(
                 drawCircle(
                     color = colors.thumbColor
                 )
-
             }
         }
 
@@ -126,7 +153,7 @@ fun CustomSlider(
                 )
                 drawRoundRect(
                     size = Size(
-                        width = state.requireOffset(),
+                        width = currentOffset.coerceIn(0f, size.width),
                         height = 15f
                     ),
                     color = colors.activeTrackColor,
@@ -136,23 +163,12 @@ fun CustomSlider(
                     ),
                     cornerRadius = CornerRadius(8f, 8f)
                 )
-
             }
         }
-        LaunchedEffect(value) {
-            state.animateTo(value.coerceIn(0f, 1f))
-        }
 
-        LaunchedEffect(state.requireOffset()) {
-            val fraction = (state.requireOffset() / widthPx)
-                .coerceIn(0f, 1f)
-
-            onValueChange(fraction)
-        }
         if(showNumbers){
             Box(
-                modifier = Modifier
-                    .matchParentSize()
+                modifier = Modifier.matchParentSize()
             ) {
                 for (i in 0 until steps) {
                     val fraction = i / (steps - 1).toFloat()
@@ -181,9 +197,6 @@ fun CustomSlider(
         }
     }
 }
-
-
-
 @Preview
 @Composable
 fun SliderTest(){

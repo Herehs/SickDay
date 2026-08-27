@@ -1,5 +1,6 @@
 package com.example.up.presentation.common_сomponents
 
+import androidx.compose.animation.animateColorAsState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -59,6 +60,15 @@ fun BottomBar(
     ){
         items(bottomBarItems){ item ->
             val selected = item.route == selectedScreen
+
+            val color = when(selected){
+                true -> { text }
+                false -> { Color(0xffB0B0B0) }
+            }
+            val animatedColor by animateColorAsState(
+                targetValue = color
+            )
+
             Box(
                 modifier = Modifier
                     .width(60.dp)
@@ -77,10 +87,7 @@ fun BottomBar(
                     modifier = Modifier.size(25.dp),
                     painter = painterResource(item.icon),
                     contentDescription = null,
-                    tint = when(selected){
-                        true -> { text }
-                        false -> { Color(0xffB0B0B0) }
-                    }
+                    tint = animatedColor
                 )
             }
         }

@@ -13,13 +13,20 @@ import com.example.up.data.repository.WeatherRepositoryImpl
 import com.example.up.domain.repository.NoteRepository
 import com.example.up.domain.repository.PositionRepository
 import com.example.up.domain.repository.WeatherRepository
+import com.example.up.domain.use_case.CreateNoteUseCase
+import com.example.up.domain.use_case.DeleteNoteUseCase
+import com.example.up.domain.use_case.GetAllNotesUseCase
 import com.example.up.domain.use_case.GetAvgWeatherUseCase
 import com.example.up.domain.use_case.GetCalendarUseCase
 import com.example.up.domain.use_case.GetCurrentPositionUseCase
 import com.example.up.domain.use_case.GetCurrentWeatherUseCase
 import com.example.up.domain.use_case.GetGraphDataUseCase
+import com.example.up.domain.use_case.GetNoteByIdUseCase
+import com.example.up.domain.use_case.SaveNoteUseCase
 import com.example.up.presentation.screens.calendar_screen.CalendarViewModel
 import com.example.up.presentation.screens.main_screen.MainViewModel
+import com.example.up.presentation.screens.note_screen.NoteViewModel
+import com.example.up.presentation.screens.notes_screen.NotesViewModel
 import com.google.android.gms.location.LocationServices
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.cio.CIO
@@ -34,6 +41,8 @@ import org.koin.dsl.module
 val presentationModule = module {
     viewModelOf(::MainViewModel)
     viewModelOf(::CalendarViewModel)
+    viewModelOf(::NotesViewModel)
+    viewModelOf(::NoteViewModel)
 }
 
 val dataModule = module {
@@ -100,4 +109,14 @@ val domainModule = module {
     single { GetCurrentPositionUseCase(get()) }
 
     single { GetCalendarUseCase(get()) }
+
+    single { GetAllNotesUseCase(get()) }
+
+    single { GetNoteByIdUseCase(get()) }
+
+    single { SaveNoteUseCase(get()) }
+
+    single { CreateNoteUseCase(get()) }
+
+    single { DeleteNoteUseCase(get()) }
 }

@@ -15,53 +15,53 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SliderDefaults
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.up.R
-import com.example.up.presentation.common_сomponents.Background
 import com.example.up.presentation.common_сomponents.Section
 import com.example.up.presentation.screens.note_screen.components.CustomSlider
 import com.example.up.presentation.screens.note_screen.components.NoteQualityComponent
-import com.example.up.presentation.ui.theme.bodyFontFamily
 import com.example.up.presentation.ui.theme.text
+import org.koin.androidx.compose.koinViewModel
 import java.time.LocalDate
-import java.time.format.DateTimeFormatter
 
 @Composable
-fun NoteScreen(modifier: Modifier) {
+fun NoteScreen(
+    modifier: Modifier,
+    onBackButton: () -> Unit,
+    noteViewModel: NoteViewModel = koinViewModel()
+) {
 
-    val currDate = LocalDate.now()
-    var note by rememberSaveable { mutableStateOf("") }
+    val note by noteViewModel.note.collectAsStateWithLifecycle()
 
-    var sliderValue by rememberSaveable { mutableFloatStateOf(0f) }
 
-//    Background()
     Column(modifier) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(top = 10.dp, bottom = 30.dp)
-                .padding(horizontal = 70.dp),
+                .padding(horizontal = 20.dp),
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically,
         ){
             IconButton(
-                onClick = {  },
+                onClick = {
+                    noteViewModel.saveNote(
+                        onComplete = onBackButton
+                    )
+                },
                 interactionSource = null,
-                modifier = Modifier.size(22.dp),
+                modifier = Modifier.size(30.dp),
                 colors = IconButtonColors(
                     containerColor = Color.Transparent,
                     contentColor = text,
@@ -74,19 +74,14 @@ fun NoteScreen(modifier: Modifier) {
                     contentDescription = null
                 )
             }
-            Text(
-                modifier = Modifier.padding(horizontal = 10.dp),
-                text = currDate.format(DateTimeFormatter.ofPattern("Заметка от dd LLLL")).replaceFirstChar { it.uppercase() },
-                fontSize = 18.sp,
-                lineHeight = 22.sp,
-                fontFamily = bodyFontFamily,
-                color = text,
-                fontWeight = FontWeight.W400
-            )
             IconButton(
-                onClick = {  },
+                onClick = {
+                    noteViewModel.deleteNote(
+                        onComplete = onBackButton
+                    )
+                },
                 interactionSource = null,
-                modifier = Modifier.size(22.dp),
+                modifier = Modifier.size(30.dp),
                 colors = IconButtonColors(
                     containerColor = Color.Transparent,
                     contentColor = text,
@@ -95,7 +90,7 @@ fun NoteScreen(modifier: Modifier) {
                 )
             ) {
                 Icon(
-                    painter = painterResource(R.drawable.right_arrow),
+                    painter = painterResource(R.drawable.trash),
                     contentDescription = null
                 )
             }
@@ -105,8 +100,8 @@ fun NoteScreen(modifier: Modifier) {
             name = "Общее состояние"
         ) {
             CustomSlider(
-                value = sliderValue,
-                onValueChange = { sliderValue = it },
+                value = note.generalHealth,
+                onValueChange = noteViewModel::onGeneralHealthChanged,
                 colors = SliderDefaults.colors(
                     thumbColor = Color(0xffFF9C9D),
                     activeTrackColor = Color(0xffFF9C9D),
@@ -116,15 +111,17 @@ fun NoteScreen(modifier: Modifier) {
             )
         }
         Section(
-            modifier = Modifier.padding(horizontal = 20.dp).padding(top = 40.dp),
+            modifier = Modifier
+                .padding(horizontal = 20.dp)
+                .padding(top = 40.dp),
             name = "Заметки"
         ){
             OutlinedTextField(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(top = 6.dp),
-                value = note,
-                onValueChange = {note = it},
+                value = note.note,
+                onValueChange = noteViewModel::onNoteTextChanged,
                 colors = OutlinedTextFieldDefaults.colors(
                     focusedBorderColor= Color(0xff9F8A8F).copy(alpha = .3f),
                     unfocusedBorderColor = Color(0xff9F8A8F).copy(alpha = .3f),
@@ -137,7 +134,9 @@ fun NoteScreen(modifier: Modifier) {
             )
         }
         Section(
-            modifier = Modifier.padding(horizontal = 20.dp).padding(top = 40.dp),
+            modifier = Modifier
+                .padding(horizontal = 20.dp)
+                .padding(top = 40.dp),
             name = "Симптомы"
         ){
             LazyColumn(
@@ -145,22 +144,23 @@ fun NoteScreen(modifier: Modifier) {
             ){
                 item{
                     NoteQualityComponent(
-                        label = "Сонливость"
+                        label = "Сонливость",
+                        sliderValue = note.drowsiness,
+                        onSliderPositionChanged = noteViewModel::onDrowsinessChanged
                     )
                 }
                 item {
                     NoteQualityComponent(
-                        label = "Давление"
+                        label = "Давление",
+                        sliderValue = note.pressure,
+                        onSliderPositionChanged = noteViewModel::onPressureChanged
                     )
                 }
                 item {
                     NoteQualityComponent(
-                        label = "Слабость"
-                    )
-                }
-                item {
-                    NoteQualityComponent(
-                        label = "Диарея"
+                        label = "Слабость",
+                        sliderValue = note.weakness,
+                        onSliderPositionChanged = noteViewModel::onWeaknessChanged
                     )
                 }
             }
@@ -173,6 +173,9 @@ fun NoteScreen(modifier: Modifier) {
 @Composable
 fun NoteScreenTest(){
     Scaffold {
-        NoteScreen(modifier = Modifier.padding(it))
+        NoteScreen(
+            modifier = Modifier.padding(it),
+            onBackButton = TODO()
+        )
     }
 }

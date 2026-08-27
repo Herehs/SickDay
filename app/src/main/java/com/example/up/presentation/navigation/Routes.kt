@@ -12,6 +12,10 @@ sealed class Routes(){
 
     @Serializable
     object Notes : Routes()
+    @Serializable
+    data class NoteDetails(
+        val id: Long?
+    ) : Routes()
 
     @Serializable
     object Onboarding : Routes()

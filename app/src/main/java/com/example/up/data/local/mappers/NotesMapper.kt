@@ -6,23 +6,20 @@ import java.util.Date
 
 fun NoteEntity.toDomain() = Note(
     id = id,
-    date = date.toDate(),
+    date = date,
     generalHealth = generalHealth,
     note = note,
     drowsiness = drowsiness,
     pressure = pressure,
-    weakness = weakness
+    weakness = weakness,
 )
 
 fun Note.toEntity() = NoteEntity(
     id = id,
-    date = date.toEpochMillis(),
+    date = date,
     generalHealth = generalHealth,
     note = note,
     drowsiness = drowsiness,
     pressure = pressure,
-    weakness = weakness
+    weakness = weakness,
 )
-
-fun Date.toEpochMillis(): Long = time
-fun Long.toDate(): Date = Date(this)

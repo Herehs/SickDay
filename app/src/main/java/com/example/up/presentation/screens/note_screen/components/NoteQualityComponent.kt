@@ -48,7 +48,9 @@ import com.example.up.presentation.ui.theme.texDark
 @Composable
 fun NoteQualityComponent(
     modifier: Modifier = Modifier,
-    label: String
+    label: String,
+    sliderValue: Float = 0f,
+    onSliderPositionChanged: (Float) -> Unit = {}
 ){
     var opened by rememberSaveable { mutableStateOf(false) }
     var sliderPosition by remember { mutableFloatStateOf(0f) }
@@ -129,8 +131,8 @@ fun NoteQualityComponent(
             ){
 
                 CustomSlider(
-                    onValueChange = {sliderPosition = it},
-                    value = sliderPosition,
+                    onValueChange = onSliderPositionChanged,
+                    value = sliderValue,
                     steps = 5,
                     colors = SliderDefaults.colors(
                         thumbColor = Color(0xff531111),

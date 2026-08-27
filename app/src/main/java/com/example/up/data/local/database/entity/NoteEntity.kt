@@ -7,11 +7,11 @@ import java.util.Date
 @Entity(tableName = "notes")
 data class NoteEntity(
     @PrimaryKey(autoGenerate = true)
-    val id: ULong,
+    val id: Long = 0L,
     val date: Long,
-    var generalHealth: Int,
-    var note: String,
-    var drowsiness: Int,
-    var pressure: Int,
-    var weakness: Int
+    val generalHealth: Float,
+    val note: String,
+    val drowsiness: Float,
+    val pressure: Float,
+    val weakness: Float,
 )

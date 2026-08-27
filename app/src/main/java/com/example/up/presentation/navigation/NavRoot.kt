@@ -1,6 +1,7 @@
 package com.example.up.presentation.navigation
 
 import androidx.compose.animation.AnimatedContentTransitionScope
+import androidx.compose.animation.AnimatedContentTransitionScope.SlideDirection
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
@@ -18,6 +19,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.input.pointer.motionEventSpy
 import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
@@ -30,6 +32,7 @@ import com.example.up.presentation.common_сomponents.BottomBarItem
 import com.example.up.presentation.screens.calendar_screen.CalendarScreen
 import com.example.up.presentation.screens.main_screen.MainScreen
 import com.example.up.presentation.screens.note_screen.NoteScreen
+import com.example.up.presentation.screens.notes_screen.NotesScreen
 import com.example.up.presentation.screens.onboarding.Onboarding
 
 
@@ -39,7 +42,7 @@ fun NavRoot(
 ) {
     val screens = listOf(
         BottomBarItem(
-            icon = R.drawable.open_eye,
+            icon = R.drawable.bandage,
             route = Routes.MainScreen
         ),
         BottomBarItem(
@@ -47,17 +50,11 @@ fun NavRoot(
             route = Routes.CalendarScreen
         ),
         BottomBarItem(
-            icon = R.drawable.pencil,
+            icon = R.drawable.notes,
             route = Routes.Notes
         ),
     )
-    val screenOrder = listOf(
-        Routes.MainScreen,
-        Routes.CalendarScreen,
-        Routes.Notes,
-    )
 
-    var previousIndex by remember { mutableIntStateOf(0) }
     var showBottomBar by rememberSaveable { mutableStateOf(true) }
 
     DisposableEffect(navController) {
@@ -86,15 +83,6 @@ fun NavRoot(
                 BottomBar(
                     bottomBarItems = screens,
                     onItemClick = {
-                        val newIndex = screenOrder.indexOf(it)
-
-                        navController.currentBackStackEntry
-                            ?.savedStateHandle
-                            ?.set("direction", newIndex > previousIndex)
-
-                        previousIndex = newIndex
-
-
                         navController.navigate(it){
                             popUpTo(navController.graph.startDestinationId) {
                                 saveState = true
@@ -111,40 +99,8 @@ fun NavRoot(
         NavHost(
             navController = navController,
             startDestination = Routes.Onboarding,
-            enterTransition = {
-
-                val isForward =
-                    initialState.savedStateHandle["direction"] ?: true
-
-                if (isForward) {
-                    slideIntoContainer(
-                        AnimatedContentTransitionScope.SlideDirection.Left,
-                        tween(400)
-                    )
-                } else {
-                    slideIntoContainer(
-                        AnimatedContentTransitionScope.SlideDirection.Right,
-                        tween(400)
-                    )
-                }
-            },
-
-            exitTransition = {
-                val isForward =
-                    initialState.savedStateHandle["direction"] ?: true
-
-                if (isForward) {
-                    slideOutOfContainer(
-                        AnimatedContentTransitionScope.SlideDirection.Left,
-                        tween(400)
-                    )
-                } else {
-                    slideOutOfContainer(
-                        AnimatedContentTransitionScope.SlideDirection.Right,
-                        tween(400)
-                    )
-                }
-            }
+            enterTransition = { fadeIn(tween(400)) },
+            exitTransition = { fadeOut(tween(400)) }
         ){
             composable<Routes.MainScreen> {
                 MainScreen(
@@ -157,14 +113,41 @@ fun NavRoot(
                 )
             }
             composable<Routes.Notes> {
-                NoteScreen(
-                    modifier = Modifier.padding(paddingValues)
+                NotesScreen(
+                    modifier = Modifier.padding(paddingValues),
+                    onAddClick = {
+                        navController.navigate(
+                            Routes.NoteDetails(id = it)
+                        )
+                    }
                 )
             }
-            composable<Routes.Onboarding>(
-                enterTransition = { fadeIn(tween(400)) },
-                exitTransition = { fadeOut(tween(400)) }
-            ) {
+            composable<Routes.NoteDetails>(
+                enterTransition = {
+                    slideIntoContainer(
+                        towards = SlideDirection.Up,
+                        tween(400)
+                    )
+                },
+                exitTransition = {
+                    slideOutOfContainer(
+                        towards = SlideDirection.Down,
+                        tween(400)
+                    )
+                }
+            ){
+                NoteScreen(
+                    modifier = Modifier.padding(paddingValues),
+                    onBackButton = {
+                        navController.navigate(Routes.Notes){
+                            popUpTo<Routes.NoteDetails> {
+                                inclusive = true
+                            }
+                        }
+                    }
+                )
+            }
+            composable<Routes.Onboarding> {
                 Onboarding(
                     modifier = Modifier,
                     onButtonClick = {

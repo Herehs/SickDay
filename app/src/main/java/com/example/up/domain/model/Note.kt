@@ -1,13 +1,12 @@
 package com.example.up.domain.model
 
-import java.util.Date
 
 data class Note(
-    val id: ULong,
-    val date: Date,
-    var generalHealth: Int,
-    var note: String,
-    var drowsiness: Int,
-    var pressure: Int,
-    var weakness: Int
+    val id: Long = 0,
+    val date: Long = 0,
+    val generalHealth: Float = 0f,
+    val note: String = "",
+    val drowsiness: Float = 0f,
+    val pressure: Float = 0f,
+    val weakness: Float = 0f,
 )
