@@ -13,7 +13,6 @@ import com.example.up.data.repository.WeatherRepositoryImpl
 import com.example.up.domain.repository.NoteRepository
 import com.example.up.domain.repository.PositionRepository
 import com.example.up.domain.repository.WeatherRepository
-import com.example.up.domain.use_case.CreateNoteUseCase
 import com.example.up.domain.use_case.DeleteNoteUseCase
 import com.example.up.domain.use_case.GetAllNotesUseCase
 import com.example.up.domain.use_case.GetAvgWeatherUseCase
@@ -115,8 +114,6 @@ val domainModule = module {
     single { GetNoteByIdUseCase(get()) }
 
     single { SaveNoteUseCase(get()) }
-
-    single { CreateNoteUseCase(get()) }
 
     single { DeleteNoteUseCase(get()) }
 }

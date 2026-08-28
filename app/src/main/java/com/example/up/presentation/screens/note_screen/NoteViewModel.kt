@@ -5,7 +5,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.toRoute
 import com.example.up.domain.model.Note
-import com.example.up.domain.use_case.CreateNoteUseCase
 import com.example.up.domain.use_case.DeleteNoteUseCase
 import com.example.up.domain.use_case.GetNoteByIdUseCase
 import com.example.up.domain.use_case.SaveNoteUseCase
@@ -21,7 +20,6 @@ class NoteViewModel(
     savedStateHandle: SavedStateHandle,
     private val getNoteByIdUseCase: GetNoteByIdUseCase,
     private val saveNoteUseCase: SaveNoteUseCase,
-    private val createNoteUseCase: CreateNoteUseCase,
     private val deleteNoteUseCase: DeleteNoteUseCase
 ) : ViewModel() {
     val noteId: Long? = savedStateHandle.toRoute<Routes.NoteDetails>().id
@@ -57,11 +55,10 @@ class NoteViewModel(
         if (currentNote == Note()) return
         viewModelScope.launch {
             withContext(NonCancellable){
-                if (noteId == null) {
-                    createNoteUseCase(note = currentNote)
-                } else {
-                    saveNoteUseCase(note = currentNote)
-                }
+                saveNoteUseCase(
+                    note = currentNote,
+                    isNew = noteId == null
+                )
             }
             onComplete()
         }
