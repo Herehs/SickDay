@@ -10,10 +10,10 @@ import io.mockk.mockk
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
-import org.junit.Assert.assertEquals
-import org.junit.Assert.assertTrue
-import org.junit.Before
-import org.junit.Test
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertTrue
+import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.Test
 
 class GetCalendarUseCaseTest {
 
@@ -21,7 +21,7 @@ class GetCalendarUseCaseTest {
 
     private lateinit var useCase: GetCalendarUseCase
 
-    @Before
+    @BeforeEach
     fun setup() {
         useCase = GetCalendarUseCase(repository)
     }

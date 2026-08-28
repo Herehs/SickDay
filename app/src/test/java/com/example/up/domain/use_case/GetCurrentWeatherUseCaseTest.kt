@@ -9,16 +9,16 @@ import io.mockk.mockk
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
-import org.junit.Assert.assertTrue
-import org.junit.Before
-import org.junit.Test
+import org.junit.jupiter.api.Assertions.assertTrue
+import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.Test
 
 class GetCurrentWeatherUseCaseTest {
 
     private val repository = mockk<WeatherRepository>()
     private lateinit var useCase: GetCurrentWeatherUseCase
 
-    @Before
+    @BeforeEach
     fun setup() {
         useCase = GetCurrentWeatherUseCase(repository)
     }

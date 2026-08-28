@@ -6,17 +6,17 @@ import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
 import kotlinx.coroutines.test.runTest
-import org.junit.Before
-import org.junit.Test
+import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.Test
 import kotlin.test.assertEquals
 
 class GetNoteByIdUseCaseTest {
-2
+
     private val repository = mockk<NoteRepository>()
 
     private lateinit var useCase: GetNoteByIdUseCase
 
-    @Before
+    @BeforeEach
     fun setup(){
         useCase = GetNoteByIdUseCase(repository)
     }
