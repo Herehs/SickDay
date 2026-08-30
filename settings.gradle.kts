@@ -24,4 +24,5 @@ dependencyResolutionManagement {
 
 rootProject.name = "up"
 include(":app")
+include(":server")
  
