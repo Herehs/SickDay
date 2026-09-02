@@ -2,7 +2,7 @@ package com.example.server.data.remote
 
 import com.example.server.data.remote.dto.HourlyWeatherDto
 import com.example.server.data.remote.dto.WeatherResponseDto
-import com.example.up.data.remote.HttpRoutes.BASE_URL
+import com.example.up.data.remote.OpenWeather.HttpRoutes.BASE_URL
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.request.get
