@@ -6,7 +6,6 @@ import com.example.up.common.Resource
 import com.example.up.domain.use_case.GetAvgWeatherUseCase
 import com.example.up.domain.use_case.GetCurrentPositionUseCase
 import com.example.up.domain.use_case.GetCurrentWeatherUseCase
-import com.example.up.domain.use_case.GetGraphDataUseCase
 import com.example.up.presentation.screens.main_screen.CurrentWeatherState
 import com.example.up.presentation.screens.main_screen.PositionState
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -20,7 +19,7 @@ class CalendarViewModel(
     private val getAvgWeatherUseCase: GetAvgWeatherUseCase,
     private val getCurrentWeatherUseCase: GetCurrentWeatherUseCase,
     private val getCurrentPositionUseCase: GetCurrentPositionUseCase,
-    private val getGraphDataUseCase: GetGraphDataUseCase
+//    private val getGraphDataUseCase: GetGraphDataUseCase
 ): ViewModel() {
 
     private val _weather = MutableStateFlow(CurrentWeatherState())
@@ -38,7 +37,7 @@ class CalendarViewModel(
     fun setDate(date: String){
         _pickedDate.value = date
         if(date != LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))){
-            getGraphData()
+//            getGraphData()
             getWeatherInfo()
         }
         else{
@@ -127,19 +126,19 @@ class CalendarViewModel(
         }
     }
 
-    fun getGraphData(){
-        viewModelScope.launch {
-            getGraphDataUseCase(
-                lat = _position.asStateFlow().value.lat,
-                lon = _position.asStateFlow().value.lon,
-                date = _pickedDate.asStateFlow().value
-            ).collect {  result ->
-                result.data?.let { graphData ->
-                    _graphData.value = graphData.list
-                }
-            }
-        }
-    }
+//    fun getGraphData(){
+//        viewModelScope.launch {
+//            getGraphDataUseCase(
+//                lat = _position.asStateFlow().value.lat,
+//                lon = _position.asStateFlow().value.lon,
+//                date = _pickedDate.asStateFlow().value
+//            ).collect {  result ->
+//                result.data?.let { graphData ->
+//                    _graphData.value = graphData.list
+//                }
+//            }
+//        }
+//    }
 
     fun getPosition(){
         viewModelScope.launch {

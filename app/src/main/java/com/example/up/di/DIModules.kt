@@ -2,11 +2,11 @@ package com.example.up.di
 
 import android.content.Context
 import androidx.room3.Room
+import com.example.server.data.remote.OpenMeteoServiceApi
+import com.example.server.data.remote.OpenMeteoServiceApiImpl
 import com.example.up.data.local.database.AppDatabase
 import com.example.up.data.local.location.LocationProvider
 import com.example.up.data.local.location.LocationProviderImpl
-import com.example.up.data.remote.WeatherServiceApi
-import com.example.up.data.remote.WeatherServiceApiImpl
 import com.example.up.data.repository.NoteRepositoryImpl
 import com.example.up.data.repository.PositionRepositoryImpl
 import com.example.up.data.repository.WeatherRepositoryImpl
@@ -16,10 +16,8 @@ import com.example.up.domain.repository.WeatherRepository
 import com.example.up.domain.use_case.DeleteNoteUseCase
 import com.example.up.domain.use_case.GetAllNotesUseCase
 import com.example.up.domain.use_case.GetAvgWeatherUseCase
-import com.example.up.domain.use_case.GetCalendarUseCase
 import com.example.up.domain.use_case.GetCurrentPositionUseCase
 import com.example.up.domain.use_case.GetCurrentWeatherUseCase
-import com.example.up.domain.use_case.GetGraphDataUseCase
 import com.example.up.domain.use_case.GetNoteByIdUseCase
 import com.example.up.domain.use_case.SaveNoteUseCase
 import com.example.up.presentation.screens.calendar_screen.CalendarViewModel
@@ -70,8 +68,8 @@ val dataModule = module {
         }
     }
 
-    single<WeatherServiceApi> {
-        WeatherServiceApiImpl(get())
+    single<OpenMeteoServiceApi> {
+        OpenMeteoServiceApiImpl(get())
     }
 
     single {
@@ -103,11 +101,9 @@ val domainModule = module {
 
     single { GetAvgWeatherUseCase(get()) }
 
-    single { GetGraphDataUseCase(get()) }
+//    single { GetGraphDataUseCase(get()) }
 
     single { GetCurrentPositionUseCase(get()) }
-
-    single { GetCalendarUseCase(get()) }
 
     single { GetAllNotesUseCase(get()) }
 

@@ -1,7 +1,6 @@
 package com.example.up.domain.use_case
 
 import com.example.up.common.Resource
-import com.example.up.domain.model.AverageWeather
 import com.example.up.domain.repository.WeatherRepository
 import io.mockk.coEvery
 import io.mockk.coVerify

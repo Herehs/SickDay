@@ -23,9 +23,6 @@ class MainViewModel(
     private val _adviseList = MutableStateFlow(emptyList<Advice>())
     val adviseList = _adviseList.asStateFlow()
 
-    private val _pillsList = MutableStateFlow(emptyList<PillsScheduleData>())
-    val pillsList = _pillsList.asStateFlow()
-
     private val _currentWeather = MutableStateFlow(CurrentWeatherState())
     val currentWeather = _currentWeather.asStateFlow()
 
@@ -121,65 +118,55 @@ class MainViewModel(
     }
 
     private fun calculateDangerCoefficient() {
-        // Если идет загрузка или ошибка, возвращаем безопасное значение
         if (_currentWeather.value.isLoading || _currentWeather.value.isError) {
             _danger.value = 0f
         }
 
-        // Нормализация температуры (экстремальные значения: -30°C и +40°C дают коэффициент 1)
         val temperatureCoefficient = when {
             _currentWeather.value.temperature < -30 -> 1f
             _currentWeather.value.temperature > 30 -> 1f
-            _currentWeather.value.temperature in -10.0..20.0 -> 0f // Комфортная зона
+            _currentWeather.value.temperature in -10.0..20.0 -> 0f
             else -> {
                 when {
                     _currentWeather.value.temperature < -10 -> {
-                        // От -10 до -30: линейный рост от 0 до 1
                         (-_currentWeather.value.temperature - 10) / 20f
                     }
                     else -> {
-                        // От 20 до 40: линейный рост от 0 до 1
                         (_currentWeather.value.temperature - 20) / 20f
                     }
                 }
             }
         }
 
-        // Нормализация влажности (оптимум 40-60%, экстремумы 0% и 100%)
         val humidityCoefficient = when {
             _currentWeather.value.humidity in 40f..60f -> 0f
             _currentWeather.value.humidity < 40f -> (40f - _currentWeather.value.humidity) / 40f
             else -> (_currentWeather.value.humidity - 60f) / 40f
         }.coerceIn(0f, 1f)
 
-        // Нормализация KP-индекса (0-9, опасность начинается с 4)
         val kpCoefficient = when {
             _currentWeather.value.kp_index <= 3 -> 0f
             else -> ((_currentWeather.value.kp_index - 3) / 6f).coerceIn(0f, 1f)
         }
 
-        // Нормализация давления (норма 760 мм рт.ст., отклонение ±30 дает коэффициент 1)
         val normalPressure = 760f
         val pressureDeviation = kotlin.math.abs(_currentWeather.value.pressure - normalPressure)
         val pressureCoefficient = (pressureDeviation / 30f).coerceIn(0f, 1f)
 
-        // Весовые коэффициенты для каждого фактора
-        // (можно менять в зависимости от того, что влияет сильнее)
+
         val weights = mapOf(
-            "temperature" to 0.35f, // Температура
-            "humidity" to 0.15f,    // Влажность
-            "kp" to 0.30f,          // Геомагнитная активность
-            "pressure" to 0.20f     // Давление
+            "temperature" to 0.35f,
+            "humidity" to 0.15f,
+            "kp" to 0.30f,
+            "pressure" to 0.20f
         )
 
-        // Взвешенная сумма коэффициентов
         val dangerCoefficient =
             temperatureCoefficient * weights["temperature"]!! +
                     humidityCoefficient * weights["humidity"]!! +
                     kpCoefficient * weights["kp"]!! +
                     pressureCoefficient * weights["pressure"]!!
 
-        // Ограничиваем результат от 0 до 1 и округляем до 2 знаков
         _danger.value = (dangerCoefficient.coerceIn(0f, 1f) * 100).toInt() / 100f
     }
 
@@ -200,30 +187,6 @@ class MainViewModel(
                 icon = R.drawable.drop,
                 text = "Ложитесь спать пораньше, ночью буря усилится"
             )
-        )
-
-        _pillsList.value = listOf(
-            PillsScheduleData(
-                name = "Фенозепам",
-                date = LocalDate.now(),
-                time = LocalTime.of(12, 0)
-            ),
-            PillsScheduleData(
-                name = "Лирика",
-                date = LocalDate.now(),
-                time = LocalTime.of(16, 0),
-                taken = true
-            ),
-            PillsScheduleData(
-                name = "Фенибут",
-                date = LocalDate.now(),
-                time = LocalTime.of(18, 0)
-            ),
-            PillsScheduleData(
-                name = "Фенозепам",
-                date = LocalDate.now(),
-                time = LocalTime.of(21, 0)
-            ),
         )
     }
 }

@@ -1,7 +1,7 @@
 package com.example.up.domain.use_case
 
 import com.example.up.common.Resource
-import com.example.up.domain.model.CurrentWeather
+import com.example.up.domain.model.Weather
 import com.example.up.domain.repository.WeatherRepository
 import kotlinx.coroutines.flow.Flow
 
@@ -11,7 +11,7 @@ class GetCurrentWeatherUseCase(
     suspend operator fun invoke(
         lat: Float,
         lon: Float
-    ): Flow<Resource<CurrentWeather>> {
+    ): Flow<Resource<Weather>> {
         return repository.getCurrentWeather(lat = lat, lon = lon)
     }
 }

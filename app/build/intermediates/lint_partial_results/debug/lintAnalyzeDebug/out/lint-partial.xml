@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<incidents format="6" by="lint 9.2.1" type="partial_results">
+    <map id="UnsafeIntentLaunch">
+            <map id="unprotected">
+                <entry
+                    name="com.example.up.presentation.MainActivity"
+                    boolean="true"/>
+            </map>
+    </map>
+    <map id="UnusedResources">
+        <location id="R.color.black"
+            file="${:app*debug*MAIN*sourceProvider*0*resDir*0}/values/colors.xml"
+            line="8"
+            column="12"
+            startOffset="293"
+            endLine="8"
+            endColumn="24"
+            endOffset="305"/>
+        <location id="R.color.purple_200"
+            file="${:app*debug*MAIN*sourceProvider*0*resDir*0}/values/colors.xml"
+            line="3"
+            column="12"
+            startOffset="62"
+            endLine="3"
+            endColumn="29"
+            endOffset="79"/>
+        <location id="R.color.purple_500"
+            file="${:app*debug*MAIN*sourceProvider*0*resDir*0}/values/colors.xml"
+            line="4"
+            column="12"
+            startOffset="109"
+            endLine="4"
+            endColumn="29"
+            endOffset="126"/>
+        <location id="R.color.purple_700"
+            file="${:app*debug*MAIN*sourceProvider*0*resDir*0}/values/colors.xml"
+            line="5"
+            column="12"
+            startOffset="156"
+            endLine="5"
+            endColumn="29"
+            endOffset="173"/>
+        <location id="R.color.teal_200"
+            file="${:app*debug*MAIN*sourceProvider*0*resDir*0}/values/colors.xml"
+            line="6"
+            column="12"
+            startOffset="203"
+            endLine="6"
+            endColumn="27"
+            endOffset="218"/>
+        <location id="R.color.teal_700"
+            file="${:app*debug*MAIN*sourceProvider*0*resDir*0}/values/colors.xml"
+            line="7"
+            column="12"
+            startOffset="248"
+            endLine="7"
+            endColumn="27"
+            endOffset="263"/>
+        <location id="R.color.white"
+            file="${:app*debug*MAIN*sourceProvider*0*resDir*0}/values/colors.xml"
+            line="9"
+            column="12"
+            startOffset="335"
+            endLine="9"
+            endColumn="24"
+            endOffset="347"/>
+        <location id="R.drawable.gear"
+            file="${:app*debug*MAIN*sourceProvider*0*resDir*0}/drawable/gear.xml"
+            line="1"
+            column="1"
+            startOffset="0"
+            endLine="20"
+            endColumn="10"
+            endOffset="4027"/>
+        <location id="R.drawable.onboarding2"
+            file="${:app*debug*MAIN*sourceProvider*0*resDir*0}/drawable/onboarding2.xml"
+            line="1"
+            column="1"
+            startOffset="0"
+            endLine="20"
+            endColumn="10"
+            endOffset="1126"/>
+        <location id="R.drawable.pencil"
+            file="${:app*debug*MAIN*sourceProvider*0*resDir*0}/drawable/pencil.xml"
+            line="1"
+            column="1"
+            startOffset="0"
+            endLine="20"
+            endColumn="10"
+            endOffset="916"/>
+        <entry
+            name="model"
+            string="array[com_google_android_gms_fonts_certs(U),com_google_android_gms_fonts_certs_dev(U),com_google_android_gms_fonts_certs_prod(U)],color[purple_200(D),purple_500(D),purple_700(D),teal_200(D),teal_700(D),black(D),white(D)],drawable[bandage(U),calendar(U),clock(U),drop(U),gear(D),heart_rate(U),ic_launcher_background(U),ic_launcher_foreground(U),ic_launcher_foreground_1(R),left_arrow(U),minus(U),notes(U),onboarding(U),onboarding2(D),open_eye(U),pencil(D),plus(U),right_arrow(U)],mipmap[ic_launcher(U),ic_launcher_round(U)],string[app_name(U)],style[Theme_Up(U)],xml[data_extraction_rules(U),backup_rules(U)];0^1^2,11^12,1c^10^11,1d^10^11;;;"/>
+    </map>
+
+</incidents>

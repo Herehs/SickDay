@@ -84,7 +84,7 @@ fun CalendarScreen(
                         disabledContainerColor = Color.Transparent,
                         disabledContentColor = Color(0xff141414).copy(alpha = .5f)
                     ),
-                    enabled = dateDifference != -3L
+                    enabled = dateDifference != -2L
                 ) {
                     Icon(
                         painter = painterResource(R.drawable.left_arrow),

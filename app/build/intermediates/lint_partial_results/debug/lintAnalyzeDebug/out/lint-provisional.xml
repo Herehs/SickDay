@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<incidents format="6" by="lint 9.2.1" type="conditional_incidents">
+
+    <incident
+        id="ConfigurationScreenWidthHeight"
+        severity="warning"
+        message="Using Configuration.screenWidthDp instead of LocalWindowInfo.current.containerSize">
+        <location
+            file="${:app*debug*MAIN*sourceProvider*0*javaDir*0}/com/example/up/presentation/screens/main_screen/components/DateCarousel.kt"
+            line="70"
+            column="27"
+            startOffset="2861"
+            endLine="70"
+            endColumn="67"
+            endOffset="2901"/>
+    </incident>
+
+</incidents>
