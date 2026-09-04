@@ -1,7 +1,7 @@
 # SickDay mobile app
+![bar](.github/assets/img/panel.svg)
 
 ## Features
-![bar](.github/assets/img/panel.svg)
 
 ### Main screen 
 The home screen displays real-time weather conditions for your location:     
