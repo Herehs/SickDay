@@ -1,25 +1,26 @@
 package com.example.up.domain.use_case
 
+import android.util.Log
 import com.example.up.common.Resource
-import com.example.up.common.toGraphData
-import com.example.up.domain.model.GraphData
+import com.example.up.common.averageForDate
 import com.example.up.domain.repository.KpRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import java.time.LocalDate
 
-class GetGraphDataUseCase(
-    private val repository: KpRepository
+class GetKpByDateUseCase(
+    private val kpRepository: KpRepository
 ) {
-    suspend operator fun invoke(
-        lat: Float,
-        lon: Float,
-        date: String
-    ): Flow<Resource<GraphData>> = repository.getKpData().map { resource ->
+    suspend operator fun invoke(date: LocalDate): Flow<Resource<Float>> = kpRepository.getKpData().map { resource ->
         when (resource) {
             is Resource.Success -> {
+                val avg = resource.data?.averageForDate(date = date) ?: 0.0f
+                Log.d(
+                    "Kp",
+                    "$avg"
+                )
                 Resource.Success(
-                    resource.data?.toGraphData(LocalDate.parse(date)) ?: GraphData(list = listOf(0f))
+                    avg.toFloat()
                 )
             }
             is Resource.Error -> Resource.Error(resource.message ?: "", null)

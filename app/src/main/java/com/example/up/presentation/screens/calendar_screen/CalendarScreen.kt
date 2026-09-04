@@ -48,8 +48,9 @@ import kotlin.math.roundToInt
 @Composable
 fun CalendarScreen(
     modifier: Modifier = Modifier,
+    vm: CalendarViewModel = koinViewModel()
 ){
-    val vm: CalendarViewModel = koinViewModel()
+
     val weather = vm.weather.collectAsState()
 
     var dateDifference: Long by remember { mutableStateOf(0) }

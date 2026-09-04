@@ -97,10 +97,10 @@ fun DateCard(
             .width(width.value)
             .height(height.value)
             .clip(shape = RoundedCornerShape(8.dp))
-            .background(color = Color(0xffFFFAEF))
+            .background(color = Color(0xFFD5DAFF))
             .border(
                 width = 1.dp,
-                color = Color(0xffFBB672),
+                color = Color(0xFF7289FB),
                 shape = RoundedCornerShape(8.dp)
             ),
         contentAlignment = Alignment.Center

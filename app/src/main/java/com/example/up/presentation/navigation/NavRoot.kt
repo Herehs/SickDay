@@ -30,16 +30,21 @@ import com.example.up.presentation.common_сomponents.Background
 import com.example.up.presentation.common_сomponents.BottomBar
 import com.example.up.presentation.common_сomponents.BottomBarItem
 import com.example.up.presentation.screens.calendar_screen.CalendarScreen
+import com.example.up.presentation.screens.calendar_screen.CalendarViewModel
 import com.example.up.presentation.screens.main_screen.MainScreen
+import com.example.up.presentation.screens.main_screen.MainViewModel
 import com.example.up.presentation.screens.note_screen.NoteScreen
 import com.example.up.presentation.screens.notes_screen.NotesScreen
 import com.example.up.presentation.screens.onboarding.Onboarding
+import org.koin.androidx.compose.koinViewModel
 
 
 @Composable
 fun NavRoot(
     navController: NavHostController = rememberNavController()
 ) {
+    val mainViewModel: MainViewModel = koinViewModel()
+    val calendarViewModel: CalendarViewModel = koinViewModel()
     val screens = listOf(
         BottomBarItem(
             icon = R.drawable.bandage,
@@ -104,12 +109,14 @@ fun NavRoot(
         ){
             composable<Routes.MainScreen> {
                 MainScreen(
-                    modifier = Modifier.padding(paddingValues)
+                    modifier = Modifier.padding(paddingValues),
+                    mainViewModel = mainViewModel
                 )
             }
             composable<Routes.CalendarScreen> {
                 CalendarScreen(
                     modifier = Modifier.padding(paddingValues),
+                    vm = calendarViewModel
                 )
             }
             composable<Routes.Notes> {

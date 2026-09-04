@@ -51,8 +51,9 @@ import kotlin.math.roundToInt
 @Composable
 fun MainScreen(
     modifier: Modifier = Modifier,
+    mainViewModel: MainViewModel = koinViewModel()
 ){
-    val mainViewModel: MainViewModel = koinViewModel()
+
     val weatherInfo = mainViewModel.currentWeather.collectAsState()
     val adviceList = mainViewModel.adviseList.collectAsState()
     val currentDate = mainViewModel.selectedDate.collectAsState()

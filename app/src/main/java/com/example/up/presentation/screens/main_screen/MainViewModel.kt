@@ -6,18 +6,17 @@ import com.example.up.R
 import com.example.up.common.Resource
 import com.example.up.domain.use_case.GetCurrentPositionUseCase
 import com.example.up.domain.use_case.GetCurrentWeatherUseCase
+import com.example.up.domain.use_case.GetKpByDateUseCase
 import com.example.up.presentation.screens.main_screen.components.Advice
-import com.example.up.presentation.screens.main_screen.components.PillsScheduleData
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.time.LocalDate
-import java.time.LocalTime
 
 class MainViewModel(
     private val getCurrentWeatherUseCase: GetCurrentWeatherUseCase,
-    private val getCurrentPositionUseCase: GetCurrentPositionUseCase
+    private val getCurrentPositionUseCase: GetCurrentPositionUseCase,
 ) : ViewModel() {
 
     private val _adviseList = MutableStateFlow(emptyList<Advice>())

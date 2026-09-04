@@ -7,9 +7,13 @@ import com.example.server.data.remote.OpenMeteoServiceApiImpl
 import com.example.up.data.local.database.AppDatabase
 import com.example.up.data.local.location.LocationProvider
 import com.example.up.data.local.location.LocationProviderImpl
+import com.example.up.data.remote.SWPCApi.SWPCServiceApi
+import com.example.up.data.remote.SWPCApi.SWPCServiceApiImpl
+import com.example.up.data.repository.KpRepositoryImpl
 import com.example.up.data.repository.NoteRepositoryImpl
 import com.example.up.data.repository.PositionRepositoryImpl
 import com.example.up.data.repository.WeatherRepositoryImpl
+import com.example.up.domain.repository.KpRepository
 import com.example.up.domain.repository.NoteRepository
 import com.example.up.domain.repository.PositionRepository
 import com.example.up.domain.repository.WeatherRepository
@@ -18,6 +22,8 @@ import com.example.up.domain.use_case.GetAllNotesUseCase
 import com.example.up.domain.use_case.GetAvgWeatherUseCase
 import com.example.up.domain.use_case.GetCurrentPositionUseCase
 import com.example.up.domain.use_case.GetCurrentWeatherUseCase
+import com.example.up.domain.use_case.GetGraphDataUseCase
+import com.example.up.domain.use_case.GetKpByDateUseCase
 import com.example.up.domain.use_case.GetNoteByIdUseCase
 import com.example.up.domain.use_case.SaveNoteUseCase
 import com.example.up.presentation.screens.calendar_screen.CalendarViewModel
@@ -72,6 +78,10 @@ val dataModule = module {
         OpenMeteoServiceApiImpl(get())
     }
 
+    single<SWPCServiceApi> {
+        SWPCServiceApiImpl(get())
+    }
+
     single {
         LocationServices.getFusedLocationProviderClient(get<Context>())
     }
@@ -92,16 +102,22 @@ val dataModule = module {
     single<NoteRepository> {
         NoteRepositoryImpl(get())
     }
+
+    single<KpRepository> {
+        KpRepositoryImpl(get())
+    }
 }
 
 val domainModule = module {
     //use cases
 
-    single { GetCurrentWeatherUseCase(get()) }
+    single { GetCurrentWeatherUseCase(get(), get()) }
 
-    single { GetAvgWeatherUseCase(get()) }
+    single { GetAvgWeatherUseCase(get(), get()) }
 
-//    single { GetGraphDataUseCase(get()) }
+    single { GetKpByDateUseCase(get()) }
+
+    single { GetGraphDataUseCase(get()) }
 
     single { GetCurrentPositionUseCase(get()) }
 

@@ -1,6 +1,5 @@
-package com.example.up.data.remote
+package com.example.up.common
 
-import com.example.up.common.Resource
 import io.ktor.client.network.sockets.ConnectTimeoutException
 import io.ktor.client.plugins.ClientRequestException
 import io.ktor.client.plugins.HttpRequestTimeoutException
