@@ -1,6 +1,7 @@
 # SickDay mobile app
 
 ## Features
+![bar](.github/assets/img/panel.svg)
 
 ### Main screen 
 The home screen displays real-time weather conditions for your location:     
@@ -36,7 +37,9 @@ Track your wellbeing with a dedicated notes screen:
 ## API`s
 
 ### Weather — [open-meteo](https://open-meteo.com/)
-used for fetching pressure, temperature and humidity
+Open-Source weather API with free access for non-commercial use.
+No API Key required. Accurate weather forecasts for any location. 
+Used for fetching pressure, temperature and humidity.
 ### Kp index — [NOAA SWPC](https://www.swpc.noaa.gov/products/planetary-k-index)
 Kp index updates every 3 hours.
 
