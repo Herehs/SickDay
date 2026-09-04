@@ -13,7 +13,8 @@ The home screen displays real-time weather conditions for your location:
 ### Weather calendar
 Browse weather data by date using an interactive calendar:
 - Tap any date to select it
-- The weather widget below the calendar updates to show conditions for the selected day (using the same weather component as the home screen)
+- The weather widget below the calendar updates to show conditions 
+- for the selected day
 
 ### Health notes
 Track your wellbeing with a dedicated notes screen:
