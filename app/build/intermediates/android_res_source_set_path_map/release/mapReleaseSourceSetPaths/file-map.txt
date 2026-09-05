@@ -1,8 +1,0 @@
-com.example.up.app-pngs-0 /home/cqr/Projects/Kotlin/sickday/SickDay/app/build/generated/res/pngs/release
-com.example.up.app-updated_navigation_xml-1 /home/cqr/Projects/Kotlin/sickday/SickDay/app/build/generated/updated_navigation_xml/release
-com.example.up.app-packageReleaseResources-2 /home/cqr/Projects/Kotlin/sickday/SickDay/app/build/intermediates/incremental/release/packageReleaseResources/merged.dir
-com.example.up.app-packageReleaseResources-3 /home/cqr/Projects/Kotlin/sickday/SickDay/app/build/intermediates/incremental/release/packageReleaseResources/stripped.dir
-com.example.up.app-release-4 /home/cqr/Projects/Kotlin/sickday/SickDay/app/build/intermediates/merged_res/release/mergeReleaseResources
-com.example.up.app-main-5 /home/cqr/Projects/Kotlin/sickday/SickDay/app/src/main/res
-com.example.up.app-release-6 /home/cqr/Projects/Kotlin/sickday/SickDay/app/src/release/res
-gradleHome-0 /home/cqr/.gradle
