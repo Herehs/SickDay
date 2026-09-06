@@ -52,7 +52,10 @@ class NoteViewModel(
         onComplete: () -> Unit
     ) {
         val currentNote = _note.value ?: return
-        if (currentNote == Note()) return
+        if (currentNote == Note()) {
+            onComplete()
+            return
+        }
         viewModelScope.launch {
             withContext(NonCancellable){
                 saveNoteUseCase(

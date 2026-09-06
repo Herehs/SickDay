@@ -2,6 +2,8 @@ package com.example.up.domain.use_case
 
 import com.example.up.common.Resource
 import com.example.up.domain.model.GraphData
+import com.example.up.domain.model.KpData
+import com.example.up.domain.repository.KpRepository
 import com.example.up.domain.repository.WeatherRepository
 import io.mockk.coEvery
 import io.mockk.coVerify
@@ -13,10 +15,11 @@ import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
+import java.time.LocalDate
 
 class GetGraphDataUseCaseTest {
 
-    private val repository = mockk<WeatherRepository>()
+    private val repository = mockk<KpRepository>()
     private lateinit var useCase: GetGraphDataUseCase
 
     @BeforeEach
@@ -32,15 +35,17 @@ class GetGraphDataUseCaseTest {
         )
 
         val flow = flowOf(
-            Resource.Success(graphData)
+            Resource.Success(listOf(KpData(
+                Kp = .1,
+                a_running = 1,
+                station_count = 8,
+                time = LocalDate.of(2025, 5,15)
+            )))
         )
 
+
         coEvery {
-            repository.getGraphData(
-                lat = 50f,
-                lon = 30f,
-                date = "2025-05-14"
-            )
+            repository.getKpData()
         } returns flow
 
         val result = useCase(
@@ -57,11 +62,7 @@ class GetGraphDataUseCaseTest {
         )
 
         coVerify {
-            repository.getGraphData(
-                lat = 50f,
-                lon = 30f,
-                date = "2025-05-14"
-            )
+            repository.getKpData()
         }
     }
 }

@@ -45,6 +45,7 @@ fun NavRoot(
 ) {
     val mainViewModel: MainViewModel = koinViewModel()
     val calendarViewModel: CalendarViewModel = koinViewModel()
+
     val screens = listOf(
         BottomBarItem(
             icon = R.drawable.bandage,

@@ -1,5 +1,6 @@
 package com.example.up.presentation.screens.note_screen
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -41,6 +42,9 @@ fun NoteScreen(
     onBackButton: () -> Unit,
     noteViewModel: NoteViewModel = koinViewModel()
 ) {
+    BackHandler {
+        onBackButton()
+    }
 
     val note by noteViewModel.note.collectAsStateWithLifecycle()
 

@@ -12,8 +12,8 @@ class GetGraphDataUseCase(
     private val repository: KpRepository
 ) {
     suspend operator fun invoke(
-        lat: Float,
-        lon: Float,
+        lat: Double,
+        lon: Double,
         date: String
     ): Flow<Resource<GraphData>> = repository.getKpData().map { resource ->
         when (resource) {

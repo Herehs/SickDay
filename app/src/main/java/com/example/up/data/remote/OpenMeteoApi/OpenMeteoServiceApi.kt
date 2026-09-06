@@ -1,9 +1,9 @@
-package com.example.server.data.remote
+package com.example.up.data.remote.OpenMeteoApi
 
 import com.example.server.data.remote.dto.HourlyWeatherDto
 import com.example.server.data.remote.dto.WeatherResponseDto
 
 interface OpenMeteoServiceApi {
-    suspend fun getCurrentWeather(lat: Float, lon: Float): WeatherResponseDto
-    suspend fun getHourlyWeather(lat: Float, lon: Float, date: String): HourlyWeatherDto
+    suspend fun getCurrentWeather(lat: Double, lon: Double): WeatherResponseDto
+    suspend fun getHourlyWeather(lat: Double, lon: Double, date: String): HourlyWeatherDto
 }

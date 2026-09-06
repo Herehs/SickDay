@@ -16,8 +16,8 @@ class GetCurrentWeatherUseCase(
     private val kpRepository: KpRepository
 ) {
     suspend operator fun invoke(
-        lat: Float,
-        lon: Float
+        lat: Double,
+        lon: Double
     ): Flow<Resource<Weather>> {
         return combine(
             repository.getCurrentWeather(lat = lat, lon = lon),

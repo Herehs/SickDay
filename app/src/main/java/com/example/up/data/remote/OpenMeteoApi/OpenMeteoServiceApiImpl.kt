@@ -1,8 +1,8 @@
-package com.example.server.data.remote
+package com.example.up.data.remote.OpenMeteoApi
 
+import HttpRoutes.BASE_URL
 import com.example.server.data.remote.dto.HourlyWeatherDto
 import com.example.server.data.remote.dto.WeatherResponseDto
-import com.example.up.data.remote.OpenWeatherApi.HttpRoutes.BASE_URL
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.request.get
@@ -12,8 +12,8 @@ class OpenMeteoServiceApiImpl(
     private val client: HttpClient
 ) : OpenMeteoServiceApi {
     override suspend fun getCurrentWeather(
-        lat: Float,
-        lon: Float
+        lat: Double,
+        lon: Double
     ): WeatherResponseDto = client.get(BASE_URL){
         parameter("latitude", lat)
         parameter("longitude", lon)
@@ -21,8 +21,8 @@ class OpenMeteoServiceApiImpl(
     }.body()
 
     override suspend fun getHourlyWeather(
-        lat: Float,
-        lon: Float,
+        lat: Double,
+        lon: Double,
         date: String
     ): HourlyWeatherDto = client.get(BASE_URL){
         parameter("latitude", lat)

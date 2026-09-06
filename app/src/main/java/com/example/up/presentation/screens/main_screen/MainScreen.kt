@@ -58,24 +58,25 @@ fun MainScreen(
     val adviceList = mainViewModel.adviseList.collectAsState()
     val currentDate = mainViewModel.selectedDate.collectAsState()
     val danger = mainViewModel.danger.collectAsState()
-    when {
-        weatherInfo.value.isLoading -> {
-            LoadingScreen(modifier = modifier)
-        }
-        weatherInfo.value.isError -> {
-            ErrorScreen(modifier = modifier)
-        }
-        else -> {
-            MainScreenSuccess(
-                modifier = modifier,
-                adviceList = adviceList.value,
-                currentDate = currentDate.value,
-                weatherInfo = weatherInfo.value,
-                danger = danger.value,
-                pickDate = { mainViewModel.selectDate(it.date) }
-            )
-        }
-    }
+
+    MainScreenSuccess(
+        modifier = modifier,
+        adviceList = adviceList.value,
+        currentDate = currentDate.value,
+        weatherInfo = weatherInfo.value,
+        danger = danger.value
+    ) { mainViewModel.selectDate(it.date) }
+    
+//    when {
+//        weatherInfo.value.isLoading -> {
+//            LoadingScreen(modifier = modifier)
+//        }
+//        weatherInfo.value.isError -> {
+//            ErrorScreen(modifier = modifier)
+//        }
+//        else -> {
+//        }
+//    }
 }
 
 @Composable

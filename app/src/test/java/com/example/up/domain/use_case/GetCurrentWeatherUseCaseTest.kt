@@ -1,7 +1,8 @@
 package com.example.up.domain.use_case
 
 import com.example.up.common.Resource
-import com.example.up.domain.model.CurrentWeather
+import com.example.up.domain.model.Weather
+import com.example.up.domain.repository.KpRepository
 import com.example.up.domain.repository.WeatherRepository
 import io.mockk.coEvery
 import io.mockk.coVerify
@@ -15,25 +16,29 @@ import org.junit.jupiter.api.Test
 
 class GetCurrentWeatherUseCaseTest {
 
-    private val repository = mockk<WeatherRepository>()
+    private val weatherRepository = mockk<WeatherRepository>()
+    private val kpRepository = mockk<KpRepository>()
     private lateinit var useCase: GetCurrentWeatherUseCase
 
     @BeforeEach
     fun setup() {
-        useCase = GetCurrentWeatherUseCase(repository)
+        useCase = GetCurrentWeatherUseCase(
+            weatherRepository,
+            kpRepository
+        )
     }
 
     @Test
     fun `should return current weather`() = runTest {
 
-        val weather = CurrentWeather(
+        val weather = Weather(
             temperature = 20f
         )
 
         val flow = flowOf(Resource.Success(weather))
 
         coEvery {
-            repository.getCurrentWeather(
+            weatherRepository.getCurrentWeather(
                 lat = 50f,
                 lon = 30f
             )
@@ -47,7 +52,7 @@ class GetCurrentWeatherUseCaseTest {
         assertTrue(result is Resource.Success)
 
         coVerify {
-            repository.getCurrentWeather(
+            weatherRepository.getCurrentWeather(
                 lat = 50f,
                 lon = 30f
             )

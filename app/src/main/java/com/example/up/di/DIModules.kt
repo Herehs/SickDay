@@ -1,12 +1,19 @@
 package com.example.up.di
 
 import android.content.Context
+import androidx.datastore.core.DataStore
+import androidx.datastore.preferences.core.Preferences
+import androidx.datastore.preferences.preferencesDataStore
 import androidx.room3.Room
-import com.example.server.data.remote.OpenMeteoServiceApi
-import com.example.server.data.remote.OpenMeteoServiceApiImpl
+import com.example.up.data.local.cache.CacheService
+import com.example.up.data.local.cache.PositionCacheServiceImpl
+import com.example.up.data.local.cache.datastore
+import com.example.up.data.local.cache.dto.PositionCache
 import com.example.up.data.local.database.AppDatabase
 import com.example.up.data.local.location.LocationProvider
 import com.example.up.data.local.location.LocationProviderImpl
+import com.example.up.data.remote.OpenMeteoApi.OpenMeteoServiceApi
+import com.example.up.data.remote.OpenMeteoApi.OpenMeteoServiceApiImpl
 import com.example.up.data.remote.SWPCApi.SWPCServiceApi
 import com.example.up.data.remote.SWPCApi.SWPCServiceApiImpl
 import com.example.up.data.repository.KpRepositoryImpl
@@ -49,7 +56,7 @@ val presentationModule = module {
 }
 
 val dataModule = module {
-    //data providers
+    //db builder
     single {
         Room.databaseBuilder(
             androidContext(),
@@ -57,7 +64,13 @@ val dataModule = module {
             "sickday_db"
         ).fallbackToDestructiveMigration(true).build()
     }
+    // dao for notes
     single { get<AppDatabase>().noteDao() }
+
+    single<DataStore<Preferences>> {
+        androidContext().datastore
+    }
+
 
     single {
         HttpClient(CIO) {
@@ -90,13 +103,17 @@ val dataModule = module {
         LocationProviderImpl(get<Context>(), get())
     }
 
+    single<CacheService<PositionCache>> {
+        PositionCacheServiceImpl(get())
+    }
+
     //repositories
     single<WeatherRepository>{
         WeatherRepositoryImpl(get())
     }
 
     single<PositionRepository> {
-        PositionRepositoryImpl(get())
+        PositionRepositoryImpl(get(), get())
     }
 
     single<NoteRepository> {

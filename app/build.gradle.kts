@@ -97,6 +97,7 @@ dependencies {
 
     implementation(libs.androidx.datastore)
     implementation(libs.androidx.datastore.core)
+    implementation(libs.androidx.datastore.preferences)
 
     implementation(libs.androidx.room3.runtime)
     ksp(libs.androidx.room3.compiler)

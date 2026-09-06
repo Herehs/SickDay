@@ -79,6 +79,7 @@ androidx-compose-foundation = { group = "androidx.compose.foundation", name = "f
 
 androidx-datastore = {module = "androidx.datastore:datastore", version.ref = "datastoreversion"}
 androidx-datastore-core = {module = "androidx.datastore:datastore-core", version.ref = "datastoreversion"}
+androidx-datastore-preferences = { module = "androidx.datastore:datastore-preferences", version.ref = "datastoreversion" }
 mockk = { module = "io.mockk:mockk", version.ref = "mockk" }
 play-services-location = { group = "com.google.android.gms", name = "play-services-location", version.ref = "playServicesLocation" }
 junit-jupiter = { group = "org.junit.jupiter", name = "junit-jupiter", version.ref = "junitJupiter" }

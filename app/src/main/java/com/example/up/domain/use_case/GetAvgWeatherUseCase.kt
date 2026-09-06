@@ -15,8 +15,8 @@ class GetAvgWeatherUseCase(
     private val kpRepository: KpRepository
 ) {
     suspend operator fun invoke(
-        lat: Float,
-        lon: Float,
+        lat: Double,
+        lon: Double,
         date: String
     ): Flow<Resource<Weather>>{
 
@@ -35,12 +35,6 @@ class GetAvgWeatherUseCase(
                             ?.averageForDate(LocalDate.parse(date))
                             ?.toFloat()
                             ?: 0f
-
-                        Log.d(
-                            "Kp",
-                            "$avgKp"
-                        )
-
                         Resource.Success(weather.copy(kp_index = avgKp))
                     }
                 }

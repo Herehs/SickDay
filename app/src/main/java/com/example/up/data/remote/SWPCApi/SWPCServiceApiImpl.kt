@@ -20,11 +20,6 @@ class SWPCServiceApiImpl(
         val isExpired = System.currentTimeMillis() - cacheTimestamp > cacheTtlMillis
         val current = cache
 
-        Log.d(
-            "Kp",
-            "Kp service made api call. "
-        )
-
         if (current == null || isExpired) {
             val fresh = try {
                 client.get("https://services.swpc.noaa.gov/products/noaa-planetary-k-index.json")
@@ -35,17 +30,9 @@ class SWPCServiceApiImpl(
             }
             cache = fresh
             cacheTimestamp = System.currentTimeMillis()
-            Log.d(
-                "Kp",
-                "Kp value ${cache}. "
-            )
 
             fresh
         } else {
-            Log.d(
-                "Kp",
-                "Kp used cache. "
-            )
             current
         }
     }
