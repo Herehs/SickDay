@@ -8,6 +8,7 @@ import com.example.up.domain.use_case.GetCurrentPositionUseCase
 import com.example.up.domain.use_case.GetCurrentWeatherUseCase
 import com.example.up.domain.use_case.GetKpByDateUseCase
 import com.example.up.presentation.screens.main_screen.components.Advice
+import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
@@ -38,82 +39,97 @@ class MainViewModel(
         _selectedDate.value = date
     }
 
-    private fun getWeatherInfo(){
+    private val _refresh = MutableStateFlow(false)
+    val refresh = _refresh.asStateFlow()
+
+    fun onRefresh(){
+        _refresh.value = true
         viewModelScope.launch {
-            getCurrentWeatherUseCase(
-                lat = _position.asStateFlow().value.lat,
-                lon = _position.asStateFlow().value.lon
-            ).collect {  result ->
-                when(result){
-                    is Resource.Success -> {
-                        result.data?.let { weather ->
-                            _currentWeather.update {
-                                it.copy(
-                                    humidity = weather.humidity,
-                                    kp_index = weather.kp_index,
-                                    pressure = weather.pressure,
-                                    temperature = weather.temperature,
-                                    isLoading = false,
-                                    isError = false
-                                )
-                            }
-                        }
-                        calculateDangerCoefficient()
-                    }
-                    is Resource.Loading -> {
-                        _currentWeather.update {
-                            it.copy(isLoading = true)
-                        }
-                    }
-                    is Resource.Error -> {
-                        _currentWeather.update {
-                            it.copy(
-                                isLoading = false,
-                                isError = true
-                            )
-                        }
-                    }
-                }
+            try {
+                getData()
+            } finally {
+                _refresh.value = false
             }
         }
     }
 
-    fun getPosition(){
-        viewModelScope.launch {
-            getCurrentPositionUseCase().collect { result ->
-                when(result){
-                    is Resource.Success -> {
-                        result.data?.let { position ->
-                            _position.update {
-                                it.copy(
-                                    lat = position.lat,
-                                    lon = position.lon,
-                                    isLoading = false,
-                                    isError = false
-                                )
-                            }
+    private suspend fun getData(){
+        getPosition()
+        getWeatherInfo()
+    }
 
-                            getWeatherInfo()
-                        }
-                    }
-                    is Resource.Loading -> {
-                        _position.update {
+    private suspend fun getWeatherInfo(){
+        getCurrentWeatherUseCase(
+            lat = _position.asStateFlow().value.lat,
+            lon = _position.asStateFlow().value.lon
+        ).collect {  result ->
+            when(result){
+                is Resource.Success -> {
+                    result.data?.let { weather ->
+                        _currentWeather.update {
                             it.copy(
-                                isLoading = true,
-                            )
-                        }
-                    }
-                    is Resource.Error -> {
-                        _position.update {
-                            it.copy(
+                                humidity = weather.humidity,
+                                kp_index = weather.kp_index,
+                                pressure = weather.pressure,
+                                temperature = weather.temperature,
                                 isLoading = false,
-                                isError = true
+                                isError = false
                             )
                         }
+                    }
+                    calculateDangerCoefficient()
+                }
+                is Resource.Loading -> {
+                    _currentWeather.update {
+                        it.copy(isLoading = true)
+                    }
+                }
+                is Resource.Error -> {
+                    _currentWeather.update {
+                        it.copy(
+                            isLoading = false,
+                            isError = true
+                        )
                     }
                 }
             }
         }
+
+    }
+
+    private suspend fun getPosition(){
+        getCurrentPositionUseCase().collect { result ->
+            when(result){
+                is Resource.Success -> {
+                    result.data?.let { position ->
+                        _position.update {
+                            it.copy(
+                                lat = position.lat,
+                                lon = position.lon,
+                                isLoading = false,
+                                isError = false
+                            )
+                        }
+                    }
+                }
+                is Resource.Loading -> {
+                    _position.update {
+                        it.copy(
+                            isLoading = true,
+                        )
+                    }
+                }
+                is Resource.Error -> {
+                    _position.update {
+                        it.copy(
+                            isLoading = false,
+                            isError = true
+                        )
+                    }
+                }
+            }
+        }
+
     }
 
     private fun calculateDangerCoefficient() {
@@ -170,7 +186,9 @@ class MainViewModel(
     }
 
     init {
-        getPosition()
+        viewModelScope.launch {
+            getData()
+        }
 
 
         _adviseList.value = listOf(

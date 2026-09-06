@@ -15,8 +15,10 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
+import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -48,6 +50,7 @@ import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import kotlin.math.roundToInt
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MainScreen(
     modifier: Modifier = Modifier,
@@ -58,25 +61,31 @@ fun MainScreen(
     val adviceList = mainViewModel.adviseList.collectAsState()
     val currentDate = mainViewModel.selectedDate.collectAsState()
     val danger = mainViewModel.danger.collectAsState()
+    val refresh = mainViewModel.refresh.collectAsState()
 
-    MainScreenSuccess(
-        modifier = modifier,
-        adviceList = adviceList.value,
-        currentDate = currentDate.value,
-        weatherInfo = weatherInfo.value,
-        danger = danger.value
-    ) { mainViewModel.selectDate(it.date) }
-    
-//    when {
-//        weatherInfo.value.isLoading -> {
-//            LoadingScreen(modifier = modifier)
-//        }
-//        weatherInfo.value.isError -> {
-//            ErrorScreen(modifier = modifier)
-//        }
-//        else -> {
-//        }
-//    }
+    PullToRefreshBox(
+        isRefreshing = refresh.value,
+        onRefresh = mainViewModel::onRefresh,
+        modifier = modifier
+    ) {
+        when {
+            weatherInfo.value.isLoading -> {
+                LoadingScreen(modifier = Modifier.fillMaxSize())
+            }
+            weatherInfo.value.isError -> {
+                ErrorScreen(modifier = Modifier.fillMaxSize())
+            }
+            else -> {
+                MainScreenSuccess(
+                    modifier = Modifier.fillMaxSize(),
+                    adviceList = adviceList.value,
+                    currentDate = currentDate.value,
+                    weatherInfo = weatherInfo.value,
+                    danger = danger.value
+                ) { mainViewModel.selectDate(it.date) }
+            }
+        }
+    }
 }
 
 @Composable
