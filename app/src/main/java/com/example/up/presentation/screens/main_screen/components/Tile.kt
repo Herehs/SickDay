@@ -1,9 +1,11 @@
 package com.example.up.presentation.screens.main_screen.components
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
@@ -28,35 +30,34 @@ import com.example.up.presentation.ui.theme.text
 @Composable
 fun Tile(
     modifier: Modifier = Modifier,
-    name: String,
-    tileContent: @Composable (() -> Unit)
+    name: String= "name",
+    value: String = ""
 ){
     Column(
         modifier = modifier
-            .width(174.dp)
-            .height(84.dp)
-            .clip(RoundedCornerShape(5.dp))
-            .border(
-                width = 1.dp,
-                color = Color(0xffCCA7A7),
-                shape = RoundedCornerShape(6.dp)
-            ),
-        horizontalAlignment = Alignment.Start
+            .clip(RoundedCornerShape(10.dp))
+            .background(Color(0xffD0EAFF).copy(alpha = 0.3f))
+            .padding(10.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Column(
-            modifier = Modifier.padding(top = 10.dp, start = 16.dp)
-        ) {
-            Text(
-                modifier = Modifier,
-                text = name,
-                fontSize = 13.sp,
-                lineHeight = 22.sp,
-                fontFamily = bodyFontFamily,
-                color = text,
-                fontWeight = FontWeight.W400
-            )
-            tileContent()
-        }
+        Text(
+            modifier = Modifier,
+            text = name,
+            fontSize = 14.sp,
+            lineHeight = 22.sp,
+            fontFamily = bodyFontFamily,
+            color = text,
+            fontWeight = FontWeight.W400
+        )
+        Text(
+            modifier = Modifier,
+            text = value,
+            fontSize = 32.sp,
+            lineHeight = 32.sp,
+            fontFamily = bodyFontFamily,
+            color = text,
+            fontWeight = FontWeight.W400
+        )
     }
 }
 
@@ -70,37 +71,7 @@ fun TileTest(){
     ){
         Tile(
             name = "hui",
-            tileContent = {
-
-                Text(
-                    modifier = Modifier.padding(bottom = 4.dp),
-                    text = buildAnnotatedString {
-                        withStyle(style = SpanStyle(
-                                fontSize = 32.sp,
-                                fontFamily = bodyFontFamily,
-                                color = text,
-                                fontWeight = FontWeight.W400
-                            )
-                        ){
-                            append("777 ")
-                        }
-                        withStyle(style = SpanStyle(
-                            fontSize = 16.sp,
-                            fontFamily = bodyFontFamily,
-                            color = text,
-                            fontWeight = FontWeight.W400
-                        )
-                        ){
-                            append("мм рт ст")
-                        }
-                    },
-                    fontSize = 18.sp,
-                    lineHeight = 22.sp,
-                    fontFamily = bodyFontFamily,
-                    color = text,
-                    fontWeight = FontWeight.W400
-                )
-            }
+            value = "sdsd"
         )
     }
 }

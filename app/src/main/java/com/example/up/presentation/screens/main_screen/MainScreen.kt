@@ -3,17 +3,21 @@ package com.example.up.presentation.screens.main_screen
 import android.Manifest
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -24,6 +28,8 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
@@ -121,7 +127,9 @@ fun MainScreenSuccess(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Text(
-            modifier = Modifier.padding(horizontal = 10.dp).padding(top = 10.dp),
+            modifier = Modifier
+                .padding(horizontal = 10.dp)
+                .padding(top = 10.dp, bottom = 30.dp),
             text = formatted.format(DateTimeFormatter.ofPattern("LLLL yyyy")).replaceFirstChar { it.uppercase() },
             fontSize = 18.sp,
             lineHeight = 22.sp,
@@ -130,143 +138,71 @@ fun MainScreenSuccess(
             fontWeight = FontWeight.W400
         )
 
-        DateCarousel(modifier = Modifier.padding(top = 10.dp).height(100.dp), pickedDay = pickDate)
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(top = 8.dp),
+                .padding(top = 0.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            IndexScale(text = "Индекс", value = danger, modifier = Modifier.padding(horizontal = 20.dp))
-            LazyVerticalGrid(
+            Text(
+                modifier = Modifier.padding(bottom = 4.dp),
+                text = " ${weatherInfo.temperature}°",
+                fontSize = 64.sp,
+                lineHeight = 64.sp,
+                fontFamily = bodyFontFamily,
+                color = text,
+                fontWeight = FontWeight.W400
+            )
+            Text(
+                modifier = Modifier.padding(bottom = 24.dp),
+                text = "Средняя температура",
+                fontSize = 18.sp,
+                lineHeight = 18.sp,
+                fontFamily = bodyFontFamily,
+                color = text,
+                fontWeight = FontWeight.W400
+            )
+
+            Row(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(top = 12.dp)
                     .padding(horizontal = 20.dp),
-                columns = GridCells.Fixed(2),
-                horizontalArrangement = Arrangement.spacedBy(8.dp),
-                verticalArrangement = Arrangement.spacedBy(8.dp)
+                horizontalArrangement = Arrangement.spacedBy(10.dp)
             ) {
-                item {
-                    Tile(
-                        name = "Давление",
-                        tileContent = {
-                            Text(
-                                modifier = Modifier.padding(bottom = 4.dp),
-                                text = buildAnnotatedString {
-                                    withStyle(style = SpanStyle(
-                                        fontSize = 32.sp,
-                                        fontFamily = bodyFontFamily,
-                                        color = text,
-                                        fontWeight = FontWeight.W400
-                                    )
-                                    ){
-                                        append(weatherInfo.pressure.roundToInt().toString())
-                                    }
-                                },
-                                fontSize = 18.sp,
-                                lineHeight = 22.sp,
-                                fontFamily = bodyFontFamily,
-                                color = text,
-                                fontWeight = FontWeight.W400
-                            )
-                        }
-                    )
-                }
-                item {
-                    Tile(
-                        name = "Индекс Кр",
-                        tileContent = {
-                            Text(
-                                modifier = Modifier.padding(bottom = 4.dp),
-                                text = buildAnnotatedString {
-                                    withStyle(style = SpanStyle(
-                                        fontSize = 32.sp,
-                                        fontFamily = bodyFontFamily,
-                                        color = text,
-                                        fontWeight = FontWeight.W400
-                                    )
-                                    ){
-                                        append("${weatherInfo.kp_index.roundToInt()}/")
-                                    }
-                                    withStyle(style = SpanStyle(
-                                        fontSize = 24.sp,
-                                        fontFamily = bodyFontFamily,
-                                        color = text,
-                                        fontWeight = FontWeight.W400
-                                    )
-                                    ){
-                                        append("9")
-                                    }
-                                },
-                                fontSize = 18.sp,
-                                lineHeight = 22.sp,
-                                fontFamily = bodyFontFamily,
-                                color = text,
-                                fontWeight = FontWeight.W400
-                            )
-                        }
-                    )
-                }
-                item {
-                    Tile(
-                        name = "Температура",
-                        tileContent = {
-                            Text(
-                                modifier = Modifier.padding(bottom = 4.dp),
-                                text = buildAnnotatedString {
-                                    withStyle(style = SpanStyle(
-                                        fontSize = 32.sp,
-                                        fontFamily = bodyFontFamily,
-                                        color = text,
-                                        fontWeight = FontWeight.W400
-                                    )
-                                    ){
-                                        append("${weatherInfo.temperature}")
-                                    }
-                                },
-                                fontSize = 18.sp,
-                                lineHeight = 22.sp,
-                                fontFamily = bodyFontFamily,
-                                color = text,
-                                fontWeight = FontWeight.W400
-                            )
-                        }
-                    )
-                }
-                item {
-                    Tile(
-                        name = "Влажность",
-                        tileContent = {
-                            Text(
-                                modifier = Modifier.padding(bottom = 4.dp),
-                                text = buildAnnotatedString {
-                                    withStyle(style = SpanStyle(
-                                        fontSize = 32.sp,
-                                        fontFamily = bodyFontFamily,
-                                        color = text,
-                                        fontWeight = FontWeight.W400
-                                    )
-                                    ){
-                                        append("${weatherInfo.humidity.roundToInt()}%")
-                                    }
-                                },
-                                fontSize = 18.sp,
-                                lineHeight = 22.sp,
-                                fontFamily = bodyFontFamily,
-                                color = text,
-                                fontWeight = FontWeight.W400
-                            )
-                        }
-                    )
-
-                }
+                Tile(
+                    modifier = Modifier.weight(1f),
+                    name = "Влажность",
+                    value = "${weatherInfo.humidity.roundToInt()}%"
+                )
+                Tile(
+                    modifier = Modifier.weight(1f),
+                    name = "Индекс Кр",
+                    value = "${weatherInfo.kp_index.roundToInt()}/9"
+                )
+                Tile(
+                    modifier = Modifier.weight(1f),
+                    name = "Давление",
+                    value = weatherInfo.pressure.roundToInt().toString()
+                )
             }
+            IndexScale(
+                modifier = Modifier
+                    .padding(
+                        start = 20.dp,
+                        top = 20.dp,
+                        end = 20.dp
+                    ),
+                text = "Индекс",
+                value = danger,
+            )
             Section(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(top = 40.dp)
-                    .padding(horizontal = 20.dp),
+                    .padding(top = 10.dp, start = 20.dp, end = 20.dp)
+                    .clip(RoundedCornerShape(10.dp))
+                    .background(Color(0xffD0EAFF).copy(alpha = 0.3f))
+                    .padding(10.dp),
                 name = "Советы на сегодня"
             ) {
                 //уже захардкожено во вьюмодели
@@ -296,8 +232,28 @@ fun MainScreenSuccess(
 
 
 
-@Preview
+@Preview(showBackground = true)
 @Composable
 fun TestMainScreen(){
-    MainScreen()
+    MainScreenSuccess(
+        adviceList = listOf(
+            Advice(
+                icon = R.drawable.heart_rate,
+                text = "Снизьте физические нагрузки, избегайте резкого подъёма"
+            ),
+            Advice(
+                icon = R.drawable.clock,
+                text = "Пейте больше воды \n1.5–2 л в течение дня"
+            ),
+            Advice(
+                icon = R.drawable.drop,
+                text = "Ложитесь спать пораньше, ночью буря усилится"
+            )
+        )
+        ,
+        currentDate = LocalDate.now(),
+        weatherInfo = CurrentWeatherState(),
+        danger = 1f,
+        pickDate = {  }
+    )
 }

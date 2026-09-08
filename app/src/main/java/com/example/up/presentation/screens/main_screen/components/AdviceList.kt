@@ -35,7 +35,12 @@ fun AdviceList(
     ) {
         items(advices){ advice ->
             Row(
-                modifier = Modifier.padding(top = 4.dp, bottom = 4.dp),
+                modifier = Modifier.padding(
+                    top = 4.dp,
+                    bottom = 4.dp,
+                    start = 10.dp,
+                    end = 10.dp
+                ),
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Icon(

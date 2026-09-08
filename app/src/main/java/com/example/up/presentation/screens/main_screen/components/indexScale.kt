@@ -36,7 +36,7 @@ fun IndexScale(
         modifier = modifier,
     ) {
         Text(
-            modifier = Modifier.padding(bottom = 10.dp),
+            modifier = Modifier.padding(bottom = 0.dp),
             text = text,
             fontSize = 17.sp,
             lineHeight = 22.sp,

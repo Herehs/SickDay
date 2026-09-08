@@ -6,8 +6,11 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.gestures.snapping.SnapPosition
 import androidx.compose.foundation.gestures.snapping.rememberSnapFlingBehavior
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -36,47 +39,57 @@ import com.example.up.presentation.ui.theme.bodyFontFamily
 import com.example.up.presentation.ui.theme.text
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
+import kotlin.math.abs
+import kotlin.math.pow
 
 @Composable
 fun DateCarousel(
     modifier: Modifier = Modifier,
     pickedDay: (DateCardData) -> Unit,
 ){
-    val listSize = 201
+    val listSize = 61
     val dateList = getDateList(listSize)
 
     val lazyRowState = rememberLazyListState()
-    val centerItemIndex = remember {
-        derivedStateOf {
-            val layoutInfo = lazyRowState.layoutInfo
-            val viewportCenter = (layoutInfo.viewportStartOffset + layoutInfo.viewportEndOffset) / 2
 
-            println("viewportCenter ${viewportCenter}")
-            layoutInfo.visibleItemsInfo.minByOrNull { item ->
-                val itemCenter = item.offset + item.size / 2
-                kotlin.math.abs(itemCenter - viewportCenter)
-            }?.index
-        }
-    }
     LaunchedEffect(Unit) {
-        lazyRowState.scrollToItem(listSize / 2)
+        lazyRowState.scrollToItem(listSize)
     }
 
     LazyRow(
         state = lazyRowState,
-        modifier = modifier,
+        modifier = modifier.padding(top = 20.dp),
         flingBehavior = rememberSnapFlingBehavior(lazyListState = lazyRowState, snapPosition = SnapPosition.Center),
         contentPadding = PaddingValues(
-            horizontal = (LocalConfiguration.current.screenWidthDp.dp / 2) - (126.dp / 2)
+            horizontal = (LocalConfiguration.current.screenWidthDp.dp / 2) - (60.dp / 2)
         )
     ) {
         itemsIndexed(dateList){ index, card ->
-            var isSelected = false
-            if(index == centerItemIndex.value){
-                isSelected = true
-                pickedDay(card)
+            val layoutInfo = lazyRowState.layoutInfo
+            val itemInfo = layoutInfo.visibleItemsInfo.find { it.index == index }
+
+            val offset = remember(itemInfo, layoutInfo) {
+                if (itemInfo == null) {
+                    0f
+                } else {
+                    val viewportCenter = (layoutInfo.viewportStartOffset + layoutInfo.viewportEndOffset) / 2
+                    val itemCenter = itemInfo.offset + itemInfo.size / 2
+                    val distance = abs(itemCenter - viewportCenter)
+                    val maxDistance = layoutInfo.viewportSize.width / 2f
+
+                    val fraction = (distance / maxDistance).coerceIn(0f, 1f)
+
+                    val result = (fraction * 100).pow(2) * 0.01f - 0.01f
+                    -result
+                }
             }
-            DateCard(card.copy(selected = isSelected))
+
+            DateCard(
+                modifier = Modifier.graphicsLayer{
+                    translationY = offset
+                },
+                data = card.copy()
+            )
         }
     }
 }
@@ -84,18 +97,13 @@ fun DateCarousel(
 @Composable
 fun DateCard(
     data: DateCardData,
+    modifier: Modifier = Modifier,
 ){
-    val numberSize = animateFloatAsState(if(data.selected) 1.5f else 1f)
-    val width = animateDpAsState(if(data.selected) 126.dp else 80.dp)
-    val height = animateDpAsState(if(data.selected) 100.dp else 67.dp)
-    val textOffset = animateFloatAsState(if(data.selected) 55f else 0f)
-
-
-    Box(
-        modifier = Modifier
+    Column(
+        modifier = modifier
             .padding(5.dp)
-            .width(width.value)
-            .height(height.value)
+            .width(50.dp)
+            .aspectRatio(3f/4f)
             .clip(shape = RoundedCornerShape(8.dp))
             .background(color = Color(0xFFD5DAFF))
             .border(
@@ -103,14 +111,13 @@ fun DateCard(
                 color = Color(0xFF7289FB),
                 shape = RoundedCornerShape(8.dp)
             ),
-        contentAlignment = Alignment.Center
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
     ){
         Text(
-            modifier = Modifier.graphicsLayer(
-                translationY = -textOffset.value
-            ),
+            modifier = Modifier,
             text = data.date.format(DateTimeFormatter.ofPattern("dd")),
-            fontSize = 24.sp * numberSize.value,
+            fontSize = 24.sp,
             lineHeight = 22.sp,
             fontFamily = bodyFontFamily,
             color = text,
@@ -119,32 +126,29 @@ fun DateCard(
 
 
         Text(
-            modifier = Modifier.graphicsLayer(
-                translationY = textOffset.value,
-                alpha = if (textOffset.value > 10f) textOffset.value / 55 else 0f
-            ),
-            text = data.date.format(DateTimeFormatter.ofPattern("EEEE")).replaceFirstChar { it.uppercase() },
-            fontSize = 13.sp,
-            lineHeight = 22.sp,
+            modifier = Modifier,
+            text = data.date.format(DateTimeFormatter.ofPattern("E")).replaceFirstChar { it.uppercase() },
+            fontSize = 12.sp,
+            lineHeight = 18.sp,
             fontFamily = bodyFontFamily,
             color = text,
             fontWeight = FontWeight.W500,
             maxLines = 1,
-            textAlign = TextAlign.Center
+            textAlign = TextAlign.Center,
+            letterSpacing = -1.sp
         )
     }
 }
 
 data class DateCardData(
     val date: LocalDate,
-    var selected: Boolean = false,
-    var scale: Float = 1f
+    val isSelected: Boolean = false,
 )
 
 fun getDateList(size: Int): List<DateCardData> {
     val today = LocalDate.now()
     val dateList = mutableListOf<DateCardData>()
-    for(i in -size / 2 .. size / 2){
+    for(i in -size .. 0){
         dateList.add(
             DateCardData(
                 date = today.plusDays(i.toLong())
