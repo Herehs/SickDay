@@ -44,9 +44,29 @@ Used for fetching pressure, temperature and humidity.
 ### Kp index — [NOAA SWPC](https://www.swpc.noaa.gov/products/planetary-k-index)
 Kp index updates every 3 hours.
 
+## Getting started
+1. Clone repository:
+``` bash
+git clone https://github.com/Herehs/SickDay.git
+cd SickDay
+```
+2. Assembly with Gradle:
+``` bash
+# assemble debug apk
+./gradlew assembleDebug
+
+# assemble release apk
+./gradlew assembleRelease
+
+# install on your device
+./gradlew assembleRelease
+```
+
 ## Screenshots
 <div style="display: flex; gap: 10px;">
   <img src=".github/assets/img/scr1.png" width="250">
   <img src=".github/assets/img/scr2.png" width="250">
   <img src=".github/assets/img/scr3.png" width="250">
 </div>
+
+
