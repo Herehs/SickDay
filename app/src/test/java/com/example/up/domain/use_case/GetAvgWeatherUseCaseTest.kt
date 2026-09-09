@@ -53,8 +53,8 @@ class GetAvgWeatherUseCaseTest {
 
         coEvery {
             weatherRepository.getAvgWeather(
-                lat = 50f,
-                lon = 30f,
+                lat = 50.0,
+                lon = 30.0,
                 date = "2025-05-14"
             )
         } returns weatherFlow
@@ -65,8 +65,8 @@ class GetAvgWeatherUseCaseTest {
 
 
         val result = useCase(
-            lat = 50f,
-            lon = 30f,
+            lat = 50.0,
+            lon = 30.0,
             date = "2025-05-14"
         ).first()
 
@@ -81,8 +81,8 @@ class GetAvgWeatherUseCaseTest {
 
         coVerify {
             weatherRepository.getAvgWeather(
-                lat = 50f,
-                lon = 30f,
+                lat = 50.0,
+                lon = 30.0,
                 date = "2025-05-14"
             )
         }

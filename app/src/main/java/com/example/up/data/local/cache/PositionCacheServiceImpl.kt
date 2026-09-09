@@ -17,15 +17,15 @@ class PositionCacheServiceImpl(
     private val lon = doublePreferencesKey("lon")
     private val savedAtMs = longPreferencesKey("savedAtMs")
 
-    override suspend fun load(): Flow<PositionCache> = datastore.data.map { prefs ->
-        val position = Position(
-            lat = prefs[lat] ?: .0,
-            lon = prefs[lon] ?: .0
-        )
-        PositionCache(
-            position = position,
-            savedAtMs = prefs[savedAtMs] ?: 0L
-        )
+    override suspend fun load(): Flow<PositionCache?> = datastore.data.map { prefs ->
+        val lat = prefs[lat]
+        val lon = prefs[lon]
+        if(lat == null || lon == null) { null } else {
+            PositionCache(
+                position = Position(lat, lon),
+                savedAtMs = prefs[savedAtMs] ?: 0L
+            )
+        }
     }
 
     override suspend fun save(data: PositionCache) {
@@ -38,3 +38,4 @@ class PositionCacheServiceImpl(
         }
     }
 }
+

@@ -39,22 +39,22 @@ class GetCurrentWeatherUseCaseTest {
 
         coEvery {
             weatherRepository.getCurrentWeather(
-                lat = 50f,
-                lon = 30f
+                lat = 50.0,
+                lon = 30.0
             )
         } returns flow
 
         val result = useCase(
-            lat = 50f,
-            lon = 30f
+            lat = 50.0,
+            lon = 30.0
         ).first()
 
         assertTrue(result is Resource.Success)
 
         coVerify {
             weatherRepository.getCurrentWeather(
-                lat = 50f,
-                lon = 30f
+                lat = 50.0,
+                lon = 30.0
             )
         }
     }

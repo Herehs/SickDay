@@ -39,6 +39,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.up.R
+import com.example.up.domain.model.WeeklyWeather
 import com.example.up.presentation.common_сomponents.ErrorScreen
 import com.example.up.presentation.common_сomponents.LoadingScreen
 import com.example.up.presentation.common_сomponents.Section
@@ -48,6 +49,7 @@ import com.example.up.presentation.screens.main_screen.components.DateCardData
 import com.example.up.presentation.screens.main_screen.components.DateCarousel
 import com.example.up.presentation.screens.main_screen.components.IndexScale
 import com.example.up.presentation.screens.main_screen.components.Tile
+import com.example.up.presentation.screens.main_screen.components.WeeklyWeatherList
 import com.example.up.presentation.ui.theme.bodyFontFamily
 import com.example.up.presentation.ui.theme.text
 import com.example.up.presentation.ui.theme.textDim
@@ -68,6 +70,7 @@ fun MainScreen(
     val currentDate = mainViewModel.selectedDate.collectAsState()
     val danger = mainViewModel.danger.collectAsState()
     val refresh = mainViewModel.refresh.collectAsState()
+    val weeklyWeather = mainViewModel.weeklyWeather.collectAsState()
 
     PullToRefreshBox(
         isRefreshing = refresh.value,
@@ -87,7 +90,8 @@ fun MainScreen(
                     adviceList = adviceList.value,
                     currentDate = currentDate.value,
                     weatherInfo = weatherInfo.value,
-                    danger = danger.value
+                    danger = danger.value,
+                    weeklyWeather = weeklyWeather.value
                 ) { mainViewModel.selectDate(it.date) }
             }
         }
@@ -101,6 +105,7 @@ fun MainScreenSuccess(
     currentDate: LocalDate,
     weatherInfo: CurrentWeatherState,
     danger: Float,
+    weeklyWeather: List<WeeklyWeather>,
     pickDate: (DateCardData) -> Unit
 ){
     val formatted = currentDate.format(DateTimeFormatter.ofPattern("LLLL yyyy")).replaceFirstChar { it.uppercase() }
@@ -196,6 +201,10 @@ fun MainScreenSuccess(
                 text = "Индекс",
                 value = danger,
             )
+            Spacer(Modifier.height(10.dp))
+            WeeklyWeatherList(
+                weatherList = weeklyWeather
+            )
             Section(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -249,11 +258,11 @@ fun TestMainScreen(){
                 icon = R.drawable.drop,
                 text = "Ложитесь спать пораньше, ночью буря усилится"
             )
-        )
-        ,
+        ),
         currentDate = LocalDate.now(),
         weatherInfo = CurrentWeatherState(),
         danger = 1f,
-        pickDate = {  }
+        pickDate = { },
+        weeklyWeather = TODO()
     )
 }

@@ -5,6 +5,7 @@ import com.example.up.common.safeApiCall
 import com.example.up.data.remote.OpenMeteoApi.OpenMeteoServiceApi
 import com.example.up.data.remote.mappers.toDomain
 import com.example.up.domain.model.Weather
+import com.example.up.domain.model.WeeklyWeather
 import com.example.up.domain.repository.WeatherRepository
 import kotlinx.coroutines.flow.Flow
 
@@ -19,6 +20,20 @@ class WeatherRepositoryImpl(
             lat = lat,
             lon = lon,
             date = date
+        ).toDomain()
+    }
+
+    override suspend fun getWeeklyWeather(
+        lat: Double,
+        lon: Double,
+        startDate: String,
+        endDate: String
+    ): Flow<Resource<List<WeeklyWeather>>> = safeApiCall {
+        api.getWeeklyWeather(
+            lat = lat,
+            lon = lon,
+            startDate = startDate,
+            endDate = endDate
         ).toDomain()
     }
 }

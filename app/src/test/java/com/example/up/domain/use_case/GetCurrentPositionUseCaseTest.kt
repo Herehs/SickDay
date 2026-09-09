@@ -29,8 +29,8 @@ class GetCurrentPositionUseCaseTest {
     fun `invoke should return current position`() = runTest {
 
         val position = Position(
-            lat = 50f,
-            lon = 30f
+            lat = 50.0,
+            lon = 30.0
         )
 
         val flow = flowOf(

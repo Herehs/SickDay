@@ -4,9 +4,10 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.up.R
 import com.example.up.common.Resource
+import com.example.up.domain.model.WeeklyWeather
 import com.example.up.domain.use_case.GetCurrentPositionUseCase
 import com.example.up.domain.use_case.GetCurrentWeatherUseCase
-import com.example.up.domain.use_case.GetKpByDateUseCase
+import com.example.up.domain.use_case.GetWeeklyWeatherUseCase
 import com.example.up.presentation.screens.main_screen.components.Advice
 import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -14,10 +15,12 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 
 class MainViewModel(
     private val getCurrentWeatherUseCase: GetCurrentWeatherUseCase,
     private val getCurrentPositionUseCase: GetCurrentPositionUseCase,
+    private val getWeeklyWeatherUseCase: GetWeeklyWeatherUseCase
 ) : ViewModel() {
 
     private val _adviseList = MutableStateFlow(emptyList<Advice>())
@@ -42,6 +45,9 @@ class MainViewModel(
     private val _refresh = MutableStateFlow(false)
     val refresh = _refresh.asStateFlow()
 
+    private val _weeklyWeather = MutableStateFlow(listOf<WeeklyWeather>())
+    val weeklyWeather = _weeklyWeather.asStateFlow()
+
     fun onRefresh(){
         _refresh.value = true
         viewModelScope.launch {
@@ -56,6 +62,7 @@ class MainViewModel(
     private suspend fun getData(){
         getPosition()
         getWeatherInfo()
+        getWeeklyWeather()
     }
 
     private suspend fun getWeatherInfo(){
@@ -183,6 +190,30 @@ class MainViewModel(
                     pressureCoefficient * weights["pressure"]!!
 
         _danger.value = (dangerCoefficient.coerceIn(0f, 1f) * 100).toInt() / 100f
+    }
+
+    private suspend fun getWeeklyWeather(){
+        getWeeklyWeatherUseCase(
+            lat = _position.asStateFlow().value.lat,
+            lon = _position.asStateFlow().value.lon,
+            currentDate = _selectedDate.value.format(DateTimeFormatter.ofPattern("yyyy-MM-dd")) ?: "1970-01-01"
+        ).collect {  result ->
+            when(result){
+                is Resource.Success -> {
+                    result.data?.let { weather ->
+                        _weeklyWeather.value = weather
+                    }
+                    calculateDangerCoefficient()
+                }
+                is Resource.Loading -> {
+
+                }
+                is Resource.Error -> {
+
+                }
+            }
+        }
+
     }
 
     init {

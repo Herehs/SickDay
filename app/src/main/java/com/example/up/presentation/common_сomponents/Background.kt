@@ -28,7 +28,6 @@ import kotlin.random.Random
 
 val figureColors = listOf(
     Color(0xFFFF91ED),
-    Color(0xFFD0EAFF),
     Color(0xFFFFE1D0),
     Color(0xFFFBFFDB),
     Color(0xFFFFD0EC),
@@ -36,7 +35,6 @@ val figureColors = listOf(
     Color(0xFFD0FFE6),
     Color(0xFFFFC6FF),
     Color(0xFFBDB2FF),
-    Color(0xFFA0C4FF),
     Color(0xFFCAFFBF)
 
 )

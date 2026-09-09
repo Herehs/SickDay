@@ -3,6 +3,8 @@ package com.example.up.data.remote.OpenMeteoApi
 import HttpRoutes.BASE_URL
 import com.example.server.data.remote.dto.HourlyWeatherDto
 import com.example.server.data.remote.dto.WeatherResponseDto
+import com.example.up.data.remote.dto.WeeklyWeatherDto
+import com.example.up.domain.model.WeeklyWeather
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.request.get
@@ -18,6 +20,19 @@ class OpenMeteoServiceApiImpl(
         parameter("latitude", lat)
         parameter("longitude", lon)
         parameter("current", "temperature_2m,relative_humidity_2m,pressure_msl")
+    }.body()
+
+    override suspend fun getWeeklyWeather(
+        lat: Double,
+        lon: Double,
+        startDate: String,
+        endDate: String
+    ): WeeklyWeatherDto = client.get(BASE_URL){
+        parameter("latitude", lat)
+        parameter("longitude", lon)
+        parameter("daily", "temperature_2m_mean,relative_humidity_2m_mean")
+        parameter("start_date", startDate)
+        parameter("end_date", endDate)
     }.body()
 
     override suspend fun getHourlyWeather(

@@ -32,6 +32,7 @@ import com.example.up.domain.use_case.GetCurrentWeatherUseCase
 import com.example.up.domain.use_case.GetGraphDataUseCase
 import com.example.up.domain.use_case.GetKpByDateUseCase
 import com.example.up.domain.use_case.GetNoteByIdUseCase
+import com.example.up.domain.use_case.GetWeeklyWeatherUseCase
 import com.example.up.domain.use_case.SaveNoteUseCase
 import com.example.up.presentation.screens.calendar_screen.CalendarViewModel
 import com.example.up.presentation.screens.main_screen.MainViewModel
@@ -145,4 +146,6 @@ val domainModule = module {
     single { SaveNoteUseCase(get()) }
 
     single { DeleteNoteUseCase(get()) }
+
+    single { GetWeeklyWeatherUseCase(get()) }
 }

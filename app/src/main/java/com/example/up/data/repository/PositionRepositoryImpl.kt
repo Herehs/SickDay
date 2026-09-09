@@ -20,13 +20,13 @@ class PositionRepositoryImpl(
     private val cacheTtlMillis: Long = 1000 * 60 * 60L
 
     override suspend fun getCurrentPosition(): Flow<Resource<Position>> = flow {
-        val isExpired = System.currentTimeMillis() - (inMemoryCache?.savedAtMs ?: 0L) > cacheTtlMillis
 
         try {
             emit(Resource.Loading())
             val cached = inMemoryCache ?: positionCache.load().first()
+            val isExpired = cached == null || System.currentTimeMillis() - cached.savedAtMs > cacheTtlMillis
 
-            if(cached != null || !isExpired){
+            if(!isExpired){
                 inMemoryCache = cached
                 emit(Resource.Success(cached.toDomain()))
                 return@flow
