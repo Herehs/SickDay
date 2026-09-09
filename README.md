@@ -45,3 +45,8 @@ Used for fetching pressure, temperature and humidity.
 Kp index updates every 3 hours.
 
 ## Screenshots
+<div style="display: flex; gap: 10px;">
+  <img src=".github/assets/img/scr1.png" width="250">
+  <img src=".github/assets/img/scr2.png" width="250">
+  <img src=".github/assets/img/scr3.png" width="250">
+</div>
