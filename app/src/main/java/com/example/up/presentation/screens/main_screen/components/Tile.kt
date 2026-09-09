@@ -15,6 +15,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
@@ -36,7 +37,7 @@ fun Tile(
     Column(
         modifier = modifier
             .clip(RoundedCornerShape(10.dp))
-            .background(Color(0xffD0EAFF).copy(alpha = 0.3f))
+            .background(Color(0xffFFFFFF).copy(alpha = 0.5f))
             .padding(10.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {

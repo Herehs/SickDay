@@ -2,6 +2,7 @@ package com.example.up.presentation.screens.main_screen.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
@@ -30,10 +31,10 @@ import com.example.up.presentation.ui.theme.text
 fun AdviceList(
     advices: List<Advice>
 ){
-    LazyColumn(
+    Column(
         modifier = Modifier.padding(top = 4.dp)
     ) {
-        items(advices){ advice ->
+        for(advice in advices){
             Row(
                 modifier = Modifier.padding(
                     top = 4.dp,
@@ -83,7 +84,9 @@ fun AdviceListTest(){
 
     Scaffold() { innerPadding ->
         Box(
-            modifier = Modifier.padding(innerPadding).padding(horizontal = 10.dp)
+            modifier = Modifier
+                .padding(innerPadding)
+                .padding(horizontal = 10.dp)
         ){
             AdviceList(adviceList)
         }

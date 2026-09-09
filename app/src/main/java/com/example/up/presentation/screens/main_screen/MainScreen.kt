@@ -5,7 +5,6 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -13,14 +12,9 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.lazy.grid.GridCells
-import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.runtime.Composable
@@ -30,11 +24,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.SpanStyle
-import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -46,13 +36,11 @@ import com.example.up.presentation.common_сomponents.Section
 import com.example.up.presentation.screens.main_screen.components.Advice
 import com.example.up.presentation.screens.main_screen.components.AdviceList
 import com.example.up.presentation.screens.main_screen.components.DateCardData
-import com.example.up.presentation.screens.main_screen.components.DateCarousel
 import com.example.up.presentation.screens.main_screen.components.IndexScale
 import com.example.up.presentation.screens.main_screen.components.Tile
 import com.example.up.presentation.screens.main_screen.components.WeeklyWeatherList
 import com.example.up.presentation.ui.theme.bodyFontFamily
 import com.example.up.presentation.ui.theme.text
-import com.example.up.presentation.ui.theme.textDim
 import org.koin.androidx.compose.koinViewModel
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
@@ -126,29 +114,25 @@ fun MainScreenSuccess(
         )
     }
 
-    Column(
-        modifier = modifier
-            .fillMaxSize(),
+    LazyColumn(
+        modifier = modifier,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Text(
-            modifier = Modifier
-                .padding(horizontal = 10.dp)
-                .padding(top = 10.dp, bottom = 30.dp),
-            text = formatted.format(DateTimeFormatter.ofPattern("LLLL yyyy")).replaceFirstChar { it.uppercase() },
-            fontSize = 18.sp,
-            lineHeight = 22.sp,
-            fontFamily = bodyFontFamily,
-            color = text,
-            fontWeight = FontWeight.W400
-        )
-
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(top = 0.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
+        item {
+            Text(
+                modifier = Modifier
+                    .padding(horizontal = 10.dp)
+                    .padding(top = 10.dp, bottom = 30.dp),
+                text = formatted.format(DateTimeFormatter.ofPattern("LLLL yyyy"))
+                    .replaceFirstChar { it.uppercase() },
+                fontSize = 18.sp,
+                lineHeight = 22.sp,
+                fontFamily = bodyFontFamily,
+                color = text,
+                fontWeight = FontWeight.W400
+            )
+        }
+        item {
             Text(
                 modifier = Modifier.padding(bottom = 4.dp),
                 text = " ${weatherInfo.temperature}°",
@@ -167,7 +151,8 @@ fun MainScreenSuccess(
                 color = text,
                 fontWeight = FontWeight.W400
             )
-
+        }
+        item {
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -191,6 +176,8 @@ fun MainScreenSuccess(
                     value = weatherInfo.pressure.roundToInt().toString()
                 )
             }
+        }
+        item {
             IndexScale(
                 modifier = Modifier
                     .padding(
@@ -202,15 +189,19 @@ fun MainScreenSuccess(
                 value = danger,
             )
             Spacer(Modifier.height(10.dp))
+        }
+        item {
             WeeklyWeatherList(
                 weatherList = weeklyWeather
             )
+        }
+        item {
             Section(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(top = 10.dp, start = 20.dp, end = 20.dp)
                     .clip(RoundedCornerShape(10.dp))
-                    .background(Color(0xffD0EAFF).copy(alpha = 0.3f))
+                    .background(Color(0xffFFFFFF).copy(alpha = 0.5f))
                     .padding(10.dp),
                 name = "Советы на сегодня"
             ) {
@@ -219,23 +210,8 @@ fun MainScreenSuccess(
 
                 AdviceList(advices = adviceList)
             }
-
-//            Text(
-//                modifier = Modifier.fillMaxWidth().padding(horizontal = 20.dp).padding(top = 30.dp),
-//                text = "Принятие лекарств",
-//                fontSize = 17.sp,
-//                lineHeight = 22.sp,
-//                fontFamily = bodyFontFamily,
-//                color = text,
-//                fontWeight = FontWeight.W400,
-//                letterSpacing = -(0.8).sp
-//            )
-            //PillsSchedule(pillsList = pillsScheduleList.value, currentTime = LocalTime.of(14 ,0))
-
-
         }
     }
-
 }
 
 
