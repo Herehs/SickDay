@@ -6,14 +6,21 @@ import java.time.LocalDate
 import java.time.ZoneId
 
 class SaveNoteUseCase(
-    val notesRepository: NoteRepository
+    private val notesRepository: NoteRepository,
+    private val timeProvider: () -> Long = {
+        LocalDate.now()
+            .atStartOfDay(ZoneId.systemDefault())
+            .toEpochSecond()
+    }
+
 ){
     suspend operator fun invoke(note: Note, isNew: Boolean){
         if(isNew){
-            notesRepository.createNote(note = note.copy(
-                date = LocalDate.now().atStartOfDay(ZoneId.systemDefault())
-                    .toEpochSecond()
-            ))
+            notesRepository.createNote(
+                note = note.copy(
+                    date = timeProvider()
+                )
+            )
         } else {
             notesRepository.updateNote(note = note)
         }

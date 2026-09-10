@@ -35,11 +35,6 @@ class GetCurrentWeatherUseCase(
                             ?.toFloat()
                             ?: 0f
 
-                        Log.d(
-                            "Kp",
-                            "$avgKp"
-                        )
-
                         Resource.Success(weather.copy(kp_index = avgKp))
                     }
                 }
