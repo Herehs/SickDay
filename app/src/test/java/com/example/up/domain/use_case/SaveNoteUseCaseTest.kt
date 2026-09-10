@@ -14,17 +14,18 @@ import org.junit.jupiter.api.Test
 class SaveNoteUseCaseTest {
 
     private val repository = mockk<NoteRepository>()
+    private val time = 19000000L
 
     private lateinit var useCase: SaveNoteUseCase
 
     @BeforeEach
     fun setup(){
-        useCase = SaveNoteUseCase(repository)
+        useCase = SaveNoteUseCase(repository){ time }
     }
 
     @Test
     fun `should create new note`() = runTest {
-        val note = Note(note = "abc")
+        val note = Note(note = "abc", date = time)
 
         coEvery {
             repository.createNote(note = note)

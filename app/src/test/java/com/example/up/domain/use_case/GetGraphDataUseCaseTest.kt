@@ -35,12 +35,28 @@ class GetGraphDataUseCaseTest {
         )
 
         val flow = flowOf(
-            Resource.Success(listOf(KpData(
-                Kp = .1,
-                a_running = 1,
-                station_count = 8,
-                time = LocalDate.of(2025, 5,15)
-            )))
+            Resource.Success(
+                listOf(
+                    KpData(
+                        Kp = 1.0,
+                        a_running = 1,
+                        station_count = 8,
+                        time = LocalDate.of(2025, 5,15)
+                    ),
+                    KpData(
+                        Kp = 2.0,
+                        a_running = 1,
+                        station_count = 8,
+                        time = LocalDate.of(2025, 5,15)
+                    ),
+                    KpData(
+                        Kp = 3.0,
+                        a_running = 1,
+                        station_count = 8,
+                        time = LocalDate.of(2025, 5,15)
+                    )
+                )
+            )
         )
 
 
@@ -51,7 +67,7 @@ class GetGraphDataUseCaseTest {
         val result = useCase(
             lat = 50.0,
             lon = 30.0,
-            date = "2025-05-14"
+            date = "2025-05-15"
         ).first()
 
         assertTrue(result is Resource.Success)
