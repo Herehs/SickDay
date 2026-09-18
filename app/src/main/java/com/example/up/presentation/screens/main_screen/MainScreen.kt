@@ -98,21 +98,7 @@ fun MainScreenSuccess(
 ){
     val formatted = currentDate.format(DateTimeFormatter.ofPattern("LLLL yyyy")).replaceFirstChar { it.uppercase() }
 
-    val locationLauncher = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.RequestMultiplePermissions()
-    ) { permissions ->
-        permissions[Manifest.permission.ACCESS_FINE_LOCATION] ?: false
-        permissions[Manifest.permission.ACCESS_COARSE_LOCATION] ?: false
-    }
 
-    LaunchedEffect(Unit) {
-        locationLauncher.launch(
-            arrayOf(
-                Manifest.permission.ACCESS_FINE_LOCATION,
-                Manifest.permission.ACCESS_COARSE_LOCATION
-            )
-        )
-    }
 
     LazyColumn(
         modifier = modifier,
